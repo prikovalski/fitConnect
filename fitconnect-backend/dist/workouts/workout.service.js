@@ -12,7 +12,9 @@ const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 let WorkoutService = class WorkoutService {
     async createWorkout(data) {
-        return prisma.workoutPlan.create({ data });
+        return prisma.workoutPlan.create({
+            data: Object.assign(Object.assign({}, data), { validFrom: new Date(data.validFrom), validUntil: new Date(data.validUntil) }),
+        });
     }
     async getWorkoutsByPatient(patientId) {
         return prisma.workoutPlan.findMany({

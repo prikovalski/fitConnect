@@ -6,26 +6,26 @@ export declare class AssessmentService {
         createdById: number;
     }): Promise<{
         id: number;
-        method: string;
-        date: Date;
         data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        method: string;
+        date: Date;
         createdById: number;
     }>;
     getAssessmentsByPatient(patientId: number): Promise<{
         id: number;
-        method: string;
-        date: Date;
         data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        method: string;
+        date: Date;
         createdById: number;
     }[]>;
     getAssessmentById(id: number): Promise<{
         id: number;
-        method: string;
-        date: Date;
         data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        method: string;
+        date: Date;
         createdById: number;
     } | null>;
 }

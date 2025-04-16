@@ -4,9 +4,22 @@ import { AppController } from './app.controller';
 import { WorkoutModule } from './workouts/workout.module';
 import { MealPlanModule } from './mealplans/mealplan.module';
 import { AssessmentModule } from './assessments/assessment.module';
+import { DayModule } from './workout/days/day.module';
+import { ExerciseModule } from './workout/exercises/exercise.module';
+import { SetModule } from './workout/sets/set.module';
+import { LogModule } from './workout/logs/log.module';
 
 @Module({
-  imports: [AuthModule, WorkoutModule, MealPlanModule, AssessmentModule],
+  imports: [
+    AuthModule,
+    WorkoutModule,
+    AssessmentModule,
+    MealPlanModule,
+    DayModule,
+    ExerciseModule,
+    SetModule,
+    LogModule,
+  ],
   controllers: [AppController],
 })
 export class AppModule {}

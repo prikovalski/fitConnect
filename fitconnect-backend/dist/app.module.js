@@ -13,12 +13,25 @@ const app_controller_1 = require("./app.controller");
 const workout_module_1 = require("./workouts/workout.module");
 const mealplan_module_1 = require("./mealplans/mealplan.module");
 const assessment_module_1 = require("./assessments/assessment.module");
+const day_module_1 = require("./workout/days/day.module");
+const exercise_module_1 = require("./workout/exercises/exercise.module");
+const set_module_1 = require("./workout/sets/set.module");
+const log_module_1 = require("./workout/logs/log.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, workout_module_1.WorkoutModule, mealplan_module_1.MealPlanModule, assessment_module_1.AssessmentModule],
+        imports: [
+            auth_module_1.AuthModule,
+            workout_module_1.WorkoutModule,
+            assessment_module_1.AssessmentModule,
+            mealplan_module_1.MealPlanModule,
+            day_module_1.DayModule,
+            exercise_module_1.ExerciseModule,
+            set_module_1.SetModule,
+            log_module_1.LogModule,
+        ],
         controllers: [app_controller_1.AppController],
     })
 ], AppModule);
