@@ -9,26 +9,26 @@ export declare class MealPlanController {
         patientId: number;
     }): Promise<{
         id: number;
-        patientId: number;
         title: string;
         description: string;
         createdAt: Date;
         nutritionistId: number;
+        patientId: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
-        patientId: number;
         title: string;
         description: string;
         createdAt: Date;
         nutritionistId: number;
+        patientId: number;
     }[]>;
     getOne(id: string): Promise<{
         id: number;
-        patientId: number;
         title: string;
         description: string;
         createdAt: Date;
         nutritionistId: number;
+        patientId: number;
     } | null>;
 }

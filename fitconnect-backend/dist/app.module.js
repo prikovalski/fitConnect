@@ -11,12 +11,14 @@ const common_1 = require("@nestjs/common");
 const auth_module_1 = require("./auth/auth.module");
 const app_controller_1 = require("./app.controller");
 const workout_module_1 = require("./workouts/workout.module");
+const mealplan_module_1 = require("./mealplans/mealplan.module");
+const assessment_module_1 = require("./assessments/assessment.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, workout_module_1.WorkoutModule],
+        imports: [auth_module_1.AuthModule, workout_module_1.WorkoutModule, mealplan_module_1.MealPlanModule, assessment_module_1.AssessmentModule],
         controllers: [app_controller_1.AppController],
     })
 ], AppModule);

@@ -25,14 +25,14 @@ model WorkoutPlan {
 }
 
 model PhysicalAssessment {
-  id           Int      @id @default(autoincrement())
-  method       String
-  date         DateTime @default(now())
-  data         Json
-  patient      User     @relation("AssessmentPatient", fields: [patientId], references: [id])
-  patientId    Int
-  createdBy    User     @relation("AssessmentCreator", fields: [createdById], references: [id])
-  createdById  Int
+  id          Int      @id @default(autoincrement())
+  method      String
+  date        DateTime @default(now())
+  data        Json
+  patient     User     @relation("AssessmentPatient", fields: [patientId], references: [id])
+  patientId   Int
+  createdBy   User     @relation("AssessmentCreator", fields: [createdById], references: [id])
+  createdById Int
 }
 
 model MealPlan {
@@ -46,17 +46,26 @@ model MealPlan {
   patientId      Int
 }
 
+model DataSharing {
+  id               Int     @id @default(autoincrement())
+  patient          User    @relation("UserDataSharing", fields: [patientId], references: [id])
+  patientId        Int     @unique
+  shareWorkoutWith Boolean @default(false)
+  shareMealWith    Boolean @default(false)
+}
+
 model User {
-  id                   Int               @id @default(autoincrement())
-  email                String            @unique
-  password             String
-  name                 String
-  role                 Role
-  createdAt            DateTime          @default(now())
-  trainerPlans         WorkoutPlan[]     @relation("TrainerPlans")
-  patientPlans         WorkoutPlan[]     @relation("PatientPlans")
-  assessments          PhysicalAssessment[] @relation("AssessmentPatient")
-  createdAssessments   PhysicalAssessment[] @relation("AssessmentCreator")
-  nutritionistPlans    MealPlan[]        @relation("NutritionistPlans")
-  mealPatientPlans     MealPlan[]        @relation("MealPatientPlans")
+  id                 Int                  @id @default(autoincrement())
+  email              String               @unique
+  password           String
+  name               String
+  role               Role
+  createdAt          DateTime             @default(now())
+  trainerPlans       WorkoutPlan[]        @relation("TrainerPlans")
+  patientPlans       WorkoutPlan[]        @relation("PatientPlans")
+  assessments        PhysicalAssessment[] @relation("AssessmentPatient")
+  createdAssessments PhysicalAssessment[] @relation("AssessmentCreator")
+  nutritionistPlans  MealPlan[]           @relation("NutritionistPlans")
+  mealPatientPlans   MealPlan[]           @relation("MealPatientPlans")
+  dataSharing        DataSharing?         @relation("UserDataSharing")
 }

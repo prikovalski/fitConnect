@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AssessmentController = void 0;
 const common_1 = require("@nestjs/common");
 const assessment_service_1 = require("./assessment.service");
+const roles_decorator_1 = require("../auth/roles.decorator");
 let AssessmentController = class AssessmentController {
     constructor(assessmentService) {
         this.assessmentService = assessmentService;
@@ -31,6 +32,7 @@ let AssessmentController = class AssessmentController {
 };
 exports.AssessmentController = AssessmentController;
 __decorate([
+    (0, roles_decorator_1.Roles)('TRAINER', 'NUTRITIONIST'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -38,6 +40,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AssessmentController.prototype, "create", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('PATIENT', 'TRAINER', 'NUTRITIONIST'),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('patientId')),
     __metadata("design:type", Function),
@@ -45,6 +48,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AssessmentController.prototype, "getByPatient", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('PATIENT', 'TRAINER', 'NUTRITIONIST'),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MealPlanController = void 0;
 const common_1 = require("@nestjs/common");
 const mealplan_service_1 = require("./mealplan.service");
+const roles_decorator_1 = require("../auth/roles.decorator");
 let MealPlanController = class MealPlanController {
     constructor(mealPlanService) {
         this.mealPlanService = mealPlanService;
@@ -31,6 +32,7 @@ let MealPlanController = class MealPlanController {
 };
 exports.MealPlanController = MealPlanController;
 __decorate([
+    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -38,6 +40,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MealPlanController.prototype, "create", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('PATIENT'),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('patientId')),
     __metadata("design:type", Function),
@@ -45,6 +48,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MealPlanController.prototype, "getByPatient", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('PATIENT', 'NUTRITIONIST'),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
