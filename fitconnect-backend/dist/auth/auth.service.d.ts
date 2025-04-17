@@ -1,13 +1,30 @@
-import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
 export declare class AuthService {
-    private jwtService;
-    constructor(jwtService: JwtService);
     register(data: {
         email: string;
         password: string;
         name: string;
-        role: Role;
-    }): Promise<string>;
-    login(email: string, password: string): Promise<string>;
+        role: string;
+    }): Promise<{
+        message: string;
+        user: {
+            id: number;
+            email: string;
+            password: string;
+            name: string;
+            role: import(".prisma/client").$Enums.Role;
+            createdAt: Date;
+        };
+    }>;
+    login(data: {
+        email: string;
+        password: string;
+    }): Promise<{
+        token: string;
+        user: {
+            id: number;
+            name: string;
+            email: string;
+            role: import(".prisma/client").$Enums.Role;
+        };
+    } | null>;
 }

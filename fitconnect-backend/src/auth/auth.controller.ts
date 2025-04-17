@@ -1,18 +1,19 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Role } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: { email: string; password: string; name: string; role: Role }) {
+  register(@Body() body: { email: string; password: string; name: string; role: string }) {
     return this.authService.register(body);
   }
 
   @Post('login')
   async login(@Body() body: { email: string; password: string }) {
-    return this.authService.login(body.email, body.password);
+    const result = await this.authService.login(body);
+    if (!result) throw new UnauthorizedException('Credenciais inválidas');
+    return result;
   }
 }

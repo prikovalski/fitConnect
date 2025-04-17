@@ -19,11 +19,14 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async register(body) {
+    register(body) {
         return this.authService.register(body);
     }
     async login(body) {
-        return this.authService.login(body.email, body.password);
+        const result = await this.authService.login(body);
+        if (!result)
+            throw new common_1.UnauthorizedException('Credenciais inválidas');
+        return result;
     }
 };
 exports.AuthController = AuthController;
@@ -32,7 +35,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
 __decorate([
     (0, common_1.Post)('login'),
