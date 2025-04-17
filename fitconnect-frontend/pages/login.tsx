@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import PageWrapper from '../components/PageWrapper';
+import styles from '../styles/ui.module.css';
 
 export default function Login() {
   const router = useRouter();
@@ -40,42 +40,44 @@ export default function Login() {
   };
 
   return (
-    <PageWrapper>
-      <div className="min-h-screen bg-[#F0F9F7] flex items-center justify-center px-4">
-        <motion.div
-          className="bg-white p-8 rounded-xl shadow-md w-full max-w-md"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+    <div className="min-h-screen bg-[#F0F9F7] flex items-center justify-center px-4">
+      <motion.div
+        className={styles.card}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className={styles.heading}>Bem-vindo ao FitConnect</h1>
+
+        <input
+          type="email"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className={styles.input}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className={styles.input}
+        />
+
+        {error && <p className={styles['message-error']}>{error}</p>}
+
+        <button
+          onClick={handleLogin}
+          className={styles.button}
+          disabled={loading}
         >
-          <h1 className="text-2xl font-bold mb-6 text-[#00B894] text-center">Bem-vindo ao FitConnect</h1>
+          {loading ? 'Entrando...' : 'Entrar'}
+        </button>
 
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-          <button
-            onClick={handleLogin}
-            className="w-full bg-[#00B894] text-white py-2 rounded hover:bg-[#019f80] transition"
-            disabled={loading}
-          >
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </motion.div>
-      </div>
-    </PageWrapper>
+        <p className="text-sm text-center mt-4">
+          Não tem conta? <a href="/register" className={styles.link}>Cadastre-se aqui</a>
+        </p>
+      </motion.div>
+    </div>
   );
 }
