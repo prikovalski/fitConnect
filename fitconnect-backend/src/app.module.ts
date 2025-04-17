@@ -8,6 +8,7 @@ import { DayModule } from './workout/days/day.module';
 import { ExerciseModule } from './workout/exercises/exercise.module';
 import { SetModule } from './workout/sets/set.module';
 import { LogModule } from './workout/logs/log.module';
+import { WorkoutTodayModule } from './workout/workout-today.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LogModule } from './workout/logs/log.module';
     ExerciseModule,
     SetModule,
     LogModule,
+    WorkoutTodayModule,
   ],
   controllers: [AppController],
 })

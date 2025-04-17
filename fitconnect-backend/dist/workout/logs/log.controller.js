@@ -20,6 +20,15 @@ let LogController = class LogController {
     async create(body) {
         return prisma.workoutLog.create({ data: Object.assign(Object.assign({}, body), { date: new Date(body.date) }) });
     }
+    async update(id, body) {
+        return prisma.workoutLog.update({
+            where: { id: Number(id) },
+            data: {
+                actualReps: body.actualReps,
+                actualLoad: body.actualLoad,
+            },
+        });
+    }
 };
 exports.LogController = LogController;
 __decorate([
@@ -29,6 +38,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], LogController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], LogController.prototype, "update", null);
 exports.LogController = LogController = __decorate([
     (0, common_1.Controller)('workout/logs')
 ], LogController);

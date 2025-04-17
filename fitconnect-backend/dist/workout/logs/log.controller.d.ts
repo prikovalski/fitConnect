@@ -6,8 +6,18 @@ export declare class LogController {
         actualLoad: number;
     }): Promise<{
         id: number;
-        date: Date;
         workoutSetId: number;
+        date: Date;
+        actualReps: number;
+        actualLoad: number;
+    }>;
+    update(id: string, body: {
+        actualReps: number;
+        actualLoad: number;
+    }): Promise<{
+        id: number;
+        workoutSetId: number;
+        date: Date;
         actualReps: number;
         actualLoad: number;
     }>;
