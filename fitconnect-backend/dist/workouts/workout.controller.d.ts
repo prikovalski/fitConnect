@@ -11,34 +11,34 @@ export declare class WorkoutController {
         validUntil: string;
     }): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     }[]>;
     getOne(id: string): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     } | null>;

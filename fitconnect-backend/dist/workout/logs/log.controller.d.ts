@@ -6,8 +6,8 @@ export declare class LogController {
         actualLoad: number;
     }): Promise<{
         id: number;
-        workoutSetId: number;
         date: Date;
+        workoutSetId: number;
         actualReps: number;
         actualLoad: number;
     }>;
@@ -16,8 +16,8 @@ export declare class LogController {
         actualLoad: number;
     }): Promise<{
         id: number;
-        workoutSetId: number;
         date: Date;
+        workoutSetId: number;
         actualReps: number;
         actualLoad: number;
     }>;
