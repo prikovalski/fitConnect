@@ -23,6 +23,7 @@ import { WorkoutPlanModule } from './workouts/workout-plan.module';
     LogModule,
     WorkoutTodayModule,
     WorkoutPlanModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [PrismaService],

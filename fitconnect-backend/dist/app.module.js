@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const auth_module_1 = require("./auth/auth.module");
 const app_controller_1 = require("./app.controller");
 const workout_module_1 = require("./workouts/workout.module");
 const mealplan_module_1 = require("./mealplans/mealplan.module");
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
             log_module_1.LogModule,
             workout_today_module_1.WorkoutTodayModule,
             workout_plan_module_1.WorkoutPlanModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [prisma_service_1.PrismaService],

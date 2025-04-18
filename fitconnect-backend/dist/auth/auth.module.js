@@ -14,6 +14,7 @@ const jwt_strategy_1 = require("./jwt.strategy");
 const jwt_auth_guard_1 = require("./jwt-auth.guard");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
+const prisma_service_1 = require("../prisma.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -25,10 +26,9 @@ exports.AuthModule = AuthModule = __decorate([
                 secret: process.env.JWT_SECRET,
                 signOptions: { expiresIn: '7d' },
             }),
-            auth_controller_1.AuthController,
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard],
+        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard, prisma_service_1.PrismaService],
         exports: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard],
     })
 ], AuthModule);
