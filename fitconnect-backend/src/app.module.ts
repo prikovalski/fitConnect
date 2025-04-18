@@ -9,6 +9,7 @@ import { ExerciseModule } from './workout/exercises/exercise.module';
 import { SetModule } from './workout/sets/set.module';
 import { LogModule } from './workout/logs/log.module';
 import { WorkoutTodayModule } from './workout/workout-today.module';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -23,5 +24,7 @@ import { WorkoutTodayModule } from './workout/workout-today.module';
     WorkoutTodayModule,
   ],
   controllers: [AppController],
+  providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class AppModule {}

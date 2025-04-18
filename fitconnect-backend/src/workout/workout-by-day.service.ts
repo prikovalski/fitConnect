@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
+import { WorkoutDay, Prisma } from '@prisma/client';
 
 @Injectable()
 export class WorkoutByDayService {
@@ -10,7 +11,7 @@ export class WorkoutByDayService {
       where: {
         workoutPlan: {
           patientId,
-          active: true,
+          isActive: true,
         },
         dayOfWeek: day,
       },
@@ -20,7 +21,7 @@ export class WorkoutByDayService {
             sets: {
               include: {
                 logs: {
-                  orderBy: { createdAt: 'desc' },
+                  orderBy: { date: 'desc' },
                   take: 1,
                 },
               },
@@ -45,20 +46,30 @@ export class WorkoutByDayService {
       planTitle: workoutDay.workoutPlan.title,
       day: workoutDay.dayOfWeek,
       muscleGroup: workoutDay.muscleGroup,
-      exercises: workoutDay.exercises.map((exercise) => ({
-        name: exercise.name,
-        sets: exercise.sets.map((set) => ({
-          setNumber: set.setNumber,
-          targetReps: set.targetReps,
-          targetLoad: set.targetLoad,
-          lastLog: set.logs[0]
-            ? {
-                actualReps: set.logs[0].actualReps,
-                actualLoad: set.logs[0].actualLoad,
-              }
-            : null,
-        })),
-      })),
+      exercises: workoutDay.exercises.map(
+        (exercise: Prisma.WorkoutExerciseGetPayload<{
+          include: {
+            sets: {
+              include: {
+                logs: true;
+              };
+            };
+          };
+        }>) => ({
+          name: exercise.name,
+          sets: exercise.sets.map((set) => ({
+            setNumber: set.setNumber,
+            targetReps: set.targetReps,
+            targetLoad: set.targetLoad,
+            lastLog: set.logs[0]
+              ? {
+                  actualReps: set.logs[0].actualReps,
+                  actualLoad: set.logs[0].actualLoad,
+                }
+              : null,
+          })),
+        }),
+      ),
     };
   }
 }
