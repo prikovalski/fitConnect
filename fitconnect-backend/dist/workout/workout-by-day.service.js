@@ -8,11 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkoutByDayService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("src/prisma.service");
+const prisma_service_1 = require("../prisma.service");
 let WorkoutByDayService = class WorkoutByDayService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -22,7 +21,7 @@ let WorkoutByDayService = class WorkoutByDayService {
             where: {
                 workoutPlan: {
                     patientId,
-                    active: true,
+                    isActive: true,
                 },
                 dayOfWeek: day,
             },
@@ -32,7 +31,7 @@ let WorkoutByDayService = class WorkoutByDayService {
                         sets: {
                             include: {
                                 logs: {
-                                    orderBy: { createdAt: 'desc' },
+                                    orderBy: { date: 'desc' },
                                     take: 1,
                                 },
                             },
@@ -42,8 +41,15 @@ let WorkoutByDayService = class WorkoutByDayService {
                 workoutPlan: true,
             },
         });
-        if (!workoutDay)
-            return null;
+        if (!workoutDay) {
+            return {
+                message: 'Nenhum plano ativo encontrado para este paciente neste dia.',
+                planTitle: null,
+                day,
+                muscleGroup: null,
+                exercises: [],
+            };
+        }
         return {
             planTitle: workoutDay.workoutPlan.title,
             day: workoutDay.dayOfWeek,
@@ -68,6 +74,6 @@ let WorkoutByDayService = class WorkoutByDayService {
 exports.WorkoutByDayService = WorkoutByDayService;
 exports.WorkoutByDayService = WorkoutByDayService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], WorkoutByDayService);
 //# sourceMappingURL=workout-by-day.service.js.map

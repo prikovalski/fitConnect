@@ -18,6 +18,7 @@ const exercise_module_1 = require("./workout/exercises/exercise.module");
 const set_module_1 = require("./workout/sets/set.module");
 const log_module_1 = require("./workout/logs/log.module");
 const workout_today_module_1 = require("./workout/workout-today.module");
+const prisma_service_1 = require("./prisma.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,6 +36,8 @@ exports.AppModule = AppModule = __decorate([
             workout_today_module_1.WorkoutTodayModule,
         ],
         controllers: [app_controller_1.AppController],
+        providers: [prisma_service_1.PrismaService],
+        exports: [prisma_service_1.PrismaService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

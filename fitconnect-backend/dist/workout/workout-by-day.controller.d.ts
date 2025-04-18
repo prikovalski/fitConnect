@@ -1,10 +1,13 @@
+import { WorkoutByDayService } from './workout-by-day.service';
 export declare class WorkoutByDayController {
+    private readonly workoutByDayService;
+    constructor(workoutByDayService: WorkoutByDayService);
     getWorkoutByDay(patientId: string, day: string): Promise<{
         message: string;
-        planTitle?: undefined;
-        day?: undefined;
-        muscleGroup?: undefined;
-        exercises?: undefined;
+        planTitle: null;
+        day: string;
+        muscleGroup: null;
+        exercises: never[];
     } | {
         planTitle: string;
         day: string;

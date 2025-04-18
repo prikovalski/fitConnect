@@ -14,62 +14,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkoutByDayController = void 0;
 const common_1 = require("@nestjs/common");
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const workout_by_day_service_1 = require("./workout-by-day.service");
 let WorkoutByDayController = class WorkoutByDayController {
+    constructor(workoutByDayService) {
+        this.workoutByDayService = workoutByDayService;
+    }
     async getWorkoutByDay(patientId, day) {
-        const activePlan = await prisma.workoutPlan.findFirst({
-            where: {
-                patientId: Number(patientId),
-                isActive: true,
-            },
-        });
-        if (!activePlan) {
-            return { message: 'Nenhum plano de treino ativo encontrado para o paciente.' };
-        }
-        const workoutDay = await prisma.workoutDay.findFirst({
-            where: {
-                workoutPlanId: activePlan.id,
-                dayOfWeek: day.toUpperCase(),
-            },
-            include: {
-                exercises: {
-                    include: {
-                        sets: {
-                            include: {
-                                logs: {
-                                    where: { date: { lte: new Date() } },
-                                    orderBy: { date: 'desc' },
-                                    take: 1,
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-        if (!workoutDay) {
-            return { message: 'Nenhum treino encontrado para esse dia.' };
-        }
-        return {
-            planTitle: activePlan.title,
-            day: workoutDay.dayOfWeek,
-            muscleGroup: workoutDay.muscleGroup,
-            exercises: workoutDay.exercises.map((exercise) => ({
-                name: exercise.name,
-                sets: exercise.sets.map((set) => ({
-                    setNumber: set.setNumber,
-                    targetReps: set.targetReps,
-                    targetLoad: set.targetLoad,
-                    lastLog: set.logs[0]
-                        ? {
-                            actualReps: set.logs[0].actualReps,
-                            actualLoad: set.logs[0].actualLoad,
-                        }
-                        : null,
-                })),
-            })),
-        };
+        return this.workoutByDayService.getWorkoutByDay(Number(patientId), day.toUpperCase());
     }
 };
 exports.WorkoutByDayController = WorkoutByDayController;
@@ -82,6 +33,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WorkoutByDayController.prototype, "getWorkoutByDay", null);
 exports.WorkoutByDayController = WorkoutByDayController = __decorate([
-    (0, common_1.Controller)('workout')
+    (0, common_1.Controller)('workout'),
+    __metadata("design:paramtypes", [workout_by_day_service_1.WorkoutByDayService])
 ], WorkoutByDayController);
 //# sourceMappingURL=workout-by-day.controller.js.map
