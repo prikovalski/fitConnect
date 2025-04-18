@@ -1,8 +1,16 @@
 import PrivateRoute from '../components/PrivateRoute';
+import BackButton from '../components/BackButton';
 import { Dumbbell } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 export default function Trainings() {
+  const router = useRouter();
+
+  const handleClick = (id: number) => {
+    router.push(`/trainings/${id}`);
+  };
+
   return (
     <PrivateRoute>
       <div className="min-h-screen bg-[#F0F9F7] py-12 px-4 flex flex-col items-center">
@@ -12,24 +20,30 @@ export default function Trainings() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+          <BackButton />
           <div className="flex items-center gap-4 mb-6">
             <Dumbbell className="text-[#00B894]" size={32} />
             <h1 className="text-3xl font-bold text-[#00B894]">Meus Treinos</h1>
           </div>
 
           <p className="text-gray-700 mb-6">
-            Abaixo você encontrará todas as planilhas de treino ativas e arquivadas criadas pelos seus treinadores. Clique em uma delas para visualizar os detalhes.
+            Abaixo você encontrará todas as planilhas de treino ativas e arquivadas criadas pelos seus treinadores.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Exemplo de Card de Treino */}
-            <div className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <div
+              className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+              onClick={() => handleClick(1)}
+            >
               <h2 className="text-lg font-semibold text-[#00B894] mb-2">Hipertrofia - Junho</h2>
               <p className="text-gray-600 text-sm mb-1">Treinador: João Silva</p>
               <p className="text-gray-600 text-sm">Validade: 01/06/2025 a 30/06/2025</p>
             </div>
 
-            <div className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <div
+              className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+              onClick={() => handleClick(2)}
+            >
               <h2 className="text-lg font-semibold text-[#00B894] mb-2">Funcional + Core</h2>
               <p className="text-gray-600 text-sm mb-1">Treinador: Carla Torres</p>
               <p className="text-gray-600 text-sm">Validade: 10/05/2025 a 10/07/2025</p>
