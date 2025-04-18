@@ -1,37 +1,66 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaClient, Role } from '@prisma/client';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'minhaChaveSuperSecreta';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  async register(data: { email: string; password: string; name: string; role: string }) {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        password: hashedPassword,
-        name: data.name,
-        role: data.role as Role, 
-      },
-    });
-    return { message: 'Usuário criado com sucesso', user };
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
+
+  async validateUser(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (user && await bcrypt.compare(password, user.password)) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 
-  async login(data: { email: string; password: string }) {
-    const user = await prisma.user.findUnique({ where: { email: data.email } });
-    if (!user) return null;
+  async login({ email, password }: { email: string; password: string }) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new UnauthorizedException('E-mail ou senha inválidos.');
+    }
 
-    const isValid = await bcrypt.compare(data.password, user.password);
-    if (!isValid) return null;
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (!passwordValid) {
+      throw new UnauthorizedException('E-mail ou senha inválidos.');
+    }
 
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, {
-      expiresIn: '7d',
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const token = await this.jwtService.signAsync(payload);
+
+    return { token };
+  }
+
+  async register({
+    name,
+    email,
+    password,
+    role,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await this.prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: role as Role,
+      },
     });
 
-    return { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
+    const payload = { sub: newUser.id, email: newUser.email, role: newUser.role };
+    const token = await this.jwtService.signAsync(payload);
+
+    return { token };
   }
 }

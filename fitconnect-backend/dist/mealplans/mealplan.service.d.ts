@@ -6,25 +6,25 @@ export declare class MealPlanService {
         patientId: number;
     }): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
+        createdAt: Date;
         patientId: number;
         nutritionistId: number;
     }>;
     getMealPlansByPatient(patientId: number): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
+        createdAt: Date;
         patientId: number;
         nutritionistId: number;
     }[]>;
     getMealPlanById(id: number): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
+        createdAt: Date;
         patientId: number;
         nutritionistId: number;
     } | null>;

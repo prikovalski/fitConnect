@@ -10,10 +10,10 @@ import { SetModule } from './workout/sets/set.module';
 import { LogModule } from './workout/logs/log.module';
 import { WorkoutTodayModule } from './workout/workout-today.module';
 import { PrismaService } from './prisma.service';
+import { WorkoutPlanModule } from './workouts/workout-plan.module';
 
 @Module({
   imports: [
-    AuthModule,
     WorkoutModule,
     AssessmentModule,
     MealPlanModule,
@@ -22,6 +22,7 @@ import { PrismaService } from './prisma.service';
     SetModule,
     LogModule,
     WorkoutTodayModule,
+    WorkoutPlanModule,
   ],
   controllers: [AppController],
   providers: [PrismaService],

@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const auth_module_1 = require("./auth/auth.module");
 const app_controller_1 = require("./app.controller");
 const workout_module_1 = require("./workouts/workout.module");
 const mealplan_module_1 = require("./mealplans/mealplan.module");
@@ -19,13 +18,13 @@ const set_module_1 = require("./workout/sets/set.module");
 const log_module_1 = require("./workout/logs/log.module");
 const workout_today_module_1 = require("./workout/workout-today.module");
 const prisma_service_1 = require("./prisma.service");
+const workout_plan_module_1 = require("./workouts/workout-plan.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            auth_module_1.AuthModule,
             workout_module_1.WorkoutModule,
             assessment_module_1.AssessmentModule,
             mealplan_module_1.MealPlanModule,
@@ -34,6 +33,7 @@ exports.AppModule = AppModule = __decorate([
             set_module_1.SetModule,
             log_module_1.LogModule,
             workout_today_module_1.WorkoutTodayModule,
+            workout_plan_module_1.WorkoutPlanModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [prisma_service_1.PrismaService],
