@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
+import { jwtDecode } from 'jwt-decode';
 import styles from '../styles/ui.module.css';
+
+type DecodedToken = {
+  exp: number;
+};
 
 export default function Login() {
   const router = useRouter();
@@ -12,8 +17,20 @@ export default function Login() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) router.push('/dashboard');
-  }, []);
+    if (token) {
+      try {
+        const decoded = jwtDecode<DecodedToken>(token);
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp && decoded.exp > currentTime) {
+          router.push('/dashboard');
+        } else {
+          localStorage.removeItem('token'); // remove token expirado
+        }
+      } catch (err) {
+        localStorage.removeItem('token'); // token inválido
+      }
+    }
+  }, [router]);
 
   const handleLogin = async () => {
     setLoading(true);
