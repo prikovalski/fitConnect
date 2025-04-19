@@ -3,9 +3,46 @@ import BackButton from '../components/BackButton';
 import { Dumbbell } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+
+type WorkoutPlan = {
+  id: number;
+  title: string;
+  description: string;
+  validFrom: string;
+  validUntil: string;
+  trainer: {
+    name: string;
+  };
+};
+
+type TokenPayload = {
+  sub: number;
+  email: string;
+  role: string;
+};
 
 export default function Trainings() {
   const router = useRouter();
+  const [plans, setPlans] = useState<WorkoutPlan[]>([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const decoded = jwtDecode<TokenPayload>(token);
+    const patientId = decoded.sub;
+
+    fetch(`http://localhost:3333/workouts/plans?patientId=${patientId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setPlans(data))
+      .catch((err) => console.error('Erro ao buscar planos:', err));
+  }, []);
 
   const handleClick = (id: number) => {
     router.push(`/trainings/${id}`);
@@ -27,27 +64,28 @@ export default function Trainings() {
           </div>
 
           <p className="text-gray-700 mb-6">
-            Abaixo você encontrará todas as planilhas de treino ativas e arquivadas criadas pelos seus treinadores.
+            Abaixo estão os planos de treino cadastrados pelos seus treinadores.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div
-              className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
-              onClick={() => handleClick(1)}
-            >
-              <h2 className="text-lg font-semibold text-[#00B894] mb-2">Hipertrofia - Junho</h2>
-              <p className="text-gray-600 text-sm mb-1">Treinador: João Silva</p>
-              <p className="text-gray-600 text-sm">Validade: 01/06/2025 a 30/06/2025</p>
-            </div>
-
-            <div
-              className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
-              onClick={() => handleClick(2)}
-            >
-              <h2 className="text-lg font-semibold text-[#00B894] mb-2">Funcional + Core</h2>
-              <p className="text-gray-600 text-sm mb-1">Treinador: Carla Torres</p>
-              <p className="text-gray-600 text-sm">Validade: 10/05/2025 a 10/07/2025</p>
-            </div>
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                onClick={() => handleClick(plan.id)}
+                className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+              >
+                <h2 className="text-lg font-semibold text-[#00B894] mb-2">
+                  {plan.title}
+                </h2>
+                <p className="text-gray-600 text-sm mb-1">
+                  Treinador: {plan.trainer?.name || 'Desconhecido'}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  Validade: {new Date(plan.validFrom).toLocaleDateString()} até{' '}
+                  {new Date(plan.validUntil).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>
