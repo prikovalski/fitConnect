@@ -13,7 +13,7 @@ export class AuthMiddleware implements NestMiddleware {
       return res.sendStatus(200);
     }
 
-    const publicRoutes = ['/auth/login', '/auth/register'];
+    const publicRoutes = ['/auth/login', '/auth/register', '/auth/reset-password'];
 
     if (publicRoutes.includes(req.path)) {
       return next();

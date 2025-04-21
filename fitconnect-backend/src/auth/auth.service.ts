@@ -37,6 +37,20 @@ export class AuthService {
     return { token };
   }
 
+  async resetPassword(email: string, newPassword: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error('Usuário não encontrado');
+  
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({
+      where: { email },
+      data: { password: hashed },
+    });
+  
+    return { message: 'Senha redefinida com sucesso.' };
+  }
+  
+
   async register({
     name,
     email,

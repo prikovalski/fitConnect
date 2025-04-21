@@ -94,6 +94,12 @@ export default function Login() {
         <p className="text-sm text-center mt-4">
           Não tem conta? <a href="/register" className={styles.link}>Cadastre-se aqui</a>
         </p>
+
+        <p className="text-sm text-center mt-4">
+          <a href="/reset-password" className="text-[#00B894] hover:underline">
+            Esqueceu sua senha?
+          </a>
+        </p>
       </motion.div>
     </div>
   );

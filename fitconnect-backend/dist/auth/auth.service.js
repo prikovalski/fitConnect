@@ -51,6 +51,17 @@ let AuthService = class AuthService {
         const token = await this.jwtService.signAsync(payload);
         return { token };
     }
+    async resetPassword(email, newPassword) {
+        const user = await this.prisma.user.findUnique({ where: { email } });
+        if (!user)
+            throw new Error('Usuário não encontrado');
+        const hashed = await bcrypt.hash(newPassword, 10);
+        await this.prisma.user.update({
+            where: { email },
+            data: { password: hashed },
+        });
+        return { message: 'Senha redefinida com sucesso.' };
+    }
     async register({ name, email, password, role, }) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await this.prisma.user.create({

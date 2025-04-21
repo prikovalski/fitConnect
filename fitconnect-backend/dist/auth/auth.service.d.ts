@@ -17,6 +17,9 @@ export declare class AuthService {
     }): Promise<{
         token: string;
     }>;
+    resetPassword(email: string, newPassword: string): Promise<{
+        message: string;
+    }>;
     register({ name, email, password, role, }: {
         name: string;
         email: string;

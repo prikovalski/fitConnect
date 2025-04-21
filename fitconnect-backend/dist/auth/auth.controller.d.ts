@@ -10,4 +10,10 @@ export declare class AuthController {
     login(body: LoginDto): Promise<{
         token: string;
     }>;
+    resetPassword(body: {
+        email: string;
+        newPassword: string;
+    }): Promise<{
+        message: string;
+    }>;
 }
