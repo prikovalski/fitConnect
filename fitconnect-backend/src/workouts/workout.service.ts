@@ -30,6 +30,10 @@ export class WorkoutService {
   }
 
   async getWorkoutById(id: number) {
+    if (!id) {
+      throw new Error('ID do plano não foi fornecido.');
+    }
+    
     return prisma.workoutPlan.findUnique({ where: { id } });
   }
 }

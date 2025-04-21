@@ -1,24 +1,37 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'minhaChaveSuperSecreta';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) throw new UnauthorizedException('Token não fornecido');
+    // Libera preflight CORS
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      return res.sendStatus(200);
+    }
 
-    const token = authHeader.split(' ')[1];
-    if (!token) throw new UnauthorizedException('Token mal formatado');
+    const publicRoutes = ['/auth/login', '/auth/register'];
+
+    if (publicRoutes.includes(req.path)) {
+      return next();
+    }
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ message: 'Token não encontrado' });
+    }
+
+    const [, token] = authHeader.split(' ');
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req['user'] = decoded;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+      (req as any).user = decoded;
       next();
     } catch (err) {
-      throw new UnauthorizedException('Token inválido ou expirado');
+      return res.status(401).json({ message: 'Token inválido' });
     }
   }
 }

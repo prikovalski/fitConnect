@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkoutController = void 0;
 const common_1 = require("@nestjs/common");
 const workout_service_1 = require("./workout.service");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let WorkoutController = class WorkoutController {
     constructor(workoutService) {
         this.workoutService = workoutService;
@@ -26,6 +27,7 @@ let WorkoutController = class WorkoutController {
         return this.workoutService.getWorkoutsByPatient(Number(patientId));
     }
     getOne(id) {
+        console.log('🔍 RECEBIDO id:', id);
         return this.workoutService.getWorkoutById(Number(id));
     }
 };
@@ -38,7 +40,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], WorkoutController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('plans'),
     __param(0, (0, common_1.Query)('patientId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -53,6 +55,7 @@ __decorate([
 ], WorkoutController.prototype, "getOne", null);
 exports.WorkoutController = WorkoutController = __decorate([
     (0, common_1.Controller)('workouts'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:paramtypes", [workout_service_1.WorkoutService])
 ], WorkoutController);
 //# sourceMappingURL=workout.controller.js.map

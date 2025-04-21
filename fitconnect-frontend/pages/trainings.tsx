@@ -40,8 +40,14 @@ export default function Trainings() {
       },
     })
       .then((res) => res.json())
-      .then((data) => setPlans(data))
-      .catch((err) => console.error('Erro ao buscar planos:', err));
+      .then((data) => {
+        console.log('🔍 RESPOSTA DA API:', data);
+        setPlans(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error('Erro ao buscar planos:', err);
+        setPlans([]);
+      });
   }, []);
 
   const handleClick = (id: number) => {

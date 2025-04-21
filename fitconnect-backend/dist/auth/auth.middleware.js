@@ -9,22 +9,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthMiddleware = void 0;
 const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || 'minhaChaveSuperSecreta';
 let AuthMiddleware = class AuthMiddleware {
     use(req, res, next) {
-        const authHeader = req.headers['authorization'];
-        if (!authHeader)
-            throw new common_1.UnauthorizedException('Token não fornecido');
-        const token = authHeader.split(' ')[1];
-        if (!token)
-            throw new common_1.UnauthorizedException('Token mal formatado');
+        if (req.method === 'OPTIONS') {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+            res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            return res.sendStatus(200);
+        }
+        const publicRoutes = ['/auth/login', '/auth/register'];
+        if (publicRoutes.includes(req.path)) {
+            return next();
+        }
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(401).json({ message: 'Token não encontrado' });
+        }
+        const [, token] = authHeader.split(' ');
         try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            req['user'] = decoded;
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = decoded;
             next();
         }
         catch (err) {
-            throw new common_1.UnauthorizedException('Token inválido ou expirado');
+            return res.status(401).json({ message: 'Token inválido' });
         }
     }
 };

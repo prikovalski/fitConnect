@@ -23,6 +23,9 @@ let WorkoutService = class WorkoutService {
         });
     }
     async getWorkoutById(id) {
+        if (!id) {
+            throw new Error('ID do plano não foi fornecido.');
+        }
         return prisma.workoutPlan.findUnique({ where: { id } });
     }
 };
