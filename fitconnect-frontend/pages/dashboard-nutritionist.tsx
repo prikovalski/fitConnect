@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import PrivateRoute from '../components/PrivateRoute';
 import { User, Salad, Dumbbell } from 'lucide-react';
 import { motion } from 'framer-motion';
+import NavbarNutritionist from '../components/NavbarNutritionist';
 
 export default function DashboardNutritionist() {
   const [patients, setPatients] = useState<any[]>([]);
@@ -26,6 +27,7 @@ export default function DashboardNutritionist() {
 
   return (
     <PrivateRoute>
+      <NavbarNutritionist />
       <div className="min-h-screen bg-[#F0F9F7] py-12 px-4 flex flex-col items-center">
         <motion.div
           className="bg-white p-8 rounded-xl shadow-md w-full max-w-5xl"
