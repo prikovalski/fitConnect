@@ -38,6 +38,7 @@ export class NutritionistService {
   }
 
   async getPatientDetail(patientId: number, nutritionistId: number) {
+    console.log("Entrou Service");
     const patient = await this.prisma.user.findUnique({
       where: { id: patientId },
       select: { id: true, name: true, email: true }

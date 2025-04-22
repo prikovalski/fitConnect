@@ -28,6 +28,7 @@ let NutritionistController = class NutritionistController {
     }
     async getPatientDetail(id, req) {
         const nutritionistId = req.user.sub;
+        console.log("🔍 Nutritionist ID Controller:", nutritionistId);
         return this.nutritionistService.getPatientDetail(Number(id), nutritionistId);
     }
 };
@@ -41,8 +42,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], NutritionistController.prototype, "getPatients", null);
 __decorate([
-    (0, common_1.Get)('patient/:id'),
     (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    (0, common_1.Get)('patient/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
