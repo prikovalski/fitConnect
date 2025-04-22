@@ -6,19 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MealPlanModule = void 0;
+exports.NutritionistModule = void 0;
 const common_1 = require("@nestjs/common");
-const mealplan_service_1 = require("./mealplan.service");
-const mealplan_controller_1 = require("./mealplan.controller");
-const meal_controller_1 = require("./meal.controller");
-const meal_service_1 = require("./meal.service");
-let MealPlanModule = class MealPlanModule {
+const nutritionist_controller_1 = require("./nutritionist.controller");
+const nutritionist_service_1 = require("./nutritionist.service");
+const prisma_service_1 = require("../prisma.service");
+let NutritionistModule = class NutritionistModule {
 };
-exports.MealPlanModule = MealPlanModule;
-exports.MealPlanModule = MealPlanModule = __decorate([
+exports.NutritionistModule = NutritionistModule;
+exports.NutritionistModule = NutritionistModule = __decorate([
     (0, common_1.Module)({
-        controllers: [mealplan_controller_1.MealPlanController, meal_controller_1.MealController],
-        providers: [mealplan_service_1.MealPlanService, meal_service_1.MealService]
+        controllers: [nutritionist_controller_1.NutritionistController],
+        providers: [nutritionist_service_1.NutritionistService, prisma_service_1.PrismaService],
     })
-], MealPlanModule);
-//# sourceMappingURL=mealplan.module.js.map
+], NutritionistModule);
+//# sourceMappingURL=nutritionist.module.js.map

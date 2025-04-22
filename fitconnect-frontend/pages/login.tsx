@@ -25,7 +25,11 @@ export default function Login() {
         const decoded = jwtDecode<DecodedToken>(token);
         const currentTime = Date.now() / 1000;
         if (decoded.exp && decoded.exp > currentTime) {
-          router.push('/dashboard');
+          if (decoded.role === 'NUTRITIONIST') {
+            router.push('/dashboard-nutritionist');
+          } else {
+            router.push('/dashboard');
+          }
         } else {
           localStorage.removeItem('token');
         }
@@ -56,7 +60,12 @@ export default function Login() {
         localStorage.setItem('role', decoded.role);
         localStorage.setItem('name', decoded.name);
 
-        router.push('/dashboard');
+        // Redirecionamento conforme perfil
+        if (decoded.role === 'NUTRITIONIST') {
+          router.push('/dashboard-nutritionist');
+        } else {
+          router.push('/dashboard');
+        }
       }
     } catch (err) {
       setError('Erro de conexão com o servidor');

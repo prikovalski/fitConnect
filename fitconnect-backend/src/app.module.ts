@@ -11,6 +11,7 @@ import { LogModule } from './workout/logs/log.module';
 import { WorkoutTodayModule } from './workout/workout-today.module';
 import { PrismaService } from './prisma.service';
 import { WorkoutPlanModule } from './workouts/workout-plan.module';
+import { NutritionistModule } from 'Nutritionist/nutritionist.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WorkoutPlanModule } from './workouts/workout-plan.module';
     WorkoutTodayModule,
     WorkoutPlanModule,
     AuthModule,
+    NutritionistModule,
   ],
   controllers: [AppController],
   providers: [PrismaService],
