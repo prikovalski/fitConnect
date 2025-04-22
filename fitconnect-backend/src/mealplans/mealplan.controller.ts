@@ -58,7 +58,8 @@ export class MealPlanController {
     @Body() body: any,
     @Req() req: any
   ) {
-    console.log('Nutritionist ID:', req.user.sub);
-    return this.mealPlanService.updateMealPlan(Number(planId), body, req.user.sub);
+    console.log('Nutritionist ID:', req.user.id);
+    return this.mealPlanService.updateMealPlan(Number(planId), body, req.user.id);
   }
+  
 }

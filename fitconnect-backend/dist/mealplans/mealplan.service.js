@@ -59,19 +59,15 @@ let MealPlanService = class MealPlanService {
     }
     async updateMealPlan(planId, data, nutritionistId) {
         const plan = await prisma.mealPlan.findUnique({ where: { id: planId } });
-        console.log("🔍 Nutri: ", nutritionistId);
-        if (!plan) {
+        if (!plan)
             throw new Error('Plano não encontrado');
-        }
-        if (!plan.isActive) {
+        if (!plan.isActive)
             throw new Error('Apenas planos ativos podem ser editados.');
-        }
-        if (plan.nutritionistId !== nutritionistId) {
+        if (plan.nutritionistId !== nutritionistId)
             throw new Error('Você não tem permissão para editar este plano.');
-        }
         return prisma.mealPlan.update({
             where: { id: planId },
-            data
+            data: Object.assign(Object.assign({}, data), { validFrom: new Date(data.validFrom), validUntil: new Date(data.validUntil) })
         });
     }
 };

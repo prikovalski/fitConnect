@@ -24,4 +24,11 @@ export declare class MealService {
         name: string;
         order: number;
     }>;
+    updateMealWithItems(mealId: number, data: {
+        name: string;
+        order: number;
+        items: any[];
+    }): Promise<{
+        message: string;
+    }>;
 }

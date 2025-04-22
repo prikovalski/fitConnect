@@ -24,4 +24,15 @@ export declare class MealController {
         name: string;
         order: number;
     }>;
+    updateMealWithItems(mealId: string, body: {
+        name: string;
+        order: number;
+        items: {
+            foodName: string;
+            quantity: string;
+            notes?: string;
+        }[];
+    }): Promise<{
+        message: string;
+    }>;
 }

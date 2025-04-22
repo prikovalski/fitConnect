@@ -26,4 +26,34 @@ export class MealService {
       include: { items: true }
     });
   }
+  async updateMealWithItems(mealId: number, data: { name: string; order: number; items: any[] }) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.meal.update({
+        where: { id: mealId },
+        data: {
+          name: data.name,
+          order: data.order,
+        },
+      });
+
+      await tx.mealItem.deleteMany({
+        where: { mealId },
+      });
+  
+
+      if (data.items.length > 0) {
+        await tx.mealItem.createMany({
+          data: data.items.map(item => ({
+            mealId,
+            foodName: item.foodName,
+            quantity: item.quantity,
+            notes: item.notes || '',
+          })),
+        });
+      }
+  
+      return { message: 'Refeição atualizada com sucesso!' };
+    });
+  }
+  
 }

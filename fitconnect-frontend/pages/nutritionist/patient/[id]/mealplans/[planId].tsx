@@ -39,10 +39,10 @@ export default function MealPlanDetail() {
           </p>
           <p className="mb-6">{plan.description}</p>
 
-          {plan.instructions && (
+          {plan.observations && (
             <div className="mb-6 p-4 bg-[#F0F9F7] rounded">
               <h2 className="font-semibold mb-2">Instruções:</h2>
-              <p>{plan.instructions}</p>
+              <p>{plan.observations}</p>
             </div>
           )}
 

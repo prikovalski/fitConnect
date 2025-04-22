@@ -63,25 +63,21 @@ export class MealPlanService {
     });
   }
   async updateMealPlan(planId: number, data: any, nutritionistId: number) {
-    
     const plan = await prisma.mealPlan.findUnique({ where: { id: planId } });
-    console.log("🔍 Nutri: ", nutritionistId);
-    if (!plan) {
-      throw new Error('Plano não encontrado');
-    }
   
-    if (!plan.isActive) {
-      throw new Error('Apenas planos ativos podem ser editados.');
-    }
-  
-    if (plan.nutritionistId !== nutritionistId) {
-      throw new Error('Você não tem permissão para editar este plano.');
-    }
+    if (!plan) throw new Error('Plano não encontrado');
+    if (!plan.isActive) throw new Error('Apenas planos ativos podem ser editados.');
+    if (plan.nutritionistId !== nutritionistId) throw new Error('Você não tem permissão para editar este plano.');
   
     return prisma.mealPlan.update({
       where: { id: planId },
-      data
+      data: {
+        ...data,
+        validFrom: new Date(data.validFrom),
+        validUntil: new Date(data.validUntil),
+      }
     });
   }
+  
   
 }

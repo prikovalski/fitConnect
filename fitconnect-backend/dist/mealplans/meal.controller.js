@@ -24,6 +24,9 @@ let MealController = class MealController {
     async addMeal(planId, body) {
         return this.mealService.createMealWithItems(Number(planId), body);
     }
+    async updateMealWithItems(mealId, body) {
+        return this.mealService.updateMealWithItems(Number(mealId), body);
+    }
 };
 exports.MealController = MealController;
 __decorate([
@@ -35,6 +38,15 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], MealController.prototype, "addMeal", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    (0, common_1.Put)(':mealId/items'),
+    __param(0, (0, common_1.Param)('mealId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], MealController.prototype, "updateMealWithItems", null);
 exports.MealController = MealController = __decorate([
     (0, common_1.Controller)('meals'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
