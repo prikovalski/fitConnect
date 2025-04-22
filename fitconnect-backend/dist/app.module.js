@@ -20,13 +20,14 @@ const log_module_1 = require("./workout/logs/log.module");
 const workout_today_module_1 = require("./workout/workout-today.module");
 const prisma_service_1 = require("./prisma.service");
 const workout_plan_module_1 = require("./workouts/workout-plan.module");
-const nutritionist_module_1 = require("./Nutritionist/nutritionist.module");
+const nutritionist_module_1 = require("./nutritionist/nutritionist.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            nutritionist_module_1.NutritionistModule,
             workout_module_1.WorkoutModule,
             assessment_module_1.AssessmentModule,
             mealplan_module_1.MealPlanModule,
@@ -37,7 +38,6 @@ exports.AppModule = AppModule = __decorate([
             workout_today_module_1.WorkoutTodayModule,
             workout_plan_module_1.WorkoutPlanModule,
             auth_module_1.AuthModule,
-            nutritionist_module_1.NutritionistModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [prisma_service_1.PrismaService],

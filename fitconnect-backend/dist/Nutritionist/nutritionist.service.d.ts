@@ -13,4 +13,17 @@ export declare class NutritionistService {
             title: string;
         } | null;
     }[]>;
+    getPatientDetail(patientId: number, nutritionistId: number): Promise<{
+        latestMealPlan: {
+            id: number;
+            title: string;
+        } | null;
+        latestWorkout: {
+            id: number;
+            title: string;
+        } | null;
+        id: number;
+        name: string;
+        email: string;
+    }>;
 }

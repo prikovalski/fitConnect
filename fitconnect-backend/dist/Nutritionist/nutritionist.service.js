@@ -43,6 +43,29 @@ let NutritionistService = class NutritionistService {
         }));
         return result;
     }
+    async getPatientDetail(patientId, nutritionistId) {
+        const patient = await this.prisma.user.findUnique({
+            where: { id: patientId },
+            select: { id: true, name: true, email: true }
+        });
+        if (!patient)
+            throw new Error('Paciente não encontrado');
+        const latestMealPlan = await this.prisma.mealPlan.findFirst({
+            where: { patientId, nutritionistId },
+            orderBy: { createdAt: 'desc' }
+        });
+        const dataSharing = await this.prisma.dataSharing.findUnique({
+            where: { patientId }
+        });
+        let latestWorkout = null;
+        if (dataSharing === null || dataSharing === void 0 ? void 0 : dataSharing.shareWorkoutWith) {
+            latestWorkout = await this.prisma.workoutPlan.findFirst({
+                where: { patientId, isActive: true },
+                orderBy: { createdAt: 'desc' }
+            });
+        }
+        return Object.assign(Object.assign({}, patient), { latestMealPlan: latestMealPlan ? { id: latestMealPlan.id, title: latestMealPlan.title } : null, latestWorkout: latestWorkout ? { id: latestWorkout.id, title: latestWorkout.title } : null });
+    }
 };
 exports.NutritionistService = NutritionistService;
 exports.NutritionistService = NutritionistService = __decorate([

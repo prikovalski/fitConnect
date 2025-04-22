@@ -26,6 +26,10 @@ let NutritionistController = class NutritionistController {
         console.log("🔍 req.user:", req.user);
         return this.nutritionistService.getSharedPatients(nutritionistId);
     }
+    async getPatientDetail(id, req) {
+        const nutritionistId = req.user.sub;
+        return this.nutritionistService.getPatientDetail(Number(id), nutritionistId);
+    }
 };
 exports.NutritionistController = NutritionistController;
 __decorate([
@@ -36,6 +40,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], NutritionistController.prototype, "getPatients", null);
+__decorate([
+    (0, common_1.Get)('patient/:id'),
+    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], NutritionistController.prototype, "getPatientDetail", null);
 exports.NutritionistController = NutritionistController = __decorate([
     (0, common_1.Controller)('nutritionist'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

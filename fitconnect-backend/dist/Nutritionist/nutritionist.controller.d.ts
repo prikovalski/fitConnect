@@ -13,4 +13,17 @@ export declare class NutritionistController {
             title: string;
         } | null;
     }[]>;
+    getPatientDetail(id: string, req: any): Promise<{
+        latestMealPlan: {
+            id: number;
+            title: string;
+        } | null;
+        latestWorkout: {
+            id: number;
+            title: string;
+        } | null;
+        id: number;
+        name: string;
+        email: string;
+    }>;
 }
