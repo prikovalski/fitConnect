@@ -16,6 +16,8 @@ exports.MealPlanController = void 0;
 const common_1 = require("@nestjs/common");
 const mealplan_service_1 = require("./mealplan.service");
 const roles_decorator_1 = require("../auth/roles.decorator");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const common_2 = require("@nestjs/common");
 let MealPlanController = class MealPlanController {
     constructor(mealPlanService) {
         this.mealPlanService = mealPlanService;
@@ -29,6 +31,16 @@ let MealPlanController = class MealPlanController {
     }
     getOne(id) {
         return this.mealPlanService.getMealPlanById(Number(id));
+    }
+    getPlansByPatient(patientId) {
+        return this.mealPlanService.getPlansByPatient(Number(patientId));
+    }
+    getMealPlanDetail(planId) {
+        return this.mealPlanService.getMealPlanDetail(Number(planId));
+    }
+    updateMealPlan(planId, body, req) {
+        console.log('Nutritionist ID:', req.user.sub);
+        return this.mealPlanService.updateMealPlan(Number(planId), body, req.user.sub);
     }
 };
 exports.MealPlanController = MealPlanController;
@@ -56,7 +68,35 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], MealPlanController.prototype, "getOne", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    (0, common_1.Get)('patient/:patientId'),
+    __param(0, (0, common_1.Param)('patientId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], MealPlanController.prototype, "getPlansByPatient", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    (0, common_1.Get)(':planId'),
+    __param(0, (0, common_1.Param)('planId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], MealPlanController.prototype, "getMealPlanDetail", null);
+__decorate([
+    (0, common_2.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    (0, common_1.Put)(':planId'),
+    __param(0, (0, common_1.Param)('planId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", void 0)
+], MealPlanController.prototype, "updateMealPlan", null);
 exports.MealPlanController = MealPlanController = __decorate([
+    (0, common_2.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('mealplans'),
     __metadata("design:paramtypes", [mealplan_service_1.MealPlanService])
 ], MealPlanController);

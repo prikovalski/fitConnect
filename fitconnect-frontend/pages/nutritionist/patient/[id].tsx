@@ -76,6 +76,11 @@ export default function PatientDetail() {
               >
                 <PlusCircle className="mr-2" size={20} /> Cadastrar Nova Dieta
               </button>
+              <button
+                onClick={() => router.push(`/nutritionist/patient/${id}/mealplans`)}
+                className="flex items-center justify-center bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition w-full mt-4"
+              >📄 Ver Planos Alimentares Anteriores
+              </button>
             </>
           ) : (
             <p className="text-gray-600">Carregando dados do paciente...</p>

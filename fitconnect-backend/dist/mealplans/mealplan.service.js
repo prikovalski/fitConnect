@@ -33,6 +33,47 @@ let MealPlanService = class MealPlanService {
             },
         });
     }
+    async getPlansByPatient(patientId) {
+        return prisma.mealPlan.findMany({
+            where: { patientId },
+            orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                title: true,
+                validFrom: true,
+                validUntil: true,
+                isActive: true,
+            },
+        });
+    }
+    async getMealPlanDetail(planId) {
+        return prisma.mealPlan.findUnique({
+            where: { id: planId },
+            include: {
+                meals: {
+                    include: { items: true },
+                    orderBy: { order: 'asc' }
+                }
+            }
+        });
+    }
+    async updateMealPlan(planId, data, nutritionistId) {
+        const plan = await prisma.mealPlan.findUnique({ where: { id: planId } });
+        console.log("🔍 Nutri: ", nutritionistId);
+        if (!plan) {
+            throw new Error('Plano não encontrado');
+        }
+        if (!plan.isActive) {
+            throw new Error('Apenas planos ativos podem ser editados.');
+        }
+        if (plan.nutritionistId !== nutritionistId) {
+            throw new Error('Você não tem permissão para editar este plano.');
+        }
+        return prisma.mealPlan.update({
+            where: { id: planId },
+            data
+        });
+    }
 };
 exports.MealPlanService = MealPlanService;
 exports.MealPlanService = MealPlanService = __decorate([
