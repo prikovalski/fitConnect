@@ -6,6 +6,9 @@ import styles from '../styles/ui.module.css';
 
 type DecodedToken = {
   exp: number;
+  sub: string; // ID do usuário
+  role: string;
+  name: string;
 };
 
 export default function Login() {
@@ -24,10 +27,10 @@ export default function Login() {
         if (decoded.exp && decoded.exp > currentTime) {
           router.push('/dashboard');
         } else {
-          localStorage.removeItem('token'); // remove token expirado
+          localStorage.removeItem('token');
         }
       } catch (err) {
-        localStorage.removeItem('token'); // token inválido
+        localStorage.removeItem('token');
       }
     }
   }, [router]);
@@ -47,6 +50,12 @@ export default function Login() {
         setError(data.message || 'Erro ao fazer login');
       } else {
         localStorage.setItem('token', data.token);
+
+        const decoded = jwtDecode<DecodedToken>(data.token);
+        localStorage.setItem('userId', decoded.sub);
+        localStorage.setItem('role', decoded.role);
+        localStorage.setItem('name', decoded.name);
+
         router.push('/dashboard');
       }
     } catch (err) {

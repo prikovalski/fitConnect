@@ -24,7 +24,7 @@ export default function Nutrition() {
   }, []);
 
   const goToDetails = (id: number) => {
-    router.push(`/nutrition/${id}`);
+    router.push(`/nutrition-${id}`);
   };
 
   return (

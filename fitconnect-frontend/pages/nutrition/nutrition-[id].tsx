@@ -51,19 +51,28 @@ export default function NutritionDetail() {
               )}
 
               <div className="space-y-6 mt-6">
-                {plan.meals?.map((meal: any) => (
-                  <div key={meal.id} className="border border-gray-200 p-4 rounded-lg bg-[#F9FDFD]">
-                    <h3 className="font-semibold text-[#00B894] mb-2">{meal.name}</h3>
-                    <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
-                      {meal.items.map((item: any) => (
-                        <li key={item.id}>
-                          {item.foodName} — {item.quantity}
-                          {item.notes && <span className="text-xs text-gray-500"> ({item.notes})</span>}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                {plan.meals && plan.meals.length > 0 ? (
+                  plan.meals.map((meal: any) => (
+                    <div key={meal.id} className="border border-gray-200 p-4 rounded-lg bg-[#F9FDFD]">
+                      <h3 className="font-semibold text-[#00B894] mb-2">{meal.name}</h3>
+
+                      {meal.items && meal.items.length > 0 ? (
+                        <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
+                          {meal.items.map((item: any) => (
+                            <li key={item.id}>
+                              {item.foodName} — {item.quantity}
+                              {item.notes && <span className="text-xs text-gray-500"> ({item.notes})</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-500 italic">Nenhum alimento adicionado a esta refeição.</p>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-600 italic mt-4">Este plano alimentar ainda não possui refeições cadastradas.</p>
+                )}
               </div>
             </>
           ) : (
