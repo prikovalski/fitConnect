@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import PrivateRoute from '../../components/PrivateRoute';
-import BackButton from '../../components/BackButton';
+import PrivateRoute from '../../../components/PrivateRoute';
+import BackButton from '../../../components/BackButton';
 import { Salad } from 'lucide-react';
 import { motion } from 'framer-motion';
 

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import PrivateRoute from '../../components/PrivateRoute';
-import BackButton from '../../components/BackButton';
+import PrivateRoute from '../../../components/PrivateRoute';
+import BackButton from '../../../components/BackButton';
 import { motion } from 'framer-motion';
 
 export default function AddMealPlan() {
@@ -12,7 +12,7 @@ export default function AddMealPlan() {
   const [description, setDescription] = useState('');
   const [validFrom, setValidFrom] = useState('');
   const [validUntil, setValidUntil] = useState('');
-  const [instructions, setInstructions] = useState('');
+  const [observations, setObservations] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -34,7 +34,7 @@ export default function AddMealPlan() {
           description,
           validFrom,
           validUntil,
-          instructions,
+          observations,
           nutritionistId: Number(nutritionistId),
           patientId: Number(id),
         }),
@@ -100,8 +100,8 @@ export default function AddMealPlan() {
 
           <textarea
             placeholder="Instruções gerais"
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
+            value={observations}
+            onChange={(e) => setObservations(e.target.value)}
             className="mb-4 w-full px-4 py-2 border rounded"
           />
 
