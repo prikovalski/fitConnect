@@ -12,9 +12,11 @@ import { WorkoutTodayModule } from './workout/workout-today.module';
 import { PrismaService } from './prisma.service';
 import { WorkoutPlanModule } from './workouts/workout-plan.module';
 import { NutritionistModule } from 'nutritionist/nutritionist.module';
+import { MealModule } from 'mealplans/meal.module'; 
 
 @Module({
   imports: [
+    MealModule,
     NutritionistModule,
     WorkoutModule,
     AssessmentModule,

@@ -42,7 +42,7 @@ export default function AddMealItems() {
 
     if (res.ok) {
       setMessage('Refeição cadastrada com sucesso!');
-      setTimeout(() => router.push(`/nutrition/${id}`), 1500);
+      setTimeout(() => router.push(`/nutritionist/patient/${id}`), 1500);
     } else {
       setMessage('Erro ao cadastrar refeição.');
     }

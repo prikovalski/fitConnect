@@ -21,12 +21,14 @@ const workout_today_module_1 = require("./workout/workout-today.module");
 const prisma_service_1 = require("./prisma.service");
 const workout_plan_module_1 = require("./workouts/workout-plan.module");
 const nutritionist_module_1 = require("./nutritionist/nutritionist.module");
+const meal_module_1 = require("./mealplans/meal.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            meal_module_1.MealModule,
             nutritionist_module_1.NutritionistModule,
             workout_module_1.WorkoutModule,
             assessment_module_1.AssessmentModule,
