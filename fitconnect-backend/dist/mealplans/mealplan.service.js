@@ -21,7 +21,17 @@ let MealPlanService = class MealPlanService {
         });
     }
     async getMealPlanById(id) {
-        return prisma.mealPlan.findUnique({ where: { id } });
+        return prisma.mealPlan.findUnique({
+            where: { id },
+            include: {
+                meals: {
+                    orderBy: { order: 'asc' },
+                    include: {
+                        items: true,
+                    },
+                },
+            },
+        });
     }
 };
 exports.MealPlanService = MealPlanService;

@@ -8,32 +8,32 @@ datasource db {
 }
 
 model User {
-  id                   Int                   @id @default(autoincrement())
-  email                String                @unique
-  password             String
-  name                 String
-  role                 Role
-  createdAt            DateTime              @default(now())
-  trainerPlans         WorkoutPlan[]         @relation("TrainerPlans")
-  patientPlans         WorkoutPlan[]         @relation("PatientPlans")
-  assessments          PhysicalAssessment[]  @relation("AssessmentPatient")
-  createdAssessments   PhysicalAssessment[]  @relation("AssessmentCreator")
-  nutritionistPlans    MealPlan[]            @relation("NutritionistPlans")
-  mealPatientPlans     MealPlan[]            @relation("MealPatientPlans")
-  dataSharing          DataSharing?          @relation("UserDataSharing")
+  id                 Int                  @id @default(autoincrement())
+  email              String               @unique
+  password           String
+  name               String
+  role               Role
+  createdAt          DateTime             @default(now())
+  trainerPlans       WorkoutPlan[]        @relation("TrainerPlans")
+  patientPlans       WorkoutPlan[]        @relation("PatientPlans")
+  assessments        PhysicalAssessment[] @relation("AssessmentPatient")
+  createdAssessments PhysicalAssessment[] @relation("AssessmentCreator")
+  nutritionistPlans  MealPlan[]           @relation("NutritionistPlans")
+  mealPatientPlans   MealPlan[]           @relation("MealPatientPlans")
+  dataSharing        DataSharing?         @relation("UserDataSharing")
 }
 
 model WorkoutPlan {
-  id          Int       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   title       String
   description String
   validFrom   DateTime
   validUntil  DateTime
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  trainer     User      @relation("TrainerPlans", fields: [trainerId], references: [id])
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  trainer     User         @relation("TrainerPlans", fields: [trainerId], references: [id])
   trainerId   Int
-  patient     User      @relation("PatientPlans", fields: [patientId], references: [id])
+  patient     User         @relation("PatientPlans", fields: [patientId], references: [id])
   patientId   Int
   workoutDays WorkoutDay[]
 
@@ -41,8 +41,8 @@ model WorkoutPlan {
 }
 
 model WorkoutDay {
-  id            Int           @id @default(autoincrement())
-  workoutPlan   WorkoutPlan   @relation(fields: [workoutPlanId], references: [id])
+  id            Int               @id @default(autoincrement())
+  workoutPlan   WorkoutPlan       @relation(fields: [workoutPlanId], references: [id])
   workoutPlanId Int
   dayOfWeek     String
   muscleGroup   String
@@ -50,27 +50,27 @@ model WorkoutDay {
 }
 
 model WorkoutExercise {
-  id          Int            @id @default(autoincrement())
-  workoutDay  WorkoutDay     @relation(fields: [workoutDayId], references: [id])
+  id           Int          @id @default(autoincrement())
+  workoutDay   WorkoutDay   @relation(fields: [workoutDayId], references: [id])
   workoutDayId Int
-  name        String
-  order       Int
-  sets        WorkoutSet[]
+  name         String
+  order        Int
+  sets         WorkoutSet[]
 }
 
 model WorkoutSet {
-  id           Int              @id @default(autoincrement())
-  exercise     WorkoutExercise  @relation(fields: [exerciseId], references: [id])
-  exerciseId   Int
-  setNumber    Int
-  targetReps   Int
-  targetLoad   Float
-  logs         WorkoutLog[]
+  id         Int             @id @default(autoincrement())
+  exercise   WorkoutExercise @relation(fields: [exerciseId], references: [id])
+  exerciseId Int
+  setNumber  Int
+  targetReps Int
+  targetLoad Float
+  logs       WorkoutLog[]
 }
 
 model WorkoutLog {
-  id           Int          @id @default(autoincrement())
-  workoutSet   WorkoutSet   @relation(fields: [workoutSetId], references: [id])
+  id           Int        @id @default(autoincrement())
+  workoutSet   WorkoutSet @relation(fields: [workoutSetId], references: [id])
   workoutSetId Int
   date         DateTime
   actualReps   Int
@@ -81,30 +81,53 @@ model MealPlan {
   id             Int      @id @default(autoincrement())
   title          String
   description    String
+  observations   String?
+  validFrom      DateTime
+  validUntil     DateTime
+  isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   nutritionist   User     @relation("NutritionistPlans", fields: [nutritionistId], references: [id])
   nutritionistId Int
   patient        User     @relation("MealPatientPlans", fields: [patientId], references: [id])
   patientId      Int
+  meals          Meal[]
+}
+
+model Meal {
+  id         Int        @id @default(autoincrement())
+  mealPlan   MealPlan   @relation(fields: [mealPlanId], references: [id])
+  mealPlanId Int
+  name       String
+  order      Int
+  items      MealItem[]
+}
+
+model MealItem {
+  id       Int     @id @default(autoincrement())
+  meal     Meal    @relation(fields: [mealId], references: [id])
+  mealId   Int
+  foodName String
+  quantity String
+  notes    String?
 }
 
 model PhysicalAssessment {
-  id           Int      @id @default(autoincrement())
-  method       String
-  date         DateTime @default(now())
-  data         Json
-  patient      User     @relation("AssessmentPatient", fields: [patientId], references: [id])
-  patientId    Int
-  createdBy    User     @relation("AssessmentCreator", fields: [createdById], references: [id])
-  createdById  Int
+  id          Int      @id @default(autoincrement())
+  method      String
+  date        DateTime @default(now())
+  data        Json
+  patient     User     @relation("AssessmentPatient", fields: [patientId], references: [id])
+  patientId   Int
+  createdBy   User     @relation("AssessmentCreator", fields: [createdById], references: [id])
+  createdById Int
 }
 
 model DataSharing {
-  id                Int      @id @default(autoincrement())
-  patient           User     @relation("UserDataSharing", fields: [patientId], references: [id])
-  patientId         Int      @unique
-  shareWorkoutWith  Boolean  @default(false)
-  shareMealWith     Boolean  @default(false)
+  id               Int     @id @default(autoincrement())
+  patient          User    @relation("UserDataSharing", fields: [patientId], references: [id])
+  patientId        Int     @unique
+  shareWorkoutWith Boolean @default(false)
+  shareMealWith    Boolean @default(false)
 }
 
 enum Role {

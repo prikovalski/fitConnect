@@ -8,8 +8,22 @@ export class MealPlanController {
 
   @Roles('NUTRITIONIST')
   @Post()
-  create(@Body() body: { title: string; description: string; nutritionistId: number; patientId: number }) {
-    return this.mealPlanService.createMealPlan(body);
+  create(@Body() body: {
+    title: string;
+    description: string;
+    observations?: string;
+    validFrom: string;
+    validUntil: string;
+    isActive?: boolean;
+    nutritionistId: number;
+    patientId: number;
+  }) {
+    return this.mealPlanService.createMealPlan({
+      ...body,
+      validFrom: new Date(body.validFrom),
+      validUntil: new Date(body.validUntil),
+      isActive: body.isActive ?? true,
+    });
   }
 
   @Roles('PATIENT')

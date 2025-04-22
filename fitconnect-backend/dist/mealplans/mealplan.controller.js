@@ -21,7 +21,8 @@ let MealPlanController = class MealPlanController {
         this.mealPlanService = mealPlanService;
     }
     create(body) {
-        return this.mealPlanService.createMealPlan(body);
+        var _a;
+        return this.mealPlanService.createMealPlan(Object.assign(Object.assign({}, body), { validFrom: new Date(body.validFrom), validUntil: new Date(body.validUntil), isActive: (_a = body.isActive) !== null && _a !== void 0 ? _a : true }));
     }
     getByPatient(patientId) {
         return this.mealPlanService.getMealPlansByPatient(Number(patientId));

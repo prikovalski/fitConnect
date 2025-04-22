@@ -5,7 +5,16 @@ const prisma = new PrismaClient();
 
 @Injectable()
 export class MealPlanService {
-  async createMealPlan(data: { title: string; description: string; nutritionistId: number; patientId: number }) {
+  async createMealPlan(data: {
+    title: string;
+    description: string;
+    observations?: string;
+    validFrom: Date;
+    validUntil: Date;
+    isActive?: boolean;
+    nutritionistId: number;
+    patientId: number;
+  }) {
     return prisma.mealPlan.create({ data });
   }
 
@@ -17,6 +26,16 @@ export class MealPlanService {
   }
 
   async getMealPlanById(id: number) {
-    return prisma.mealPlan.findUnique({ where: { id } });
+    return prisma.mealPlan.findUnique({
+      where: { id },
+      include: {
+        meals: {
+          orderBy: { order: 'asc' },
+          include: {
+            items: true,
+          },
+        },
+      },
+    });
   }
 }

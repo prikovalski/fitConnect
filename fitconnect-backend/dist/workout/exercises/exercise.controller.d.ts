@@ -6,7 +6,7 @@ export declare class ExerciseController {
     }): Promise<{
         id: number;
         name: string;
-        workoutDayId: number;
         order: number;
+        workoutDayId: number;
     }>;
 }

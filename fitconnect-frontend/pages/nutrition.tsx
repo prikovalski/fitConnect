@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import PrivateRoute from '../components/PrivateRoute';
 import BackButton from '../components/BackButton';
 import { Salad } from 'lucide-react';
@@ -6,6 +7,25 @@ import { useRouter } from 'next/router';
 
 export default function Nutrition() {
   const router = useRouter();
+  const [plans, setPlans] = useState<any[]>([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId'); // deve ser salvo no login
+
+    if (!token || !userId) return;
+
+    fetch(`http://localhost:3333/mealplans?patientId=${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then(setPlans)
+      .catch(() => setPlans([]));
+  }, []);
+
+  const goToDetails = (id: number) => {
+    router.push(`/nutrition/${id}`);
+  };
 
   return (
     <PrivateRoute>
@@ -26,25 +46,25 @@ export default function Nutrition() {
             Veja aqui os planos alimentares criados pelos seus nutricionistas, com refeições organizadas por horário.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div
-              onClick={() => router.push('/nutrition/1')}
-              className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
-            >
-              <h2 className="text-lg font-semibold text-[#00B894] mb-2">Emagrecimento - Manhã</h2>
-              <p className="text-gray-600 text-sm mb-1">Nutricionista: Dr. André</p>
-              <p className="text-gray-600 text-sm">Inclui: Omelete, abacate e café sem açúcar</p>
+          {plans.length === 0 ? (
+            <p className="text-gray-600 text-sm">Nenhum plano alimentar disponível.</p>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {plans.map((plan) => (
+                <div
+                  key={plan.id}
+                  onClick={() => goToDetails(plan.id)}
+                  className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+                >
+                  <h2 className="text-lg font-semibold text-[#00B894] mb-2">{plan.title}</h2>
+                  <p className="text-gray-600 text-sm mb-1">{plan.description}</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(plan.validFrom).toLocaleDateString()} → {new Date(plan.validUntil).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
             </div>
-
-            <div
-              onClick={() => router.push('/nutrition/2')}
-              className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
-            >
-              <h2 className="text-lg font-semibold text-[#00B894] mb-2">Pré-treino - Tarde</h2>
-              <p className="text-gray-600 text-sm mb-1">Nutricionista: Dra. Camila</p>
-              <p className="text-gray-600 text-sm">Inclui: Batata doce, frango e salada verde</p>
-            </div>
-          </div>
+          )}
         </motion.div>
       </div>
     </PrivateRoute>

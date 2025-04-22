@@ -14,7 +14,7 @@ export declare class WorkoutPlanController {
         validUntil: Date;
         isActive: boolean;
         createdAt: Date;
-        trainerId: number;
         patientId: number;
+        trainerId: number;
     })[]>;
 }
