@@ -17,8 +17,8 @@ export declare class WorkoutController {
         validUntil: Date;
         isActive: boolean;
         createdAt: Date;
-        patientId: number;
         trainerId: number;
+        patientId: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
@@ -28,8 +28,8 @@ export declare class WorkoutController {
         validUntil: Date;
         isActive: boolean;
         createdAt: Date;
-        patientId: number;
         trainerId: number;
+        patientId: number;
     }[]>;
     getOne(id: string): Promise<{
         id: number;
@@ -39,8 +39,8 @@ export declare class WorkoutController {
         validUntil: Date;
         isActive: boolean;
         createdAt: Date;
-        patientId: number;
         trainerId: number;
+        patientId: number;
     } | null>;
     getExercises(id: string): Promise<({
         exercises: ({

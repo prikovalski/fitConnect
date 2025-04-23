@@ -13,9 +13,11 @@ import { PrismaService } from './prisma.service';
 import { WorkoutPlanModule } from './workouts/workout-plan.module';
 import { NutritionistModule } from 'nutritionist/nutritionist.module';
 import { MealModule } from 'mealplans/meal.module'; 
+import { TrainerModule } from 'trainer/trainer.module';
 
 @Module({
   imports: [
+    TrainerModule,
     MealModule,
     NutritionistModule,
     WorkoutModule,

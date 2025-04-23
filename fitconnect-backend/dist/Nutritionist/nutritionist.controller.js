@@ -23,12 +23,10 @@ let NutritionistController = class NutritionistController {
     }
     getPatients(req) {
         const nutritionistId = req.user.sub;
-        console.log("🔍 req.user:", req.user);
         return this.nutritionistService.getSharedPatients(nutritionistId);
     }
     async getPatientDetail(id, req) {
         const nutritionistId = req.user.sub;
-        console.log("🔍 Nutritionist ID Controller:", nutritionistId);
         return this.nutritionistService.getPatientDetail(Number(id), nutritionistId);
     }
 };

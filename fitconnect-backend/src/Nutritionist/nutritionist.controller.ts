@@ -12,7 +12,6 @@ export class NutritionistController {
   @Get('patients')
   getPatients(@Req() req: any) {
     const nutritionistId = req.user.sub;
-    console.log("🔍 req.user:", req.user);
     return this.nutritionistService.getSharedPatients(nutritionistId);
   }
   
@@ -20,7 +19,6 @@ export class NutritionistController {
   @Get('patient/:id')
   async getPatientDetail(@Param('id') id: string, @Req() req: any) {
     const nutritionistId = req.user.sub;
-    console.log("🔍 Nutritionist ID Controller:", nutritionistId);
     return this.nutritionistService.getPatientDetail(Number(id), nutritionistId);
   }
 }

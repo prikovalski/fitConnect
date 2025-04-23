@@ -6,7 +6,6 @@ export class NutritionistService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSharedPatients(nutritionistId: number) {
-    console.log("🔍 Nutritionist ID:", nutritionistId);
     const patients = await this.prisma.dataSharing.findMany({
       where: { shareMealWith: true },
       include: {
@@ -38,7 +37,6 @@ export class NutritionistService {
   }
 
   async getPatientDetail(patientId: number, nutritionistId: number) {
-    console.log("Entrou Service");
     const patient = await this.prisma.user.findUnique({
       where: { id: patientId },
       select: { id: true, name: true, email: true }

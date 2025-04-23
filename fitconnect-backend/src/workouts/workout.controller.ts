@@ -19,7 +19,6 @@ export class WorkoutController {
 
   @Get(':id')
   getOne(@Param('id') id: string) {
-    console.log('🔍 RECEBIDO id:', id);
     return this.workoutService.getWorkoutById(Number(id));
   }
 

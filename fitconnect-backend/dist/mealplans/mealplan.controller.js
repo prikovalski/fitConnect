@@ -39,7 +39,6 @@ let MealPlanController = class MealPlanController {
         return this.mealPlanService.getMealPlanDetail(Number(planId));
     }
     updateMealPlan(planId, body, req) {
-        console.log('Nutritionist ID:', req.user.id);
         return this.mealPlanService.updateMealPlan(Number(planId), body, req.user.id);
     }
 };

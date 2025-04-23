@@ -27,11 +27,11 @@ export default function Login() {
         if (decoded.exp && decoded.exp > currentTime) {
           if (decoded.role === 'NUTRITIONIST') {
             router.push('/dashboard-nutritionist');
+          } else if (decoded.role === 'TRAINER') {
+            router.push('/dashboard-trainer');
           } else {
-            router.push('/dashboard');
+            router.push('/dashboard');  // Paciente
           }
-        } else {
-          localStorage.removeItem('token');
         }
       } catch (err) {
         localStorage.removeItem('token');
@@ -58,11 +58,13 @@ export default function Login() {
         const decoded = jwtDecode<DecodedToken>(data.token);
         localStorage.setItem('userId', decoded.sub);
         localStorage.setItem('role', decoded.role);
-        localStorage.setItem('name', decoded.name);
+        localStorage.setItem('name', decoded.name || 'PERSONAL');
 
         // Redirecionamento conforme perfil
         if (decoded.role === 'NUTRITIONIST') {
           router.push('/dashboard-nutritionist');
+        } else if (decoded.role === 'TRAINER') {
+          router.push('/dashboard-trainer');
         } else {
           router.push('/dashboard');
         }
