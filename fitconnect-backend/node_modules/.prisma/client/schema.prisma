@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id                 Int                  @id @default(autoincrement())
-  email              String               @unique
-  password           String
-  name               String
-  role               Role
-  createdAt          DateTime             @default(now())
-  trainerPlans       WorkoutPlan[]        @relation("TrainerPlans")
-  patientPlans       WorkoutPlan[]        @relation("PatientPlans")
-  assessments        PhysicalAssessment[] @relation("AssessmentPatient")
-  createdAssessments PhysicalAssessment[] @relation("AssessmentCreator")
-  nutritionistPlans  MealPlan[]           @relation("NutritionistPlans")
-  mealPatientPlans   MealPlan[]           @relation("MealPatientPlans")
-  dataSharing        DataSharing?         @relation("UserDataSharing")
+  id                      Int                  @id @default(autoincrement())
+  email                   String               @unique
+  password                String
+  name                    String
+  role                    Role
+  createdAt               DateTime             @default(now())
+  trainerPlans            WorkoutPlan[]        @relation("TrainerPlans")
+  patientPlans            WorkoutPlan[]        @relation("PatientPlans")
+  assessments             PhysicalAssessment[] @relation("AssessmentPatient")
+  createdAssessments      PhysicalAssessment[] @relation("AssessmentCreator")
+  nutritionistPlans       MealPlan[]           @relation("NutritionistPlans")
+  mealPatientPlans        MealPlan[]           @relation("MealPatientPlans")
+  patientDataSharing      DataSharing[]        @relation("PatientDataSharing")
+  professionalDataSharing DataSharing[]        @relation("ProfessionalDataSharing")
 }
 
 model WorkoutPlan {
@@ -124,10 +125,15 @@ model PhysicalAssessment {
 
 model DataSharing {
   id               Int     @id @default(autoincrement())
-  patient          User    @relation("UserDataSharing", fields: [patientId], references: [id])
-  patientId        Int     @unique
+  patient          User    @relation("PatientDataSharing", fields: [patientId], references: [id])
+  patientId        Int
+  professional     User    @relation("ProfessionalDataSharing", fields: [professionalId], references: [id])
+  professionalId   Int
+  role             Role // TRAINER ou NUTRITIONIST
   shareWorkoutWith Boolean @default(false)
   shareMealWith    Boolean @default(false)
+
+  @@unique([patientId, professionalId, role]) // Evita duplicidade de vínculo
 }
 
 enum Role {

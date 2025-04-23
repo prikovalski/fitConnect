@@ -10,25 +10,25 @@ export declare class AssessmentController {
     }): Promise<{
         id: number;
         patientId: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         method: string;
         date: Date;
+        data: import("@prisma/client/runtime/library").JsonValue;
         createdById: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
         patientId: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         method: string;
         date: Date;
+        data: import("@prisma/client/runtime/library").JsonValue;
         createdById: number;
     }[]>;
     getOne(id: string): Promise<{
         id: number;
         patientId: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         method: string;
         date: Date;
+        data: import("@prisma/client/runtime/library").JsonValue;
         createdById: number;
     } | null>;
 }

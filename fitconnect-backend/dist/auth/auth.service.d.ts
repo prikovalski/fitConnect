@@ -6,9 +6,9 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwtService: JwtService);
     validateUser(email: string, password: string): Promise<{
         id: number;
-        email: string;
-        name: string;
         role: import(".prisma/client").$Enums.Role;
+        name: string;
+        email: string;
         createdAt: Date;
     } | null>;
     login({ email, password }: {

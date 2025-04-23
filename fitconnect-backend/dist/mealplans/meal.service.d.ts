@@ -20,9 +20,9 @@ export declare class MealService {
         }[];
     } & {
         id: number;
-        mealPlanId: number;
         name: string;
         order: number;
+        mealPlanId: number;
     }>;
     updateMealWithItems(mealId: number, data: {
         name: string;

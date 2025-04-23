@@ -1,4 +1,4 @@
-import { TrainerService } from '././trainer.service';
+import { TrainerService } from './trainer.service';
 export declare class TrainerController {
     private readonly trainerService;
     constructor(trainerService: TrainerService);
@@ -11,5 +11,15 @@ export declare class TrainerController {
         id: number;
         name: string;
         email: string;
+    }[]>;
+    getStudentWorkouts(id: string, req: any): Promise<{
+        id: number;
+        title: string;
+        validUntil: Date;
+    }[]>;
+    getStudentAssessments(id: string, req: any): Promise<{
+        id: number;
+        method: string;
+        date: Date;
     }[]>;
 }

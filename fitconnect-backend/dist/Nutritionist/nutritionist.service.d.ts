@@ -1,7 +1,16 @@
 import { PrismaService } from '../prisma.service';
+import { Role } from '@prisma/client';
 export declare class NutritionistService {
     private readonly prisma;
     constructor(prisma: PrismaService);
+    validateAccess(patientId: number, professionalId: number, role: Role): Promise<{
+        id: number;
+        patientId: number;
+        professionalId: number;
+        role: import(".prisma/client").$Enums.Role;
+        shareWorkoutWith: boolean;
+        shareMealWith: boolean;
+    }>;
     getSharedPatients(nutritionistId: number): Promise<{
         id: number;
         name: string;

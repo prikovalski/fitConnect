@@ -8,35 +8,35 @@ export declare class WorkoutService {
         validUntil: string;
     }): Promise<{
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
-        patientId: number;
         trainerId: number;
     }>;
     getWorkoutsByPatient(patientId: number): Promise<{
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
-        patientId: number;
         trainerId: number;
     }[]>;
     getWorkoutById(id: number): Promise<{
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
-        patientId: number;
         trainerId: number;
     } | null>;
     getExercisesByPlan(planId: number): Promise<({

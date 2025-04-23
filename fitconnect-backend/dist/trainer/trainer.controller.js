@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TrainerController = void 0;
 const common_1 = require("@nestjs/common");
-const trainer_service_1 = require("././trainer.service");
+const trainer_service_1 = require("./trainer.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const roles_decorator_1 = require("../auth/roles.decorator");
 let TrainerController = class TrainerController {
@@ -28,6 +28,14 @@ let TrainerController = class TrainerController {
     async getStudents(req) {
         const trainerId = req.user.id;
         return this.trainerService.getStudents(trainerId);
+    }
+    async getStudentWorkouts(id, req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getStudentWorkouts(Number(id), trainerId);
+    }
+    async getStudentAssessments(id, req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getStudentAssessments(Number(id), trainerId);
     }
 };
 exports.TrainerController = TrainerController;
@@ -47,6 +55,24 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], TrainerController.prototype, "getStudents", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('students/:id/workouts'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getStudentWorkouts", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('students/:id/assessments'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getStudentAssessments", null);
 exports.TrainerController = TrainerController = __decorate([
     (0, common_1.Controller)('trainer'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

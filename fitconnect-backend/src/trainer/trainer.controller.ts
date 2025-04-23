@@ -1,5 +1,5 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { TrainerService } from '././trainer.service';
+import { Controller, Get, Req, UseGuards, Param } from '@nestjs/common';
+import { TrainerService } from './trainer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 
@@ -12,7 +12,6 @@ export class TrainerController {
   @Get('summary')
   getDashboardSummary(@Req() req: any) {
     const trainerId = req.user.id;
-
     return this.trainerService.getDashboardSummary(trainerId);
   }
 
@@ -22,5 +21,18 @@ export class TrainerController {
     const trainerId = req.user.id;
     return this.trainerService.getStudents(trainerId);
   }
-  
-}
+
+  @Roles('TRAINER')
+  @Get('students/:id/workouts')
+  async getStudentWorkouts(@Param('id') id: string, @Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getStudentWorkouts(Number(id), trainerId);
+  }
+
+  @Roles('TRAINER')
+  @Get('students/:id/assessments')
+  async getStudentAssessments(@Param('id') id: string, @Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getStudentAssessments(Number(id), trainerId);
+  }
+} 

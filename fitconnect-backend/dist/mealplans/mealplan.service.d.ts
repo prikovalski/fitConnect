@@ -10,36 +10,36 @@ export declare class MealPlanService {
         patientId: number;
     }): Promise<{
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         nutritionistId: number;
-        patientId: number;
     }>;
     getMealPlansByPatient(patientId: number): Promise<{
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         nutritionistId: number;
-        patientId: number;
     }[]>;
     getMealPlanById(id: number): Promise<({
         meals: ({
             items: {
                 id: number;
-                mealId: number;
                 foodName: string;
                 quantity: string;
                 notes: string | null;
+                mealId: number;
             }[];
         } & {
             id: number;
@@ -49,15 +49,15 @@ export declare class MealPlanService {
         })[];
     } & {
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         nutritionistId: number;
-        patientId: number;
     }) | null>;
     getPlansByPatient(patientId: number): Promise<{
         id: number;
@@ -70,10 +70,10 @@ export declare class MealPlanService {
         meals: ({
             items: {
                 id: number;
-                mealId: number;
                 foodName: string;
                 quantity: string;
                 notes: string | null;
+                mealId: number;
             }[];
         } & {
             id: number;
@@ -83,26 +83,26 @@ export declare class MealPlanService {
         })[];
     } & {
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         nutritionistId: number;
-        patientId: number;
     }) | null>;
     updateMealPlan(planId: number, data: any, nutritionistId: number): Promise<{
         id: number;
+        patientId: number;
+        createdAt: Date;
         title: string;
         description: string;
         observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         nutritionistId: number;
-        patientId: number;
     }>;
 }

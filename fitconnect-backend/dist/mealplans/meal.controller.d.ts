@@ -20,9 +20,9 @@ export declare class MealController {
         }[];
     } & {
         id: number;
-        mealPlanId: number;
         name: string;
         order: number;
+        mealPlanId: number;
     }>;
     updateMealWithItems(mealId: string, body: {
         name: string;

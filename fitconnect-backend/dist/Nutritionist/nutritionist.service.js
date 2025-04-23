@@ -16,9 +16,26 @@ let NutritionistService = class NutritionistService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async validateAccess(patientId, professionalId, role) {
+        const sharing = await this.prisma.dataSharing.findFirst({
+            where: {
+                patientId,
+                professionalId,
+                role
+            }
+        });
+        if (!sharing) {
+            throw new common_1.ForbiddenException('Você não tem permissão para acessar os dados deste paciente.');
+        }
+        return sharing;
+    }
     async getSharedPatients(nutritionistId) {
         const patients = await this.prisma.dataSharing.findMany({
-            where: { shareMealWith: true },
+            where: {
+                professionalId: nutritionistId,
+                role: 'NUTRITIONIST',
+                shareMealWith: true
+            },
             include: {
                 patient: true
             }
@@ -43,6 +60,7 @@ let NutritionistService = class NutritionistService {
         return result;
     }
     async getPatientDetail(patientId, nutritionistId) {
+        await this.validateAccess(patientId, nutritionistId, 'NUTRITIONIST');
         const patient = await this.prisma.user.findUnique({
             where: { id: patientId },
             select: { id: true, name: true, email: true }
@@ -53,16 +71,10 @@ let NutritionistService = class NutritionistService {
             where: { patientId, nutritionistId },
             orderBy: { createdAt: 'desc' }
         });
-        const dataSharing = await this.prisma.dataSharing.findUnique({
-            where: { patientId }
+        const latestWorkout = await this.prisma.workoutPlan.findFirst({
+            where: { patientId, isActive: true },
+            orderBy: { createdAt: 'desc' }
         });
-        let latestWorkout = null;
-        if (dataSharing === null || dataSharing === void 0 ? void 0 : dataSharing.shareWorkoutWith) {
-            latestWorkout = await this.prisma.workoutPlan.findFirst({
-                where: { patientId, isActive: true },
-                orderBy: { createdAt: 'desc' }
-            });
-        }
         return Object.assign(Object.assign({}, patient), { latestMealPlan: latestMealPlan ? { id: latestMealPlan.id, title: latestMealPlan.title } : null, latestWorkout: latestWorkout ? { id: latestWorkout.id, title: latestWorkout.title } : null });
     }
 };

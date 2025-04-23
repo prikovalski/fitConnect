@@ -1,13 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class NutritionistService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async validateAccess(patientId: number, professionalId: number, role: Role) {
+    const sharing = await this.prisma.dataSharing.findFirst({
+      where: {
+        patientId,
+        professionalId,
+        role
+      }
+    });
+  
+    if (!sharing) {
+      throw new ForbiddenException('Você não tem permissão para acessar os dados deste paciente.');
+    }
+
+    return sharing;
+  }
+
   async getSharedPatients(nutritionistId: number) {
     const patients = await this.prisma.dataSharing.findMany({
-      where: { shareMealWith: true },
+      where: {
+        professionalId: nutritionistId,
+        role: 'NUTRITIONIST',
+        shareMealWith: true
+      },
       include: {
         patient: true
       }
@@ -37,6 +58,8 @@ export class NutritionistService {
   }
 
   async getPatientDetail(patientId: number, nutritionistId: number) {
+    await this.validateAccess(patientId, nutritionistId, 'NUTRITIONIST');
+
     const patient = await this.prisma.user.findUnique({
       where: { id: patientId },
       select: { id: true, name: true, email: true }
@@ -49,17 +72,10 @@ export class NutritionistService {
       orderBy: { createdAt: 'desc' }
     });
   
-    const dataSharing = await this.prisma.dataSharing.findUnique({
-      where: { patientId }
+    const latestWorkout = await this.prisma.workoutPlan.findFirst({
+      where: { patientId, isActive: true },
+      orderBy: { createdAt: 'desc' }
     });
-  
-    let latestWorkout = null;
-    if (dataSharing?.shareWorkoutWith) {
-      latestWorkout = await this.prisma.workoutPlan.findFirst({
-        where: { patientId, isActive: true },
-        orderBy: { createdAt: 'desc' }
-      });
-    }
   
     return {
       ...patient,
@@ -67,4 +83,4 @@ export class NutritionistService {
       latestWorkout: latestWorkout ? { id: latestWorkout.id, title: latestWorkout.title } : null
     };
   }
-}
+} 
