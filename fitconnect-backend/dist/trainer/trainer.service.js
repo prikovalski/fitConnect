@@ -48,6 +48,28 @@ let TrainerService = class TrainerService {
             expiringWorkouts
         };
     }
+    async getStudents(trainerId) {
+        const sharedPatients = await this.prisma.dataSharing.findMany({
+            where: {
+                shareWorkoutWith: true
+            },
+            select: {
+                patientId: true
+            }
+        });
+        const patientIds = sharedPatients.map(p => p.patientId);
+        const patients = await this.prisma.user.findMany({
+            where: {
+                id: { in: patientIds }
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true
+            }
+        });
+        return patients;
+    }
 };
 exports.TrainerService = TrainerService;
 exports.TrainerService = TrainerService = __decorate([

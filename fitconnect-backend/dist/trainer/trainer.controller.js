@@ -25,6 +25,10 @@ let TrainerController = class TrainerController {
         const trainerId = req.user.id;
         return this.trainerService.getDashboardSummary(trainerId);
     }
+    async getStudents(req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getStudents(trainerId);
+    }
 };
 exports.TrainerController = TrainerController;
 __decorate([
@@ -35,6 +39,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TrainerController.prototype, "getDashboardSummary", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('students'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getStudents", null);
 exports.TrainerController = TrainerController = __decorate([
     (0, common_1.Controller)('trainer'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

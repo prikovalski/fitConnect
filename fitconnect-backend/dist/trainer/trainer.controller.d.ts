@@ -7,4 +7,9 @@ export declare class TrainerController {
         activeWorkouts: number;
         expiringWorkouts: number;
     }>;
+    getStudents(req: any): Promise<{
+        id: number;
+        name: string;
+        email: string;
+    }[]>;
 }

@@ -40,4 +40,31 @@ export class TrainerService {
       expiringWorkouts
     };
   }
+  async getStudents(trainerId: number) {
+    // Busca os pacientes que compartilham dados de treino
+    const sharedPatients = await this.prisma.dataSharing.findMany({
+      where: {
+        shareWorkoutWith: true
+      },
+      select: {
+        patientId: true
+      }
+    });
+
+    const patientIds = sharedPatients.map(p => p.patientId);
+
+    // Busca detalhes dos pacientes
+    const patients = await this.prisma.user.findMany({
+      where: {
+        id: { in: patientIds }
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true
+      }
+    });
+
+    return patients;
+  }
 }

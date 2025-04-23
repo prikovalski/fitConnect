@@ -15,4 +15,12 @@ export class TrainerController {
 
     return this.trainerService.getDashboardSummary(trainerId);
   }
+
+  @Roles('TRAINER')
+  @Get('students')
+  async getStudents(@Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getStudents(trainerId);
+  }
+  
 }
