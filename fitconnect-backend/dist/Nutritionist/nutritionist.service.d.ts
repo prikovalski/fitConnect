@@ -5,9 +5,9 @@ export declare class NutritionistService {
     constructor(prisma: PrismaService);
     validateAccess(patientId: number, professionalId: number, role: Role): Promise<{
         id: number;
+        role: import(".prisma/client").$Enums.Role;
         patientId: number;
         professionalId: number;
-        role: import(".prisma/client").$Enums.Role;
         shareWorkoutWith: boolean;
         shareMealWith: boolean;
     }>;
@@ -32,7 +32,7 @@ export declare class NutritionistService {
             title: string;
         } | null;
         id: number;
-        name: string;
         email: string;
+        name: string;
     }>;
 }

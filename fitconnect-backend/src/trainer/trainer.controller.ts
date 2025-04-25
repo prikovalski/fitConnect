@@ -35,4 +35,25 @@ export class TrainerController {
     const trainerId = req.user.id;
     return this.trainerService.getStudentAssessments(Number(id), trainerId);
   }
+
+  @Roles('TRAINER')
+  @Get('assessments')
+  async getUpcomingAssessments(@Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getUpcomingAssessments(trainerId);
+  }
+
+  @Roles('TRAINER')
+  @Get('assessments')
+  async getAssessments(@Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getTrainerAssessments(trainerId);
+  }
+
+  @Roles('TRAINER')
+  @Get('students/:id/basic-info')
+  async getPatientBasicInfo(@Param('id') id: string) {
+    return this.trainerService.getPatientBasicInfo(Number(id));
+  }
+
 } 

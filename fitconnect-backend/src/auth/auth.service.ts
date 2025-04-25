@@ -56,11 +56,15 @@ export class AuthService {
     email,
     password,
     role,
+    birthDate,
+    gender    
   }: {
     name: string;
     email: string;
     password: string;
     role: string;
+    birthDate: string;   // ISO String: 'YYYY-MM-DD'
+    gender: 'MALE' | 'FEMALE';
   }) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await this.prisma.user.create({
@@ -69,10 +73,13 @@ export class AuthService {
         email,
         password: hashedPassword,
         role: role as Role,
+        birthDate: new Date(birthDate),
+        gender
       },
     });
 
     const payload = { sub: newUser.id, email: newUser.email, role: newUser.role, name: newUser.name };
+
     const token = await this.jwtService.signAsync(payload);
 
     return { token };

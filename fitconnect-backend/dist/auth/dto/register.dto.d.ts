@@ -3,4 +3,6 @@ export declare class RegisterDto {
     email: string;
     password: string;
     role: string;
+    birthDate: string;
+    gender: 'MALE' | 'FEMALE';
 }

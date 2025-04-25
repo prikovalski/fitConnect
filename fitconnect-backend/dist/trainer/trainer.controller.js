@@ -37,6 +37,17 @@ let TrainerController = class TrainerController {
         const trainerId = req.user.id;
         return this.trainerService.getStudentAssessments(Number(id), trainerId);
     }
+    async getUpcomingAssessments(req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getUpcomingAssessments(trainerId);
+    }
+    async getAssessments(req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getTrainerAssessments(trainerId);
+    }
+    async getPatientBasicInfo(id) {
+        return this.trainerService.getPatientBasicInfo(Number(id));
+    }
 };
 exports.TrainerController = TrainerController;
 __decorate([
@@ -73,6 +84,30 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], TrainerController.prototype, "getStudentAssessments", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('assessments'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getUpcomingAssessments", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('assessments'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getAssessments", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('students/:id/basic-info'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getPatientBasicInfo", null);
 exports.TrainerController = TrainerController = __decorate([
     (0, common_1.Controller)('trainer'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

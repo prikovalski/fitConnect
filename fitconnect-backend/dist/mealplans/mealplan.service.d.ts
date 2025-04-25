@@ -10,26 +10,26 @@ export declare class MealPlanService {
         patientId: number;
     }): Promise<{
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }>;
     getMealPlansByPatient(patientId: number): Promise<{
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }[]>;
     getMealPlanById(id: number): Promise<({
@@ -49,14 +49,14 @@ export declare class MealPlanService {
         })[];
     } & {
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }) | null>;
     getPlansByPatient(patientId: number): Promise<{
@@ -83,26 +83,26 @@ export declare class MealPlanService {
         })[];
     } & {
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }) | null>;
     updateMealPlan(planId: number, data: any, nutritionistId: number): Promise<{
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }>;
 }

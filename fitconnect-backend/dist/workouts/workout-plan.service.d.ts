@@ -8,7 +8,6 @@ export declare class WorkoutPlanService {
         };
     } & {
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
@@ -16,5 +15,6 @@ export declare class WorkoutPlanService {
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
+        patientId: number;
     })[]>;
 }

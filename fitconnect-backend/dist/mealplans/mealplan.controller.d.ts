@@ -13,26 +13,26 @@ export declare class MealPlanController {
         patientId: number;
     }): Promise<{
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }[]>;
     getOne(id: string): Promise<({
@@ -52,14 +52,14 @@ export declare class MealPlanController {
         })[];
     } & {
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }) | null>;
     getPlansByPatient(patientId: string): Promise<{
@@ -86,26 +86,26 @@ export declare class MealPlanController {
         })[];
     } & {
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }) | null>;
     updateMealPlan(planId: string, body: any, req: any): Promise<{
         id: number;
-        patientId: number;
         createdAt: Date;
         title: string;
         description: string;
-        observations: string | null;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        patientId: number;
+        observations: string | null;
         nutritionistId: number;
     }>;
 }

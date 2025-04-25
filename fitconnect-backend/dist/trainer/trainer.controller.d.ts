@@ -6,6 +6,7 @@ export declare class TrainerController {
         studentsCount: number;
         activeWorkouts: number;
         expiringWorkouts: number;
+        upcomingAssessments: number;
     }>;
     getStudents(req: any): Promise<{
         id: number;
@@ -22,4 +23,21 @@ export declare class TrainerController {
         method: string;
         date: Date;
     }[]>;
+    getUpcomingAssessments(req: any): Promise<{
+        id: number;
+        method: string;
+        nextAssessment: Date | null;
+        patientName: string;
+    }[]>;
+    getAssessments(req: any): Promise<{
+        id: number;
+        method: string;
+        date: Date;
+        patientName: string;
+    }[]>;
+    getPatientBasicInfo(id: string): Promise<{
+        name: string;
+        gender: import(".prisma/client").$Enums.Gender;
+        age: number;
+    }>;
 }

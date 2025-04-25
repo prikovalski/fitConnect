@@ -41,6 +41,14 @@ let TrainerService = class TrainerService {
                 patientId: true,
             },
         });
+        const upcomingAssessments = await this.prisma.physicalAssessment.count({
+            where: {
+                nextAssessment: {
+                    gte: new Date(),
+                    lte: (0, date_fns_1.addDays)(new Date(), 30)
+                }
+            }
+        });
         const studentIds = students.map(s => s.patientId);
         const activeWorkouts = await this.prisma.workoutPlan.count({
             where: {
@@ -60,7 +68,8 @@ let TrainerService = class TrainerService {
         return {
             studentsCount: studentIds.length,
             activeWorkouts,
-            expiringWorkouts
+            expiringWorkouts,
+            upcomingAssessments
         };
     }
     async getStudents(trainerId) {
@@ -103,6 +112,110 @@ let TrainerService = class TrainerService {
                 date: true
             }
         });
+    }
+    async getUpcomingAssessments(trainerId) {
+        const today = new Date();
+        const limitDate = (0, date_fns_1.addDays)(today, 30);
+        const sharedPatients = await this.prisma.dataSharing.findMany({
+            where: {
+                professionalId: trainerId,
+                role: 'TRAINER',
+                shareWorkoutWith: true
+            },
+            select: { patientId: true }
+        });
+        const patientIds = sharedPatients.map(p => p.patientId);
+        if (patientIds.length === 0)
+            return [];
+        const assessments = await this.prisma.physicalAssessment.findMany({
+            where: {
+                patientId: { in: patientIds },
+                nextAssessment: {
+                    gte: today,
+                    lte: limitDate
+                }
+            },
+            select: {
+                id: true,
+                method: true,
+                nextAssessment: true,
+                patient: {
+                    select: {
+                        name: true
+                    }
+                }
+            },
+            orderBy: { nextAssessment: 'asc' }
+        });
+        return assessments.map(a => ({
+            id: a.id,
+            method: a.method,
+            nextAssessment: a.nextAssessment,
+            patientName: a.patient.name
+        }));
+    }
+    async getTrainerAssessments(trainerId) {
+        const sharedPatients = await this.prisma.dataSharing.findMany({
+            where: {
+                professionalId: trainerId,
+                role: 'TRAINER',
+                shareWorkoutWith: true
+            },
+            select: {
+                patientId: true,
+                patient: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
+        const patientIds = sharedPatients.map(p => p.patientId);
+        const assessments = await this.prisma.physicalAssessment.findMany({
+            where: {
+                patientId: { in: patientIds }
+            },
+            select: {
+                id: true,
+                method: true,
+                date: true,
+                patientId: true
+            },
+            orderBy: { date: 'desc' }
+        });
+        const result = assessments.map(a => {
+            const patientInfo = sharedPatients.find(p => p.patientId === a.patientId);
+            return {
+                id: a.id,
+                method: a.method,
+                date: a.date,
+                patientName: (patientInfo === null || patientInfo === void 0 ? void 0 : patientInfo.patient.name) || 'Paciente'
+            };
+        });
+        return result;
+    }
+    async getPatientBasicInfo(patientId) {
+        const patient = await this.prisma.user.findUnique({
+            where: { id: patientId },
+            select: {
+                id: true,
+                name: true,
+                birthDate: true,
+                gender: true
+            }
+        });
+        if (!patient)
+            throw new Error('Paciente não encontrado');
+        const today = new Date();
+        const birthDate = new Date(patient.birthDate);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        const adjustedAge = m < 0 || (m === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
+        return {
+            name: patient.name,
+            gender: patient.gender,
+            age: adjustedAge
+        };
     }
 };
 exports.TrainerService = TrainerService;

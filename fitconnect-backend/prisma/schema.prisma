@@ -8,21 +8,24 @@ datasource db {
 }
 
 model User {
-  id                      Int                  @id @default(autoincrement())
-  email                   String               @unique
-  password                String
-  name                    String
-  role                    Role
-  createdAt               DateTime             @default(now())
-  trainerPlans            WorkoutPlan[]        @relation("TrainerPlans")
-  patientPlans            WorkoutPlan[]        @relation("PatientPlans")
-  assessments             PhysicalAssessment[] @relation("AssessmentPatient")
-  createdAssessments      PhysicalAssessment[] @relation("AssessmentCreator")
-  nutritionistPlans       MealPlan[]           @relation("NutritionistPlans")
-  mealPatientPlans        MealPlan[]           @relation("MealPatientPlans")
+  id                   Int                   @id @default(autoincrement())
+  email                String                @unique
+  password             String
+  name                 String
+  role                 Role
+  birthDate            DateTime              
+  gender               Gender                
+  createdAt            DateTime              @default(now())
+  trainerPlans         WorkoutPlan[]         @relation("TrainerPlans")
+  patientPlans         WorkoutPlan[]         @relation("PatientPlans")
+  assessments          PhysicalAssessment[]  @relation("AssessmentPatient")
+  createdAssessments   PhysicalAssessment[]  @relation("AssessmentCreator")
+  nutritionistPlans    MealPlan[]            @relation("NutritionistPlans")
+  mealPatientPlans     MealPlan[]            @relation("MealPatientPlans")
   patientDataSharing      DataSharing[]        @relation("PatientDataSharing")
   professionalDataSharing DataSharing[]        @relation("ProfessionalDataSharing")
 }
+
 
 model WorkoutPlan {
   id          Int          @id @default(autoincrement())
@@ -113,14 +116,15 @@ model MealItem {
 }
 
 model PhysicalAssessment {
-  id          Int      @id @default(autoincrement())
-  method      String
-  date        DateTime @default(now())
-  data        Json
-  patient     User     @relation("AssessmentPatient", fields: [patientId], references: [id])
-  patientId   Int
-  createdBy   User     @relation("AssessmentCreator", fields: [createdById], references: [id])
-  createdById Int
+  id              Int      @id @default(autoincrement())
+  method          String
+  date            DateTime @default(now())
+  nextAssessment  DateTime?  // Novo campo para a próxima avaliação
+  data            Json
+  patient         User     @relation("AssessmentPatient", fields: [patientId], references: [id])
+  patientId       Int
+  createdBy       User     @relation("AssessmentCreator", fields: [createdById], references: [id])
+  createdById     Int
 }
 
 model DataSharing {
@@ -140,4 +144,10 @@ enum Role {
   PATIENT
   TRAINER
   NUTRITIONIST
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }

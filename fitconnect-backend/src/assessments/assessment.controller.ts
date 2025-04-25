@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Param, Put, Req } from '@nestjs/common';
 import { AssessmentService } from './assessment.service';
 import { Roles } from '../auth/roles.decorator';
 
@@ -8,9 +8,10 @@ export class AssessmentController {
 
   @Roles('TRAINER', 'NUTRITIONIST')
   @Post()
-  create(@Body() body: { method: string; data: any; patientId: number; createdById: number }) {
+  create(@Body() body: any) {
     return this.assessmentService.createAssessment(body);
   }
+  
 
   @Roles('PATIENT', 'TRAINER', 'NUTRITIONIST')
   @Get()
@@ -22,5 +23,14 @@ export class AssessmentController {
   @Get(':id')
   getOne(@Param('id') id: string) {
     return this.assessmentService.getAssessmentById(Number(id));
+  }
+
+  @Roles('TRAINER', 'NUTRITIONIST')
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() body: { method?: string; data?: any; nextAssessment?: Date }
+  ) {
+    return this.assessmentService.updateAssessment(Number(id), body);
   }
 }

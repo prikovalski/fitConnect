@@ -30,4 +30,14 @@ __decorate([
     (0, class_validator_1.IsIn)(['PATIENT', 'TRAINER', 'NUTRITIONIST'], { message: 'Tipo de usuário inválido' }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "birthDate", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEnum)(['MALE', 'FEMALE']),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "gender", void 0);
 //# sourceMappingURL=register.dto.js.map

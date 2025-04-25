@@ -62,7 +62,7 @@ let AuthService = class AuthService {
         });
         return { message: 'Senha redefinida com sucesso.' };
     }
-    async register({ name, email, password, role, }) {
+    async register({ name, email, password, role, birthDate, gender }) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await this.prisma.user.create({
             data: {
@@ -70,6 +70,8 @@ let AuthService = class AuthService {
                 email,
                 password: hashedPassword,
                 role: role,
+                birthDate: new Date(birthDate),
+                gender
             },
         });
         const payload = { sub: newUser.id, email: newUser.email, role: newUser.role, name: newUser.name };

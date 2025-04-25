@@ -29,6 +29,9 @@ let AssessmentController = class AssessmentController {
     getOne(id) {
         return this.assessmentService.getAssessmentById(Number(id));
     }
+    update(id, body) {
+        return this.assessmentService.updateAssessment(Number(id), body);
+    }
 };
 exports.AssessmentController = AssessmentController;
 __decorate([
@@ -55,6 +58,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AssessmentController.prototype, "getOne", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER', 'NUTRITIONIST'),
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AssessmentController.prototype, "update", null);
 exports.AssessmentController = AssessmentController = __decorate([
     (0, common_1.Controller)('assessments'),
     __metadata("design:paramtypes", [assessment_service_1.AssessmentService])
