@@ -63,11 +63,12 @@ export default function UpcomingAssessments() {
               <div key={assessment.id} className="bg-white p-4 rounded shadow hover:shadow-md transition">
                 <h2 className="font-semibold text-[#00B894]">Paciente: {assessment.patientName}</h2>
                 <p>Método: {assessment.method}</p>
-                {assessment.date && !isNaN(new Date(assessment.date).getTime()) ? (
-                    <p><strong>Data:</strong> {new Date(assessment.date).toLocaleDateString()}</p>
-                  ) : (
-                    <p><strong>Data:</strong> Data inválida ou não informada</p>
-                  )}
+                <p>
+                <strong>Próxima Avaliação:</strong>{' '}
+                {assessment.nextAssessment
+                  ? new Date(assessment.nextAssessment).toLocaleDateString()
+                  : 'Não informada'}
+              </p>
                 <button
                   onClick={() => router.push(`/trainer/assessments/${assessment.id}`)}
                   className="mt-2 text-sm text-[#00B894] hover:underline"

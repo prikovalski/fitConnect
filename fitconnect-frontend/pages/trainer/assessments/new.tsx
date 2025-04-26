@@ -6,7 +6,8 @@ import { useRouter } from 'next/router';
 export default function NewAssessment() {
   const router = useRouter();
   const [students, setStudents] = useState([]);
-  const [patientInfo, setPatientInfo] = useState({ age: '', gender: '' });
+  const [patientInfo, setPatientInfo] = useState<{ age: number; gender: string } | null>(null);
+
   const [formData, setFormData] = useState({
     patientId: '',
     method: 'Pollock 7 Dobras',
@@ -16,7 +17,7 @@ export default function NewAssessment() {
     perimetrias: {},
     nextAssessment: ''
   });
-  const [resultados, setResultados] = useState(null);
+  const [resultados, setResultados] = useState<any>(null);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -63,13 +64,15 @@ export default function NewAssessment() {
   };
 
   const calcularResultados = () => {
+    if (!patientInfo) return null;
+
     const peso = parseFloat(formData.peso);
     const altura = parseFloat(formData.altura) / 100;
     const imc = (peso / (altura * altura)).toFixed(2);
 
     const somaDobras = Object.values(formData.dobrasCutaneas).reduce((a: number, b) => a + Number(b || 0), 0);
 
-    const idade = Number(patientInfo.age);
+    const idade = patientInfo.age;
     const sexo = patientInfo.gender === 'MALE' ? 'M' : 'F';
 
     let densidadeCorporal = 0;
@@ -81,24 +84,22 @@ export default function NewAssessment() {
     const percGordura = Number(((495 / densidadeCorporal) - 450).toFixed(2));
     const massaMagra = (peso - (peso * percGordura / 100)).toFixed(2);
 
-    setResultados({ IMC: imc, '% Gordura': percGordura, 'Massa Magra (kg)': massaMagra });
+    return { IMC: imc, '% Gordura': percGordura, 'Massa Magra (kg)': massaMagra };
   };
 
   const handleSave = async () => {
     const token = localStorage.getItem('token');
     const userIdRaw = localStorage.getItem('userId');
     const userId = userIdRaw ? Number(userIdRaw) : null;
-  
-    if (!userId) {
-      setMessage('Erro: Usuário não identificado. Faça login novamente.');
+
+    if (!userId || !formData.patientId) {
+      setMessage('Erro: Selecione um paciente e verifique o login.');
       return;
     }
-  
-    if (!formData.patientId) {
-      setMessage('Erro: Selecione um paciente.');
-      return;
-    }
-  
+
+    const resultadosCalculados = calcularResultados();
+    setResultados(resultadosCalculados);
+
     const payload = {
       method: formData.method,
       data: {
@@ -107,29 +108,27 @@ export default function NewAssessment() {
         dobrasCutaneas: formData.dobrasCutaneas,
         perimetrias: formData.perimetrias,
         nextAssessment: formData.nextAssessment,
-        resultados
+        resultados: resultadosCalculados
       },
       patientId: Number(formData.patientId),
-      createdById: Number(userId),
+      createdById: userId,
       nextAssessment: formData.nextAssessment
     };
-  
-    console.log('Payload enviado:', payload);  // Para conferirmos antes de enviar
-  
+
     const res = await fetch('http://localhost:3333/assessments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload)
     });
-  
+
     if (res.ok) {
       setMessage('Avaliação cadastrada com sucesso!');
-      setTimeout(() => router.push('/trainer/assessments'), 1500);
+      // Exibe resultados por alguns segundos antes de redirecionar
+      setTimeout(() => router.push('/trainer/assessments'), 2000);
     } else {
       setMessage('Erro ao salvar avaliação.');
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-[#F0F9F7]">
@@ -142,16 +141,12 @@ export default function NewAssessment() {
           {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
 
-        {patientInfo.age && (
+        {patientInfo && (
           <div className="mb-4">
             <p><strong>Idade:</strong> {patientInfo.age} anos</p>
             <p><strong>Sexo:</strong> {patientInfo.gender === 'MALE' ? 'Masculino' : 'Feminino'}</p>
           </div>
         )}
-
-        <select value={formData.method} onChange={(e) => handleChange('method', e.target.value)} className="border p-2 rounded w-full mb-4">
-          <option>Pollock 7 Dobras</option>
-        </select>
 
         <input type="number" placeholder="Peso (kg)" value={formData.peso} onChange={(e) => handleChange('peso', e.target.value)} className="border p-2 rounded w-full mb-4" />
         <input type="number" placeholder="Altura (cm)" value={formData.altura} onChange={(e) => handleChange('altura', e.target.value)} className="border p-2 rounded w-full mb-4" />
@@ -169,12 +164,11 @@ export default function NewAssessment() {
 
         <input type="date" value={formData.nextAssessment} onChange={(e) => handleChange('nextAssessment', e.target.value)} className="border p-2 rounded w-full mb-4" />
 
-        <button onClick={calcularResultados} className="bg-blue-500 text-white px-4 py-2 rounded mr-4">Calcular</button>
         <button onClick={handleSave} className="bg-[#00B894] text-white px-4 py-2 rounded">Salvar Avaliação</button>
 
         {resultados && (
           <div className="mt-6">
-            <h3 className="font-bold mb-2">Resultados:</h3>
+            <h3 className="font-bold mb-2">Resultados Calculados:</h3>
             <pre className="bg-gray-100 p-4 rounded">{JSON.stringify(resultados, null, 2)}</pre>
           </div>
         )}
