@@ -104,14 +104,27 @@ let TrainerService = class TrainerService {
     }
     async getStudentAssessments(studentId, trainerId) {
         await this.validateAccess(studentId, trainerId, 'TRAINER');
-        return this.prisma.physicalAssessment.findMany({
+        const student = await this.prisma.user.findUnique({
+            where: { id: studentId },
+            select: { name: true }
+        });
+        if (!student) {
+            throw new Error('Paciente não encontrado');
+        }
+        const assessments = await this.prisma.physicalAssessment.findMany({
             where: { patientId: studentId },
             select: {
                 id: true,
                 method: true,
-                date: true
-            }
+                date: true,
+                nextAssessment: true
+            },
+            orderBy: { date: 'desc' }
         });
+        return {
+            studentName: student.name,
+            assessments
+        };
     }
     async getUpcomingAssessments(trainerId) {
         const today = new Date();

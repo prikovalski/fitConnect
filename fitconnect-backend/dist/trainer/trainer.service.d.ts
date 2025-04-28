@@ -28,10 +28,14 @@ export declare class TrainerService {
         validUntil: Date;
     }[]>;
     getStudentAssessments(studentId: number, trainerId: number): Promise<{
-        id: number;
-        method: string;
-        date: Date;
-    }[]>;
+        studentName: string;
+        assessments: {
+            id: number;
+            method: string;
+            date: Date;
+            nextAssessment: Date | null;
+        }[];
+    }>;
     getUpcomingAssessments(trainerId: number): Promise<{
         id: number;
         method: string;

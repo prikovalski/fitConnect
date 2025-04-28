@@ -3,8 +3,11 @@ import NavbarTrainer from '../../../components/NavbarTrainer';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
-export default function NewAssessment() {
+export default function AssessmentForm() {
   const router = useRouter();
+  const { id } = router.query;
+  const isEditMode = Boolean(id);
+
   const [students, setStudents] = useState([]);
   const [patientInfo, setPatientInfo] = useState<{ age: number; gender: string } | null>(null);
 
@@ -13,10 +16,25 @@ export default function NewAssessment() {
     method: 'Pollock 7 Dobras',
     peso: '',
     altura: '',
-    dobrasCutaneas: {},
-    perimetrias: {},
+    dobrasCutaneas: {
+      Peitoral: '',
+      Abdominal: '',
+      Coxa: '',
+      Tríceps: '',
+      Subescapular: '',
+      'Supra-ilíaca': '',
+      'Axilar Média': ''
+    },
+    perimetrias: {
+      Cintura: '',
+      Quadril: '',
+      Coxa: '',
+      Braço: '',
+      Peito: ''
+    },
     nextAssessment: ''
   });
+
   const [resultados, setResultados] = useState<any>(null);
   const [message, setMessage] = useState('');
 
@@ -77,9 +95,9 @@ export default function NewAssessment() {
 
     let densidadeCorporal = 0;
     if (sexo === 'M') {
-      densidadeCorporal = (1.112 - 0.00043499 * Number(somaDobras) + 0.00000055 * (Number(somaDobras) ** 2) - 0.00028826 * idade);
+      densidadeCorporal = (1.112 - 0.00043499 * somaDobras + 0.00000055 * (somaDobras ** 2) - 0.00028826 * idade);
     } else {
-      densidadeCorporal = (1.097 - 0.00046971 * Number(somaDobras) + 0.00000056 * (Number(somaDobras) ** 2) - 0.00012828 * idade);
+      densidadeCorporal = (1.097 - 0.00046971 * somaDobras + 0.00000056 * (somaDobras ** 2) - 0.00012828 * idade);
     }
     const percGordura = Number(((495 / densidadeCorporal) - 450).toFixed(2));
     const massaMagra = (peso - (peso * percGordura / 100)).toFixed(2);
@@ -89,8 +107,7 @@ export default function NewAssessment() {
 
   const handleSave = async () => {
     const token = localStorage.getItem('token');
-    const userIdRaw = localStorage.getItem('userId');
-    const userId = userIdRaw ? Number(userIdRaw) : null;
+    const userId = Number(localStorage.getItem('userId'));
 
     if (!userId || !formData.patientId) {
       setMessage('Erro: Selecione um paciente e verifique o login.');
@@ -105,6 +122,8 @@ export default function NewAssessment() {
       data: {
         peso: formData.peso,
         altura: formData.altura,
+        patientAge: patientInfo?.age,
+        patientGender: patientInfo?.gender,
         dobrasCutaneas: formData.dobrasCutaneas,
         perimetrias: formData.perimetrias,
         nextAssessment: formData.nextAssessment,
@@ -123,7 +142,6 @@ export default function NewAssessment() {
 
     if (res.ok) {
       setMessage('Avaliação cadastrada com sucesso!');
-      // Exibe resultados por alguns segundos antes de redirecionar
       setTimeout(() => router.push('/trainer/assessments'), 2000);
     } else {
       setMessage('Erro ao salvar avaliação.');
@@ -131,49 +149,132 @@ export default function NewAssessment() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F9F7]">
+    <div className="min-h-screen bg-[#F0F9F7] flex flex-col">
       <NavbarTrainer />
-      <div className="p-8 max-w-4xl mx-auto bg-white rounded-xl shadow">
-        <motion.h1 className="text-2xl font-bold text-[#00B894] mb-6">Nova Avaliação Física</motion.h1>
+      <div className="flex-grow flex items-start justify-center">
+        <motion.div
+          className="mt-12 p-8 max-w-4xl w-full bg-white rounded-xl shadow"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-2xl font-bold text-[#00B894] mb-6">
+            Nova Avaliação Física
+          </h1>
 
-        <select value={formData.patientId} onChange={handlePatientChange} className="border p-2 rounded w-full mb-4">
-          <option value="">Selecione o Paciente</option>
-          {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
-
-        {patientInfo && (
-          <div className="mb-4">
-            <p><strong>Idade:</strong> {patientInfo.age} anos</p>
-            <p><strong>Sexo:</strong> {patientInfo.gender === 'MALE' ? 'Masculino' : 'Feminino'}</p>
+          {/* Bloco: Seleção de Paciente */}
+          <div className="mb-6">
+            <label className="block font-semibold mb-2 text-[#00B894]">Paciente</label>
+            <select
+              value={formData.patientId}
+              onChange={handlePatientChange}
+              className="border rounded w-full p-2 focus:ring-2 focus:ring-[#00B894]"
+            >
+              <option value="">Selecione o paciente</option>
+              {students.map((s) => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
           </div>
-        )}
 
-        <input type="number" placeholder="Peso (kg)" value={formData.peso} onChange={(e) => handleChange('peso', e.target.value)} className="border p-2 rounded w-full mb-4" />
-        <input type="number" placeholder="Altura (cm)" value={formData.altura} onChange={(e) => handleChange('altura', e.target.value)} className="border p-2 rounded w-full mb-4" />
+          {/* Bloco: Dados do Paciente */}
+          {patientInfo && (
+            <div className="mb-6 bg-[#E0F7F4] p-4 rounded shadow">
+              <h2 className="font-semibold text-[#00B894] border-b pb-2 mb-4">Dados do Paciente</h2>
+              <div className="flex flex-wrap gap-6">
+                <div><strong>Idade:</strong> {patientInfo.age} anos</div>
+                <div><strong>Sexo:</strong> {patientInfo.gender === 'MALE' ? 'Masculino' : 'Feminino'}</div>
+                <div>
+                  <label><strong>Peso:</strong></label>
+                  <input
+                    type="number"
+                    value={formData.peso}
+                    onChange={(e) => handleChange('peso', e.target.value)}
+                    className="border rounded p-1 ml-2 w-24 focus:ring-2 focus:ring-[#00B894]"
+                  /> kg
+                </div>
+                <div>
+                  <label><strong>Altura:</strong></label>
+                  <input
+                    type="number"
+                    value={formData.altura}
+                    onChange={(e) => handleChange('altura', e.target.value)}
+                    className="border rounded p-1 ml-2 w-24 focus:ring-2 focus:ring-[#00B894]"
+                  /> cm
+                </div>
+              </div>
+            </div>
+          )}
 
-        <h2 className="font-semibold">Dobras Cutâneas (mm)</h2>
-        {['Peitoral', 'Abdominal', 'Coxa', 'Tríceps', 'Subescapular', 'Supra-ilíaca', 'Axilar Média'].map((dobra) => (
-          <input
-            key={dobra}
-            type="number"
-            placeholder={dobra}
-            onChange={(e) => handleNestedChange('dobrasCutaneas', dobra, e.target.value)}
-            className="border p-2 rounded w-full mb-2"
-          />
-        ))}
-
-        <input type="date" value={formData.nextAssessment} onChange={(e) => handleChange('nextAssessment', e.target.value)} className="border p-2 rounded w-full mb-4" />
-
-        <button onClick={handleSave} className="bg-[#00B894] text-white px-4 py-2 rounded">Salvar Avaliação</button>
-
-        {resultados && (
-          <div className="mt-6">
-            <h3 className="font-bold mb-2">Resultados Calculados:</h3>
-            <pre className="bg-gray-100 p-4 rounded">{JSON.stringify(resultados, null, 2)}</pre>
+          {/* Bloco: Dobras Cutâneas */}
+          <div className="mb-6 bg-gray-100 p-4 rounded shadow">
+            <h2 className="font-semibold text-[#00B894] border-b pb-2 mb-4">Dobras Cutâneas (mm)</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {Object.entries(formData.dobrasCutaneas).map(([key, value]) => (
+                <div key={key}>
+                  <label><strong>{key}:</strong></label>
+                  <input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleNestedChange('dobrasCutaneas', key, e.target.value)}
+                    className="border rounded w-full p-2 mt-1 focus:ring-2 focus:ring-[#00B894]"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        )}
 
-        {message && <p className="mt-4 text-center">{message}</p>}
+          {/* Bloco: Perimetrias */}
+          <div className="mb-6 bg-gray-200 p-4 rounded shadow">
+            <h2 className="font-semibold text-[#00B894] border-b pb-2 mb-4">Perimetrias (cm)</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {Object.entries(formData.perimetrias).map(([key, value]) => (
+                <div key={key}>
+                  <label><strong>{key}:</strong></label>
+                  <input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleNestedChange('perimetrias', key, e.target.value)}
+                    className="border rounded w-full p-2 mt-1 focus:ring-2 focus:ring-[#00B894]"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bloco: Próxima Avaliação */}
+          <div className="mb-6">
+            <label className="font-semibold text-[#00B894]">Próxima Avaliação</label>
+            <input
+              type="date"
+              value={formData.nextAssessment}
+              onChange={(e) => handleChange('nextAssessment', e.target.value)}
+              className="border rounded w-full p-2 mt-1 focus:ring-2 focus:ring-[#00B894]"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              onClick={handleSave}
+              className="bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition"
+            >
+              Salvar Avaliação
+            </button>
+          </div>
+
+          {/* Bloco: Resultados Calculados */}
+          {resultados && (
+            <div className="mt-6 bg-[#DFF6F2] p-4 rounded shadow">
+              <h2 className="font-semibold text-[#00B894] border-b pb-2 mb-4">Resultados Calculados</h2>
+              <div className="flex gap-6">
+                <div><strong>IMC:</strong> {resultados.IMC}</div>
+                <div><strong>% Gordura:</strong> {resultados['% Gordura']}%</div>
+                <div><strong>Massa Magra:</strong> {resultados['Massa Magra (kg)']} kg</div>
+              </div>
+            </div>
+          )}
+
+          {message && <p className="mt-4 text-center">{message}</p>}
+        </motion.div>
       </div>
     </div>
   );

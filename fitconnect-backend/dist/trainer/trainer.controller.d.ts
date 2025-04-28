@@ -19,10 +19,14 @@ export declare class TrainerController {
         validUntil: Date;
     }[]>;
     getStudentAssessments(id: string, req: any): Promise<{
-        id: number;
-        method: string;
-        date: Date;
-    }[]>;
+        studentName: string;
+        assessments: {
+            id: number;
+            method: string;
+            date: Date;
+            nextAssessment: Date | null;
+        }[];
+    }>;
     getUpcomingAssessments(req: any): Promise<{
         id: number;
         method: string;

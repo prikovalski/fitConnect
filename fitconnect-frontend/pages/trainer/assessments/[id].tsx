@@ -17,6 +17,7 @@ export default function AssessmentDetail() {
       });
       const data = await res.json();
       setAssessment(data);
+      console.log("Assessment: ", data)
     };
     fetchAssessment();
   }, [id]);
@@ -40,8 +41,8 @@ export default function AssessmentDetail() {
 
           {/* Bloco Superior */}
           <div className="flex flex-wrap gap-6 mb-6">
-            <div><strong>Nome:</strong> {assessment.patientName || 'Paciente'}</div>
-            <div><strong>Idade:</strong> {assessment.patientAge || '---'} anos</div>
+            <div><strong>Nome:</strong> {assessment.patientName || 'Pacientes'}</div>
+            <div><strong>Idade:</strong> {assessment.data.patientAge || '---'} anos</div>
             <div><strong>Peso:</strong> {data.peso} kg</div>
             <div><strong>Altura:</strong> {data.altura} cm</div>
           </div>
