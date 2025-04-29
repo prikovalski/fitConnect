@@ -9,36 +9,47 @@ export declare class WorkoutController {
         patientId: number;
         validFrom: string;
         validUntil: string;
+        workoutDays: {
+            dayOfWeek: string;
+            muscleGroup: string;
+            exercises: {
+                name: string;
+                sets: {
+                    targetReps: number;
+                    targetLoad: number;
+                }[];
+            }[];
+        }[];
     }): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     }[]>;
     getOne(id: string): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     } | null>;
@@ -47,9 +58,9 @@ export declare class WorkoutController {
             sets: {
                 id: number;
                 setNumber: number;
-                exerciseId: number;
                 targetReps: number;
                 targetLoad: number;
+                exerciseId: number;
             }[];
         } & {
             id: number;
@@ -59,8 +70,19 @@ export declare class WorkoutController {
         })[];
     } & {
         id: number;
-        workoutPlanId: number;
         dayOfWeek: string;
         muscleGroup: string;
+        workoutPlanId: number;
     })[]>;
+    updateWorkout(id: string, body: any): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        createdAt: Date;
+        trainerId: number;
+        patientId: number;
+    }>;
 }

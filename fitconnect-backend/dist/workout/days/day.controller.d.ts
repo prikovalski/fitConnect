@@ -5,8 +5,8 @@ export declare class DayController {
         muscleGroup: string;
     }): Promise<{
         id: number;
-        workoutPlanId: number;
         dayOfWeek: string;
         muscleGroup: string;
+        workoutPlanId: number;
     }>;
 }

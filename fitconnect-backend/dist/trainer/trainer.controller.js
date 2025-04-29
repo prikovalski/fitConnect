@@ -48,6 +48,14 @@ let TrainerController = class TrainerController {
     async getPatientBasicInfo(id) {
         return this.trainerService.getPatientBasicInfo(Number(id));
     }
+    async getTrainerWorkouts(req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getTrainerWorkouts(trainerId);
+    }
+    async getWorkoutPlanById(id, req) {
+        const trainerId = req.user.id;
+        return this.trainerService.getWorkoutPlanById(Number(id), trainerId);
+    }
 };
 exports.TrainerController = TrainerController;
 __decorate([
@@ -108,6 +116,23 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TrainerController.prototype, "getPatientBasicInfo", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('workouts'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getTrainerWorkouts", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('workouts/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], TrainerController.prototype, "getWorkoutPlanById", null);
 exports.TrainerController = TrainerController = __decorate([
     (0, common_1.Controller)('trainer'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

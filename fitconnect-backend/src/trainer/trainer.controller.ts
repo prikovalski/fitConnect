@@ -56,4 +56,19 @@ export class TrainerController {
     return this.trainerService.getPatientBasicInfo(Number(id));
   }
 
+  @Roles('TRAINER')
+  @Get('workouts')
+  async getTrainerWorkouts(@Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getTrainerWorkouts(trainerId);
+}
+
+  @Roles('TRAINER')
+  @Get('workouts/:id')
+  async getWorkoutPlanById(@Param('id') id: string, @Req() req: any) {
+    const trainerId = req.user.id;
+    return this.trainerService.getWorkoutPlanById(Number(id), trainerId);
+  }
+
+
 } 

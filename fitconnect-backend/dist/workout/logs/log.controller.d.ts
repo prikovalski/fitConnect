@@ -7,9 +7,9 @@ export declare class LogController {
     }): Promise<{
         id: number;
         date: Date;
-        workoutSetId: number;
         actualReps: number;
         actualLoad: number;
+        workoutSetId: number;
     }>;
     update(id: string, body: {
         actualReps: number;
@@ -17,9 +17,9 @@ export declare class LogController {
     }): Promise<{
         id: number;
         date: Date;
-        workoutSetId: number;
         actualReps: number;
         actualLoad: number;
+        workoutSetId: number;
     }>;
     createMany(logs: {
         workoutSetId: number;

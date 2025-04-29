@@ -10,8 +10,8 @@ export declare class TrainerController {
     }>;
     getStudents(req: any): Promise<{
         id: number;
-        name: string;
         email: string;
+        name: string;
     }[]>;
     getStudentWorkouts(id: string, req: any): Promise<{
         id: number;
@@ -22,8 +22,8 @@ export declare class TrainerController {
         studentName: string;
         assessments: {
             id: number;
-            method: string;
             date: Date;
+            method: string;
             nextAssessment: Date | null;
         }[];
     }>;
@@ -43,5 +43,38 @@ export declare class TrainerController {
         name: string;
         gender: import(".prisma/client").$Enums.Gender;
         age: number;
+    }>;
+    getTrainerWorkouts(req: any): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        patientName: string;
+    }[]>;
+    getWorkoutPlanById(id: string, req: any): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        patientName: string;
+        workoutDays: {
+            id: number;
+            dayOfWeek: string;
+            muscleGroup: string;
+            exercises: {
+                id: number;
+                name: string;
+                sets: {
+                    id: number;
+                    setNumber: number;
+                    targetReps: number;
+                    targetLoad: number;
+                }[];
+            }[];
+        }[];
     }>;
 }

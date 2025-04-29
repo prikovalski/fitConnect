@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, UseGuards, Put } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -8,7 +8,25 @@ export class WorkoutController {
   constructor(private readonly workoutService: WorkoutService) {}
 
   @Post()
-  create(@Body() body: { title: string; description: string; trainerId: number; patientId: number; validFrom: string; validUntil: string }) {
+  create(@Body() body: {
+    title: string;
+    description: string;
+    trainerId: number;
+    patientId: number;
+    validFrom: string;
+    validUntil: string;
+    workoutDays: {
+      dayOfWeek: string;
+      muscleGroup: string;
+      exercises: {
+        name: string;
+        sets: {
+          targetReps: number;
+          targetLoad: number;
+        }[];
+      }[];
+    }[];
+  }) {
     return this.workoutService.createWorkout(body);
   }
 
@@ -25,5 +43,10 @@ export class WorkoutController {
   @Get(':id/exercises')
   getExercises(@Param('id') id: string) {
     return this.workoutService.getExercisesByPlan(Number(id));
-}
+  }
+
+  @Put(':id')
+  updateWorkout(@Param('id') id: string, @Body() body: any) {
+    return this.workoutService.updateWorkout(Number(id), body);
+  }
 }

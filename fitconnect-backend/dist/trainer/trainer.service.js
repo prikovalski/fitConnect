@@ -230,6 +230,97 @@ let TrainerService = class TrainerService {
             age: adjustedAge
         };
     }
+    async getTrainerWorkouts(trainerId) {
+        const plans = await this.prisma.workoutPlan.findMany({
+            where: {
+                trainerId,
+                isActive: true,
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                validFrom: true,
+                validUntil: true,
+                isActive: true,
+                patient: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            }
+        });
+        return plans.map(plan => {
+            var _a;
+            return ({
+                id: plan.id,
+                title: plan.title,
+                description: plan.description,
+                validFrom: plan.validFrom,
+                validUntil: plan.validUntil,
+                isActive: plan.isActive,
+                patientName: ((_a = plan.patient) === null || _a === void 0 ? void 0 : _a.name) || 'Paciente',
+            });
+        });
+    }
+    async getWorkoutPlanById(id, trainerId) {
+        const plan = await this.prisma.workoutPlan.findFirst({
+            where: {
+                id,
+                trainerId,
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                validFrom: true,
+                validUntil: true,
+                isActive: true,
+                patient: {
+                    select: {
+                        name: true,
+                    },
+                },
+                workoutDays: {
+                    select: {
+                        id: true,
+                        dayOfWeek: true,
+                        muscleGroup: true,
+                        exercises: {
+                            select: {
+                                id: true,
+                                name: true,
+                                sets: {
+                                    select: {
+                                        id: true,
+                                        setNumber: true,
+                                        targetReps: true,
+                                        targetLoad: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (!plan) {
+            throw new common_1.NotFoundException('Plano de treino não encontrado.');
+        }
+        return {
+            id: plan.id,
+            title: plan.title,
+            description: plan.description,
+            validFrom: plan.validFrom,
+            validUntil: plan.validUntil,
+            isActive: plan.isActive,
+            patientName: plan.patient.name,
+            workoutDays: plan.workoutDays,
+        };
+    }
 };
 exports.TrainerService = TrainerService;
 exports.TrainerService = TrainerService = __decorate([

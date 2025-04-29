@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { addDays } from 'date-fns';
 import { Role } from '@prisma/client';
@@ -250,6 +250,98 @@ export class TrainerService {
       name: patient.name,
       gender: patient.gender,
       age: adjustedAge
+    };
+  }
+
+  async getTrainerWorkouts(trainerId: number) {
+    const plans = await this.prisma.workoutPlan.findMany({
+      where: {
+        trainerId,
+        isActive: true, // Só planos ativos por enquanto, depois podemos listar todos se quiser
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        validFrom: true,
+        validUntil: true,
+        isActive: true,
+        patient: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      }
+    });
+  
+    return plans.map(plan => ({
+      id: plan.id,
+      title: plan.title,
+      description: plan.description,
+      validFrom: plan.validFrom,
+      validUntil: plan.validUntil,
+      isActive: plan.isActive,
+      patientName: plan.patient?.name || 'Paciente',
+    }));
+  }
+  async getWorkoutPlanById(id: number, trainerId: number) {
+    const plan = await this.prisma.workoutPlan.findFirst({
+      where: {
+        id,
+        trainerId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        validFrom: true,
+        validUntil: true,
+        isActive: true,
+        patient: {
+          select: {
+            name: true,
+          },
+        },
+        workoutDays: {
+          select: {
+            id: true,
+            dayOfWeek: true,
+            muscleGroup: true,
+            exercises: {
+              select: {
+                id: true,
+                name: true,
+                sets: {
+                  select: {
+                    id: true,
+                    setNumber: true,
+                    targetReps: true,
+                    targetLoad: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  
+    if (!plan) {
+      throw new NotFoundException('Plano de treino não encontrado.');
+    }
+  
+    return {
+      id: plan.id,
+      title: plan.title,
+      description: plan.description,
+      validFrom: plan.validFrom,
+      validUntil: plan.validUntil,
+      isActive: plan.isActive,
+      patientName: plan.patient.name,
+      workoutDays: plan.workoutDays,
     };
   }
   

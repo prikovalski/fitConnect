@@ -40,8 +40,6 @@ model WorkoutPlan {
   patient     User         @relation("PatientPlans", fields: [patientId], references: [id])
   patientId   Int
   workoutDays WorkoutDay[]
-
-  @@unique([patientId, trainerId, isActive], name: "one_active_plan_per_pair")
 }
 
 model WorkoutDay {

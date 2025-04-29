@@ -5,9 +5,9 @@ export declare class TrainerService {
     constructor(prisma: PrismaService);
     validateAccess(patientId: number, professionalId: number, role: Role): Promise<{
         id: number;
+        role: import(".prisma/client").$Enums.Role;
         patientId: number;
         professionalId: number;
-        role: import(".prisma/client").$Enums.Role;
         shareWorkoutWith: boolean;
         shareMealWith: boolean;
     }>;
@@ -19,8 +19,8 @@ export declare class TrainerService {
     }>;
     getStudents(trainerId: number): Promise<{
         id: number;
-        name: string;
         email: string;
+        name: string;
     }[]>;
     getStudentWorkouts(studentId: number, trainerId: number): Promise<{
         id: number;
@@ -31,8 +31,8 @@ export declare class TrainerService {
         studentName: string;
         assessments: {
             id: number;
-            method: string;
             date: Date;
+            method: string;
             nextAssessment: Date | null;
         }[];
     }>;
@@ -52,5 +52,38 @@ export declare class TrainerService {
         name: string;
         gender: import(".prisma/client").$Enums.Gender;
         age: number;
+    }>;
+    getTrainerWorkouts(trainerId: number): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        patientName: string;
+    }[]>;
+    getWorkoutPlanById(id: number, trainerId: number): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        patientName: string;
+        workoutDays: {
+            id: number;
+            dayOfWeek: string;
+            muscleGroup: string;
+            exercises: {
+                id: number;
+                name: string;
+                sets: {
+                    id: number;
+                    setNumber: number;
+                    targetReps: number;
+                    targetLoad: number;
+                }[];
+            }[];
+        }[];
     }>;
 }

@@ -1,41 +1,66 @@
+import { PrismaService } from 'prisma.service';
+interface WorkoutSetInput {
+    setNumber?: number;
+    targetReps: number;
+    targetLoad: number;
+}
+interface WorkoutExerciseInput {
+    name: string;
+    sets: WorkoutSetInput[];
+}
+interface WorkoutDayInput {
+    dayOfWeek: string;
+    muscleGroup: string;
+    exercises: WorkoutExerciseInput[];
+}
+interface UpdateWorkoutInput {
+    title: string;
+    description: string;
+    validFrom: string;
+    validUntil: string;
+    workoutDays: WorkoutDayInput[];
+}
 export declare class WorkoutService {
+    private prisma;
+    constructor(prisma: PrismaService);
     createWorkout(data: {
         title: string;
         description: string;
-        trainerId: number;
-        patientId: number;
         validFrom: string;
         validUntil: string;
+        trainerId: number;
+        patientId: number;
+        workoutDays: WorkoutDayInput[];
     }): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     }>;
     getWorkoutsByPatient(patientId: number): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     }[]>;
     getWorkoutById(id: number): Promise<{
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     } | null>;
@@ -44,9 +69,9 @@ export declare class WorkoutService {
             sets: {
                 id: number;
                 setNumber: number;
-                exerciseId: number;
                 targetReps: number;
                 targetLoad: number;
+                exerciseId: number;
             }[];
         } & {
             id: number;
@@ -56,8 +81,20 @@ export declare class WorkoutService {
         })[];
     } & {
         id: number;
-        workoutPlanId: number;
         dayOfWeek: string;
         muscleGroup: string;
+        workoutPlanId: number;
     })[]>;
+    updateWorkout(id: number, data: UpdateWorkoutInput): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        createdAt: Date;
+        trainerId: number;
+        patientId: number;
+    }>;
 }
+export {};

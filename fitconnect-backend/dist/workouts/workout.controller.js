@@ -32,6 +32,9 @@ let WorkoutController = class WorkoutController {
     getExercises(id) {
         return this.workoutService.getExercisesByPlan(Number(id));
     }
+    updateWorkout(id, body) {
+        return this.workoutService.updateWorkout(Number(id), body);
+    }
 };
 exports.WorkoutController = WorkoutController;
 __decorate([
@@ -62,6 +65,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], WorkoutController.prototype, "getExercises", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], WorkoutController.prototype, "updateWorkout", null);
 exports.WorkoutController = WorkoutController = __decorate([
     (0, common_1.Controller)('workouts'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

@@ -7,8 +7,8 @@ export declare class SetController {
     }): Promise<{
         id: number;
         setNumber: number;
-        exerciseId: number;
         targetReps: number;
         targetLoad: number;
+        exerciseId: number;
     }>;
 }
