@@ -106,13 +106,21 @@ export declare class WorkoutService {
         };
         workoutDays: ({
             exercises: ({
-                sets: {
+                sets: ({
+                    logs: {
+                        id: number;
+                        date: Date;
+                        actualReps: number;
+                        actualLoad: number;
+                        workoutSetId: number;
+                    }[];
+                } & {
                     id: number;
                     setNumber: number;
                     targetReps: number;
                     targetLoad: number;
                     exerciseId: number;
-                }[];
+                })[];
             } & {
                 id: number;
                 name: string;

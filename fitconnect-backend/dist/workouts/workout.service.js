@@ -150,7 +150,14 @@ let WorkoutService = class WorkoutService {
                     include: {
                         exercises: {
                             include: {
-                                sets: true
+                                sets: {
+                                    include: {
+                                        logs: {
+                                            orderBy: { date: 'desc' },
+                                            take: 1
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

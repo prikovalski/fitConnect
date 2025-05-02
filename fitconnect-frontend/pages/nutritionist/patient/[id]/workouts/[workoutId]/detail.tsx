@@ -12,6 +12,7 @@ export default function WorkoutDetailPage() {
   const { id, workoutId } = router.query;
   const [workout, setWorkout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [diasAbertos, setDiasAbertos] = useState<number[]>([]);
 
   useEffect(() => {
     if (!router.isReady || !workoutId || !id) return;
@@ -45,19 +46,30 @@ export default function WorkoutDetailPage() {
     return carga * 0.1 * reps;
   };
 
-  const caloriasTotais = useMemo(() => {
-    if (!workout || !workout.workoutDays || !Array.isArray(workout.workoutDays)) return 0;
+  const getValoresComLog = (set: any) => {
+    const logs = Array.isArray(set.logs) ? set.logs : [];
+    if (logs.length > 0) {
+      const ultimoLog = logs[logs.length - 1];
+      return {
+        reps: ultimoLog?.actualReps ?? set.targetReps,
+        carga: ultimoLog?.actualLoad ?? set.targetLoad
+      };
+    }
+    return {
+      reps: set.targetReps,
+      carga: set.targetLoad
+    };
+  };
 
+  const caloriasTotais = useMemo(() => {
     let total = 0;
+    if (!workout?.workoutDays) return 0;
 
     workout.workoutDays.forEach((day: any) => {
-      if (!day.exercises || !Array.isArray(day.exercises)) return;
-
       day.exercises.forEach((ex: any) => {
-        if (!ex.sets || !Array.isArray(ex.sets)) return;
-
         ex.sets.forEach((set: any) => {
-          total += calcularCalorias(workout.peso || 0, set.targetReps || 0, set.targetLoad || 0);
+          const { reps, carga } = getValoresComLog(set);
+          total += calcularCalorias(workout.peso, reps, carga);
         });
       });
     });
@@ -65,6 +77,26 @@ export default function WorkoutDetailPage() {
     return total;
   }, [workout]);
 
+  const calcularCaloriasPorDia = (day: any): number => {
+    let total = 0;
+    if (!day?.exercises) return 0;
+    day.exercises.forEach((ex: any) => {
+      if (!ex?.sets) return;
+      ex.sets.forEach((set: any) => {
+        const { reps, carga } = getValoresComLog(set);
+        total += calcularCalorias(workout.peso, reps, carga);
+      });
+    });
+    return total;
+  };
+
+  const toggleDia = (diaId: number) => {
+    setDiasAbertos(prev =>
+      prev.includes(diaId)
+        ? prev.filter(id => id !== diaId)
+        : [...prev, diaId]
+    );
+  };
 
   if (loading) return <p className="text-center mt-10">Carregando plano...</p>;
   if (!workout) return <p className="text-center mt-10">Plano de treino não encontrado.</p>;
@@ -89,7 +121,7 @@ export default function WorkoutDetailPage() {
 
           <div className="mb-6 bg-[#E0F7F4] p-4 rounded shadow">
             <p><strong>Descrição:</strong> {workout.description}</p>
-            <p><strong>Peso do Paciente:</strong> {workout.patientPeso} kg</p>
+            <p><strong>Peso do Paciente:</strong> {workout.peso} kg</p>
             <p><strong>Validade:</strong> {new Date(workout.validFrom).toLocaleDateString()} até {new Date(workout.validUntil).toLocaleDateString()}</p>
             <p><strong>Estimativa Calórica:</strong> {caloriasTotais.toFixed(0)} kcal</p>
           </div>
@@ -99,29 +131,48 @@ export default function WorkoutDetailPage() {
             {workout.workoutDays.length === 0 ? (
               <p className="text-gray-500">Nenhum dia de treino registrado.</p>
             ) : (
-              workout.workoutDays.map((day: any) => (
-                <div key={day.id} className="bg-gray-100 p-4 rounded mb-4 shadow">
-                  <h3 className="text-lg font-semibold text-[#00B894] mb-2">{day.dayOfWeek} - {day.muscleGroup}</h3>
-                  {day.exercises.length === 0 ? (
-                    <p className="text-gray-500">Sem exercícios registrados.</p>
-                  ) : (
-                    <ul className="space-y-3">
-                      {day.exercises.map((ex: any) => (
-                        <li key={ex.id} className="bg-white p-3 rounded shadow-sm">
-                          <p className="font-semibold">{ex.name}</p>
-                          <div className="grid grid-cols-2 gap-2 mt-2">
-                            {ex.sets.map((set: any) => (
-                              <div key={set.id} className="bg-gray-50 p-2 rounded">
-                                <p><strong>Série {set.setNumber}:</strong> {set.targetReps} reps / {set.targetLoad} kg</p>
-                              </div>
+              workout.workoutDays.map((day: any) => {
+                const isOpen = diasAbertos.includes(day.id);
+                const caloriasDia = calcularCaloriasPorDia(day);
+
+                return (
+                  <div key={day.id} className="bg-gray-100 rounded mb-4 shadow">
+                    <button
+                      onClick={() => toggleDia(day.id)}
+                      className="w-full flex justify-between items-center text-left p-4 bg-[#E0F7F4] font-semibold text-[#00B894] hover:bg-[#d5f1ed] transition"
+                    >
+                      <span>{day.dayOfWeek} - {day.muscleGroup}</span>
+                      <span className="text-sm font-medium text-right text-gray-600">{caloriasDia.toFixed(0)} kcal</span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="p-4">
+                        {day.exercises.length === 0 ? (
+                          <p className="text-gray-500">Sem exercícios registrados.</p>
+                        ) : (
+                          <ul className="space-y-3">
+                            {day.exercises.map((ex: any) => (
+                              <li key={ex.id} className="bg-white p-3 rounded shadow-sm">
+                                <p className="font-semibold">{ex.name}</p>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                  {ex.sets.map((set: any) => {
+                                    const { reps, carga } = getValoresComLog(set);
+                                    return (
+                                      <div key={set.id} className="bg-gray-50 p-2 rounded">
+                                        <p><strong>Série {set.setNumber}:</strong> {reps} reps / {carga} kg</p>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </li>
                             ))}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         </motion.div>
