@@ -41,7 +41,7 @@ export default function WorkoutPlanDetail() {
   }, [id]);
 
   const estimarCaloriasPorSerie = (reps = 12, peso = 70, met = 6.5) => {
-    const duracaoMin = (reps * 5) / 60; // 5s por repetição
+    const duracaoMin = (reps * 5) / 60;
     return Math.round(duracaoMin * met * peso * 0.0175);
   };
 
@@ -53,6 +53,13 @@ export default function WorkoutPlanDetail() {
       });
     });
     return total;
+  };
+
+  const caloriasPorGrupoMuscular = (muscleGroup: string) => {
+    if (!workout?.workoutDays) return 0;
+    return workout.workoutDays
+      .filter((d: any) => d.muscleGroup === muscleGroup)
+      .reduce((sum: number, d: any) => sum + caloriasPorDia(d), 0);
   };
 
   const caloriasTotais = useMemo(() => {
@@ -94,13 +101,17 @@ export default function WorkoutPlanDetail() {
             ) : (
               workout.workoutDays.map((day: any) => {
                 const kcal = caloriasPorDia(day);
+                const kcalGrupo = caloriasPorGrupoMuscular(day.muscleGroup);
                 return (
                   <div key={day.id} className="bg-gray-100 p-4 rounded mb-4 shadow">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="text-xl font-bold text-[#00B894]">
                         {day.dayOfWeek} - {day.muscleGroup}
                       </h3>
-                      <span className="text-sm text-gray-600">{formatKcal(kcal)}</span>
+                      <div className="text-right text-sm text-gray-600">
+                        <p>{formatKcal(kcal)}</p>
+                        <p className="italic">Grupo: {formatKcal(kcalGrupo)}</p>
+                      </div>
                     </div>
 
                     {day.exercises.length === 0 ? (
