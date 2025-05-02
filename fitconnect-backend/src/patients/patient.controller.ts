@@ -27,7 +27,6 @@ export class PatientController {
     @Param('workoutId') workoutId: string
     
   ) {
-    console.log('Entrou controller');
     return this.workoutService.getWorkoutByPatientAndId(
       Number(patientId),
       Number(workoutId)

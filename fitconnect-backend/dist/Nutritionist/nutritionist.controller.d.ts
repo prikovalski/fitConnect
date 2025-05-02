@@ -23,7 +23,7 @@ export declare class NutritionistController {
             title: string;
         } | null;
         id: number;
-        email: string;
         name: string;
+        email: string;
     }>;
 }

@@ -15,6 +15,7 @@ model User {
   role                 Role
   birthDate            DateTime              
   gender               Gender                
+  peso                 Float?
   createdAt            DateTime              @default(now())
   trainerPlans         WorkoutPlan[]         @relation("TrainerPlans")
   patientPlans         WorkoutPlan[]         @relation("PatientPlans")

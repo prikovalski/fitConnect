@@ -5,8 +5,8 @@ export declare class TrainerService {
     constructor(prisma: PrismaService);
     validateAccess(patientId: number, professionalId: number, role: Role): Promise<{
         id: number;
-        role: import(".prisma/client").$Enums.Role;
         patientId: number;
+        role: import(".prisma/client").$Enums.Role;
         professionalId: number;
         shareWorkoutWith: boolean;
         shareMealWith: boolean;
@@ -19,8 +19,8 @@ export declare class TrainerService {
     }>;
     getStudents(trainerId: number): Promise<{
         id: number;
-        email: string;
         name: string;
+        email: string;
     }[]>;
     getStudentWorkouts(studentId: number, trainerId: number): Promise<{
         id: number;

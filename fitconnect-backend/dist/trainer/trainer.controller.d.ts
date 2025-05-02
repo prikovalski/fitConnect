@@ -22,8 +22,8 @@ export declare class TrainerController {
         studentName: string;
         assessments: {
             id: number;
-            method: string;
             date: Date;
+            method: string;
             nextAssessment: Date | null;
         }[];
     }>;

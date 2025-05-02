@@ -27,7 +27,6 @@ let PatientController = class PatientController {
         return this.patientService.getPatientWorkouts(Number(id));
     }
     async getWorkoutDetailByPatient(patientId, workoutId) {
-        console.log('Entrou controller');
         return this.workoutService.getWorkoutByPatientAndId(Number(patientId), Number(workoutId));
     }
 };

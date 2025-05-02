@@ -156,13 +156,17 @@ let WorkoutService = class WorkoutService {
                     }
                 },
                 patient: {
-                    select: { name: true }
+                    select: {
+                        id: true,
+                        name: true,
+                        peso: true
+                    }
                 }
             }
         });
         if (!workout)
             throw new common_1.NotFoundException('Treino não encontrado.');
-        return Object.assign(Object.assign({}, workout), { patientName: workout.patient.name });
+        return Object.assign(Object.assign({}, workout), { patientName: workout.patient.name, patientPeso: workout.patient.peso });
     }
 };
 exports.WorkoutService = WorkoutService;

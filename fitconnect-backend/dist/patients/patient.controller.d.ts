@@ -7,8 +7,11 @@ export declare class PatientController {
     getPatientWorkouts(id: string): Promise<import("./patient.types").PatientWithActiveWorkouts>;
     getWorkoutDetailByPatient(patientId: string, workoutId: string): Promise<{
         patientName: string;
+        patientPeso: number | null;
         patient: {
+            id: number;
             name: string;
+            peso: number | null;
         };
         workoutDays: ({
             exercises: ({

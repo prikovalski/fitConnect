@@ -195,7 +195,10 @@ export class WorkoutService {
           }
         },
         patient: {
-          select: { name: true }
+          select: { 
+            id: true,
+            name: true,
+            peso: true }
         }
       }
     });
@@ -204,7 +207,8 @@ export class WorkoutService {
   
     return {
       ...workout,
-      patientName: workout.patient.name
+      patientName: workout.patient.name,
+      patientPeso: workout.patient.peso
     };
   }
   

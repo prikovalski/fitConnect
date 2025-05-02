@@ -98,8 +98,11 @@ export declare class WorkoutService {
     }>;
     getWorkoutByPatientAndId(patientId: number, workoutId: number): Promise<{
         patientName: string;
+        patientPeso: number | null;
         patient: {
+            id: number;
             name: string;
+            peso: number | null;
         };
         workoutDays: ({
             exercises: ({

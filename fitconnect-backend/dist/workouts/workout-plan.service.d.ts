@@ -8,12 +8,12 @@ export declare class WorkoutPlanService {
         };
     } & {
         id: number;
-        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
+        createdAt: Date;
         trainerId: number;
         patientId: number;
     })[]>;

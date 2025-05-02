@@ -42,24 +42,29 @@ export default function WorkoutDetailPage() {
   }, [router.isReady, workoutId, id]);
 
   const calcularCalorias = (peso: number, reps: number, carga: number): number => {
-    if (peso <= 0 || reps <= 0 || carga <= 0) return 0;
     return carga * 0.1 * reps;
   };
 
   const caloriasTotais = useMemo(() => {
-    if (!workout?.peso || !workout?.workoutDays) return 0;
+    if (!workout || !workout.workoutDays || !Array.isArray(workout.workoutDays)) return 0;
 
     let total = 0;
+
     workout.workoutDays.forEach((day: any) => {
+      if (!day.exercises || !Array.isArray(day.exercises)) return;
+
       day.exercises.forEach((ex: any) => {
+        if (!ex.sets || !Array.isArray(ex.sets)) return;
+
         ex.sets.forEach((set: any) => {
-          total += calcularCalorias(workout.peso, set.targetReps, set.targetLoad);
+          total += calcularCalorias(workout.peso || 0, set.targetReps || 0, set.targetLoad || 0);
         });
       });
     });
 
     return total;
   }, [workout]);
+
 
   if (loading) return <p className="text-center mt-10">Carregando plano...</p>;
   if (!workout) return <p className="text-center mt-10">Plano de treino não encontrado.</p>;
@@ -84,7 +89,7 @@ export default function WorkoutDetailPage() {
 
           <div className="mb-6 bg-[#E0F7F4] p-4 rounded shadow">
             <p><strong>Descrição:</strong> {workout.description}</p>
-            <p><strong>Peso do Paciente:</strong> {workout.peso} kg</p>
+            <p><strong>Peso do Paciente:</strong> {workout.patientPeso} kg</p>
             <p><strong>Validade:</strong> {new Date(workout.validFrom).toLocaleDateString()} até {new Date(workout.validUntil).toLocaleDateString()}</p>
             <p><strong>Estimativa Calórica:</strong> {caloriasTotais.toFixed(0)} kcal</p>
           </div>
