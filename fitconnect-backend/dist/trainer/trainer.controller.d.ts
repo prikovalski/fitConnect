@@ -10,8 +10,8 @@ export declare class TrainerController {
     }>;
     getStudents(req: any): Promise<{
         id: number;
-        email: string;
         name: string;
+        email: string;
     }[]>;
     getStudentWorkouts(id: string, req: any): Promise<{
         id: number;
@@ -22,8 +22,8 @@ export declare class TrainerController {
         studentName: string;
         assessments: {
             id: number;
-            date: Date;
             method: string;
+            date: Date;
             nextAssessment: Date | null;
         }[];
     }>;

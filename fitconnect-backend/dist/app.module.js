@@ -23,12 +23,14 @@ const workout_plan_module_1 = require("./workouts/workout-plan.module");
 const nutritionist_module_1 = require("./nutritionist/nutritionist.module");
 const meal_module_1 = require("./mealplans/meal.module");
 const trainer_module_1 = require("./trainer/trainer.module");
+const patient_module_1 = require("./patients/patient.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            patient_module_1.PatientModule,
             trainer_module_1.TrainerModule,
             meal_module_1.MealModule,
             nutritionist_module_1.NutritionistModule,

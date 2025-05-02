@@ -177,4 +177,35 @@ export class WorkoutService {
       },
     });
   }
+
+  async getWorkoutByPatientAndId(patientId: number, workoutId: number) {
+    const workout = await this.prisma.workoutPlan.findFirst({
+      where: {
+        id: workoutId,
+        patientId: patientId,
+      },
+      include: {
+        workoutDays: {
+          include: {
+            exercises: {
+              include: {
+                sets: true
+              }
+            }
+          }
+        },
+        patient: {
+          select: { name: true }
+        }
+      }
+    });
+  
+    if (!workout) throw new NotFoundException('Treino não encontrado.');
+  
+    return {
+      ...workout,
+      patientName: workout.patient.name
+    };
+  }
+  
 }

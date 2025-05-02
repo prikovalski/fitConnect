@@ -148,18 +148,20 @@ export default function MealPlanDetail() {
           ))}
 
           {/* BOTÃO DE EDIÇÃO */}
-          <button
-            onClick={() => router.push(`/nutritionist/patient/${id}/mealplans/${planId}/edit`)}
-            className="mt-6 bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition"
-          >
-            ✏️ Editar Plano
-          </button>
-          <button
-            onClick={generatePDF}
-            className="mt-4 bg-[#00B894] text-white px-4 py-2 rounded hover:bg-[#009f84] transition"
-          >
-            📄 Gerar PDF do Plano
-          </button>
+          <div className="flex flex-wrap gap-4 mt-6">
+            <button
+              onClick={() => router.push(`/nutritionist/patient/${id}/mealplans/${planId}/edit`)}
+              className="bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition"
+            >
+              ✏️ Editar Plano
+            </button>
+            <button
+              onClick={generatePDF}
+              className="bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition"
+            >
+              📄 Gerar PDF do Plano
+            </button>
+          </div>
         </motion.div>
       </div>
       <div id="pdf-content" className="hidden" style={{ width: '800px', padding: '20px', backgroundColor: '#fff' }}>

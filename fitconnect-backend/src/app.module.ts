@@ -14,9 +14,11 @@ import { WorkoutPlanModule } from './workouts/workout-plan.module';
 import { NutritionistModule } from 'nutritionist/nutritionist.module';
 import { MealModule } from 'mealplans/meal.module'; 
 import { TrainerModule } from 'trainer/trainer.module';
+import { PatientModule } from 'patients/patient.module';
 
 @Module({
   imports: [
+    PatientModule,
     TrainerModule,
     MealModule,
     NutritionistModule,

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 import NavbarTrainer from '../../../components/NavbarTrainer';
 
 export default function WorkoutPlanForm() {
+  const router = useRouter();
   const [students, setStudents] = useState<any[]>([]);
   const [plan, setPlan] = useState({
     title: '',
@@ -110,7 +112,13 @@ export default function WorkoutPlanForm() {
       }),
     });
     if (res.ok) {
-      alert('Plano salvo com sucesso!');
+      const createdWorkout = await res.json(); // pegar o plano criado
+      const workoutId = createdWorkout.id;
+      if (workoutId) {
+        router.push(`/trainer/workouts/${workoutId}`); // redireciona para a página do treino
+      } else {
+        alert('Plano salvo, mas ID não encontrado para redirecionar.');
+      }
     } else {
       alert('Erro ao salvar plano.');
     }

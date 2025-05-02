@@ -11,7 +11,7 @@ export default function Nutrition() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId'); // deve ser salvo no login
+    const userId = localStorage.getItem('userId'); 
 
     if (!token || !userId) return;
 

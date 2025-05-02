@@ -27,6 +27,7 @@ let WorkoutController = class WorkoutController {
         return this.workoutService.getWorkoutsByPatient(Number(patientId));
     }
     getOne(id) {
+        console.log('Entrou controller');
         return this.workoutService.getWorkoutById(Number(id));
     }
     getExercises(id) {

@@ -139,6 +139,31 @@ let WorkoutService = class WorkoutService {
             },
         });
     }
+    async getWorkoutByPatientAndId(patientId, workoutId) {
+        const workout = await this.prisma.workoutPlan.findFirst({
+            where: {
+                id: workoutId,
+                patientId: patientId,
+            },
+            include: {
+                workoutDays: {
+                    include: {
+                        exercises: {
+                            include: {
+                                sets: true
+                            }
+                        }
+                    }
+                },
+                patient: {
+                    select: { name: true }
+                }
+            }
+        });
+        if (!workout)
+            throw new common_1.NotFoundException('Treino não encontrado.');
+        return Object.assign(Object.assign({}, workout), { patientName: workout.patient.name });
+    }
 };
 exports.WorkoutService = WorkoutService;
 exports.WorkoutService = WorkoutService = __decorate([

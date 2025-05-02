@@ -6,18 +6,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WorkoutModule = void 0;
+exports.PatientModule = void 0;
 const common_1 = require("@nestjs/common");
-const workout_service_1 = require("./workout.service");
-const workout_controller_1 = require("./workout.controller");
-let WorkoutModule = class WorkoutModule {
+const patient_controller_1 = require("./patient.controller");
+const patient_service_1 = require("./patient.service");
+const prisma_service_1 = require("../prisma.service");
+const workout_module_1 = require("../workouts/workout.module");
+let PatientModule = class PatientModule {
 };
-exports.WorkoutModule = WorkoutModule;
-exports.WorkoutModule = WorkoutModule = __decorate([
+exports.PatientModule = PatientModule;
+exports.PatientModule = PatientModule = __decorate([
     (0, common_1.Module)({
-        controllers: [workout_controller_1.WorkoutController],
-        providers: [workout_service_1.WorkoutService],
-        exports: [workout_service_1.WorkoutService],
+        imports: [workout_module_1.WorkoutModule],
+        controllers: [patient_controller_1.PatientController],
+        providers: [patient_service_1.PatientService, prisma_service_1.PrismaService],
     })
-], WorkoutModule);
-//# sourceMappingURL=workout.module.js.map
+], PatientModule);
+//# sourceMappingURL=patient.module.js.map

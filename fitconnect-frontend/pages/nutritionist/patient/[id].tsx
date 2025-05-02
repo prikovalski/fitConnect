@@ -44,47 +44,57 @@ export default function PatientDetail() {
           </div>
 
           {patient ? (
-            <>
-              <p className="text-gray-700 mb-2"><strong>Nome:</strong> {patient.name}</p>
-              <p className="text-gray-700 mb-6"><strong>Email:</strong> {patient.email}</p>
+          <>
+            <p className="text-gray-700 mb-2"><strong>Nome:</strong> {patient.name}</p>
+            <p className="text-gray-700 mb-6"><strong>Email:</strong> {patient.email}</p>
 
-              <div className="mb-4">
-                <h2 className="font-semibold text-[#00B894] mb-2 flex items-center">
-                  <Salad size={20} className="mr-2" /> Última Dieta
-                </h2>
-                {patient.latestMealPlan ? (
-                  <p className="text-gray-700">{patient.latestMealPlan.title}</p>
-                ) : (
-                  <p className="text-sm text-gray-500 italic">Nenhuma dieta cadastrada.</p>
-                )}
-              </div>
+            <div className="mb-4">
+              <h2 className="font-semibold text-[#00B894] mb-2 flex items-center">
+                <Salad size={20} className="mr-2" /> Última Dieta
+              </h2>
+              {patient.latestMealPlan ? (
+                <p className="text-gray-700">{patient.latestMealPlan.title}</p>
+              ) : (
+                <p className="text-sm text-gray-500 italic">Nenhuma dieta cadastrada.</p>
+              )}
+            </div>
 
-              <div className="mb-6">
-                <h2 className="font-semibold text-[#00B894] mb-2 flex items-center">
-                  <Dumbbell size={20} className="mr-2" /> Plano de Treino Ativo
-                </h2>
-                {patient.latestWorkout ? (
-                  <p className="text-gray-700">{patient.latestWorkout.title}</p>
-                ) : (
-                  <p className="text-sm text-gray-500 italic">Sem treino compartilhado.</p>
-                )}
-              </div>
+            <div className="mb-6">
+              <h2 className="font-semibold text-[#00B894] mb-2 flex items-center">
+                <Dumbbell size={20} className="mr-2" /> Plano de Treino Ativo
+              </h2>
+              {patient.latestWorkout ? (
+                <p className="text-gray-700">{patient.latestWorkout.title}</p>
+              ) : (
+                <p className="text-sm text-gray-500 italic">Sem treino compartilhado.</p>
+              )}
+            </div>
 
-              <button
-                onClick={handleAddMeal}
-                className="flex items-center justify-center bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition w-full"
-              >
-                <PlusCircle className="mr-2" size={20} /> Cadastrar Nova Dieta
-              </button>
-              <button
-                onClick={() => router.push(`/nutritionist/patient/${id}/mealplans`)}
-                className="flex items-center justify-center bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition w-full mt-4"
-              >📄 Ver Planos Alimentares Anteriores
-              </button>
-            </>
-          ) : (
-            <p className="text-gray-600">Carregando dados do paciente...</p>
-          )}
+            <button
+              onClick={handleAddMeal}
+              className="flex items-center justify-center bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition w-full"
+            >
+              <PlusCircle className="mr-2" size={20} /> Cadastrar Nova Dieta
+            </button>
+            
+            <button
+              onClick={() => router.push(`/nutritionist/patient/${id}/mealplans`)}
+              className="flex items-center justify-center bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition w-full mt-4"
+            >
+              📄 Ver Planos Alimentares Anteriores
+            </button>
+
+            <button
+              onClick={() => router.push(`/nutritionist/patient/${id}/workouts`)}
+              className="flex items-center justify-center bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84] transition w-full mt-4"
+            >
+              🏋️ Ver Treinos Ativos
+            </button>
+          </>
+        ) : (
+          <p className="text-gray-600">Carregando dados do paciente...</p>
+        )}
+
         </motion.div>
       </div>
     </PrivateRoute>

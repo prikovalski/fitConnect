@@ -39,6 +39,7 @@ model WorkoutPlan {
   trainerId   Int
   patient     User         @relation("PatientPlans", fields: [patientId], references: [id])
   patientId   Int
+
   workoutDays WorkoutDay[]
 }
 

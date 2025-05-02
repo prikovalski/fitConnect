@@ -27,7 +27,7 @@ export class WorkoutController {
       }[];
     }[];
   }) {
-    return this.workoutService.createWorkout(body);
+    return this.workoutService.createWorkout(body); 
   }
 
   @Get('plans')
@@ -37,6 +37,7 @@ export class WorkoutController {
 
   @Get(':id')
   getOne(@Param('id') id: string) {
+    console.log('Entrou controller')
     return this.workoutService.getWorkoutById(Number(id));
   }
 

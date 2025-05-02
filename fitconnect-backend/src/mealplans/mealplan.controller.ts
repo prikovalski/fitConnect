@@ -36,7 +36,7 @@ export class MealPlanController {
   }
 
   @Roles('PATIENT', 'NUTRITIONIST')
-  @Get(':id')
+  @Get('by-id/:id')
   getOne(@Param('id') id: string) {
     return this.mealPlanService.getMealPlanById(Number(id));
   }
