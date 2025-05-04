@@ -16,14 +16,34 @@ export declare class TrainerController {
     getStudentWorkouts(id: string, req: any): Promise<{
         id: number;
         title: string;
+        description: string;
+        validFrom: Date;
         validUntil: Date;
-    }[]>;
+        isActive: boolean;
+        patientName: string;
+        patientPeso: number | null;
+        workoutDays: {
+            id: number;
+            dayOfWeek: string;
+            muscleGroup: string;
+            exercises: {
+                id: number;
+                name: string;
+                sets: {
+                    id: number;
+                    setNumber: number;
+                    targetReps: number;
+                    targetLoad: number;
+                }[];
+            }[];
+        }[];
+    }>;
     getStudentAssessments(id: string, req: any): Promise<{
         studentName: string;
         assessments: {
             id: number;
-            date: Date;
             method: string;
+            date: Date;
             nextAssessment: Date | null;
         }[];
     }>;
@@ -56,25 +76,6 @@ export declare class TrainerController {
     getWorkoutPlanById(id: string, req: any): Promise<{
         id: number;
         title: string;
-        description: string;
-        validFrom: Date;
         validUntil: Date;
-        isActive: boolean;
-        patientName: string;
-        workoutDays: {
-            id: number;
-            dayOfWeek: string;
-            muscleGroup: string;
-            exercises: {
-                id: number;
-                name: string;
-                sets: {
-                    id: number;
-                    setNumber: number;
-                    targetReps: number;
-                    targetLoad: number;
-                }[];
-            }[];
-        }[];
-    }>;
+    }[]>;
 }

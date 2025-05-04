@@ -30,7 +30,10 @@ let TrainerController = class TrainerController {
         return this.trainerService.getStudents(trainerId);
     }
     async getStudentWorkouts(id, req) {
+        console.log('aqui');
         const trainerId = req.user.id;
+        console.log('paramId: ', id);
+        console.log('trainerId userId: ', trainerId);
         return this.trainerService.getStudentWorkouts(Number(id), trainerId);
     }
     async getStudentAssessments(id, req) {
@@ -54,6 +57,8 @@ let TrainerController = class TrainerController {
     }
     async getWorkoutPlanById(id, req) {
         const trainerId = req.user.id;
+        console.log('paramId: ', id);
+        console.log('trainerId userId: ', trainerId);
         return this.trainerService.getWorkoutPlanById(Number(id), trainerId);
     }
 };

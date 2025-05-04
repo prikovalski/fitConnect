@@ -14,7 +14,6 @@ export class PatientService {
         name: true,
       },
     });
-    console.log('Patient: ',patient )
 
     if (!patient) {
       throw new NotFoundException('Paciente não encontrado');
@@ -34,7 +33,6 @@ export class PatientService {
         },
       },
     });
-    console.log('WorkoutPlans: ',workoutPlans)
     return {
       id: patient.id,       
       name: patient.name,

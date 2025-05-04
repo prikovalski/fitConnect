@@ -25,7 +25,10 @@ export class TrainerController {
   @Roles('TRAINER')
   @Get('students/:id/workouts')
   async getStudentWorkouts(@Param('id') id: string, @Req() req: any) {
+    console.log('aqui')
     const trainerId = req.user.id;
+    console.log('paramId: ', id)
+    console.log('trainerId userId: ',trainerId)
     return this.trainerService.getStudentWorkouts(Number(id), trainerId);
   }
 
@@ -67,6 +70,8 @@ export class TrainerController {
   @Get('workouts/:id')
   async getWorkoutPlanById(@Param('id') id: string, @Req() req: any) {
     const trainerId = req.user.id;
+    console.log('paramId: ', id)
+    console.log('trainerId userId: ',trainerId)
     return this.trainerService.getWorkoutPlanById(Number(id), trainerId);
   }
 

@@ -37,7 +37,6 @@ export class WorkoutController {
 
   @Get(':id')
   getOne(@Param('id') id: string) {
-    console.log('Entrou controller')
     return this.workoutService.getWorkoutById(Number(id));
   }
 

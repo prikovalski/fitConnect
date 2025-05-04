@@ -17,7 +17,6 @@ export default function AssessmentDetail() {
       });
       const data = await res.json();
       setAssessment(data);
-      console.log("Assessment: ", data)
     };
     fetchAssessment();
   }, [id]);

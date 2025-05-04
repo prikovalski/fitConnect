@@ -19,28 +19,28 @@ export declare class PatientController {
                     logs: {
                         id: number;
                         date: Date;
+                        workoutSetId: number;
                         actualReps: number;
                         actualLoad: number;
-                        workoutSetId: number;
                     }[];
                 } & {
                     id: number;
+                    exerciseId: number;
                     setNumber: number;
                     targetReps: number;
                     targetLoad: number;
-                    exerciseId: number;
                 })[];
             } & {
                 id: number;
                 name: string;
-                order: number;
                 workoutDayId: number;
+                order: number;
             })[];
         } & {
             id: number;
+            workoutPlanId: number;
             dayOfWeek: string;
             muscleGroup: string;
-            workoutPlanId: number;
         })[];
         id: number;
         title: string;

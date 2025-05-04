@@ -6,8 +6,8 @@ export declare class TrainerService {
     validateAccess(patientId: number, professionalId: number, role: Role): Promise<{
         id: number;
         patientId: number;
-        role: import(".prisma/client").$Enums.Role;
         professionalId: number;
+        role: import(".prisma/client").$Enums.Role;
         shareWorkoutWith: boolean;
         shareMealWith: boolean;
     }>;
@@ -25,14 +25,34 @@ export declare class TrainerService {
     getStudentWorkouts(studentId: number, trainerId: number): Promise<{
         id: number;
         title: string;
+        description: string;
+        validFrom: Date;
         validUntil: Date;
-    }[]>;
+        isActive: boolean;
+        patientName: string;
+        patientPeso: number | null;
+        workoutDays: {
+            id: number;
+            dayOfWeek: string;
+            muscleGroup: string;
+            exercises: {
+                id: number;
+                name: string;
+                sets: {
+                    id: number;
+                    setNumber: number;
+                    targetReps: number;
+                    targetLoad: number;
+                }[];
+            }[];
+        }[];
+    }>;
     getStudentAssessments(studentId: number, trainerId: number): Promise<{
         studentName: string;
         assessments: {
             id: number;
-            date: Date;
             method: string;
+            date: Date;
             nextAssessment: Date | null;
         }[];
     }>;
@@ -62,28 +82,17 @@ export declare class TrainerService {
         isActive: boolean;
         patientName: string;
     }[]>;
-    getWorkoutPlanById(id: number, trainerId: number): Promise<{
+    getWorkoutPlanById(patientId: number, trainerId: number): Promise<{
         id: number;
+        title: string;
+        validUntil: Date;
+    }[]>;
+    getWorkoutsByStudent(studentId: number): Promise<{
+        id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
-        isActive: boolean;
-        patientName: string;
-        workoutDays: {
-            id: number;
-            dayOfWeek: string;
-            muscleGroup: string;
-            exercises: {
-                id: number;
-                name: string;
-                sets: {
-                    id: number;
-                    setNumber: number;
-                    targetReps: number;
-                    targetLoad: number;
-                }[];
-            }[];
-        }[];
-    }>;
+    }[]>;
 }
