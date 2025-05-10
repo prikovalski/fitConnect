@@ -9,8 +9,8 @@ export declare class TrainerController {
     }>;
     getStudents(req: any): Promise<{
         id: number;
-        email: string;
         name: string;
+        email: string;
         birthDate: Date;
         gender: import(".prisma/client").$Enums.Gender;
         peso: number | null;
@@ -28,32 +28,32 @@ export declare class TrainerController {
         }[];
     }>;
     getStudentAssessments(studentId: string, req: any): Promise<{
-        createdById: number;
         id: number;
-        patientId: number;
-        method: string;
-        date: Date;
-        nextAssessment: Date | null;
         data: import("@prisma/client/runtime/library").JsonValue;
+        patientId: number;
+        date: Date;
+        method: string;
+        createdById: number;
+        nextAssessment: Date | null;
     }[]>;
     getUpcomingAssessments(req: any): Promise<{
-        createdById: number;
         id: number;
-        patientId: number;
-        method: string;
-        date: Date;
-        nextAssessment: Date | null;
         data: import("@prisma/client/runtime/library").JsonValue;
+        patientId: number;
+        date: Date;
+        method: string;
+        createdById: number;
+        nextAssessment: Date | null;
     }[]>;
     getTrainerWorkouts(req: any): Promise<{
-        trainerId: number;
-        isActive: boolean;
         id: number;
         createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
+        isActive: boolean;
+        trainerId: number;
         patientId: number;
     }[]>;
     getWorkoutPlanById(id: string, req: any): Promise<{

@@ -5,8 +5,8 @@ export declare class NutritionistService {
     constructor(prisma: PrismaService);
     validateAccess(patientId: number, professionalId: number, role: Role): Promise<{
         id: number;
-        patientId: number;
         role: import(".prisma/client").$Enums.Role;
+        patientId: number;
         professionalId: number;
         shareWorkoutWith: boolean;
         shareMealWith: boolean;

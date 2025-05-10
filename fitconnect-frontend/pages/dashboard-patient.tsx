@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
+import PatientProfileModal from '../components/PatientProfileModal';
 
 type DecodedToken = {
   id: number;
@@ -14,6 +15,7 @@ type DecodedToken = {
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<DecodedToken | null>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -21,12 +23,32 @@ export default function Dashboard() {
       try {
         const decoded = jwtDecode<DecodedToken>(token);
         setUser(decoded);
+
+        // Depois de setar o usuário, buscar se já tem perfil preenchido
+        checkPatientProfile();
       } catch (err) {
         localStorage.removeItem('token');
         router.push('/login');
       }
     }
   }, [router]);
+
+  const checkPatientProfile = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const res = await fetch('http://localhost:3333/patient-profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.status === 404) {
+        setShowProfileModal(true); // Exibe o modal se perfil não encontrado
+      }
+    } catch (error) {
+      console.error('Erro ao verificar perfil do paciente:', error);
+    }
+  };
 
   const handleLogout = () => {
     const confirmLogout = window.confirm('Deseja realmente sair da sua conta?');
@@ -79,9 +101,16 @@ export default function Dashboard() {
               Bem-vinda, {user?.name || user?.email} 👋
             </h2>
 
-            <p className="text-gray-600 mt-2">Aqui você verá seu treino do dia, plano alimentar e sua evolução.</p>
+            <p className="text-gray-600 mt-2">
+              Aqui você verá seu treino do dia, plano alimentar e sua evolução.
+            </p>
           </motion.div>
         </div>
+
+        {/* Modal de preenchimento de perfil */}
+        {showProfileModal && (
+          <PatientProfileModal onClose={() => setShowProfileModal(false)} />
+        )}
       </div>
     </PrivateRoute>
   );

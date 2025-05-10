@@ -1,0 +1,62 @@
+import { PatientProfileService } from './patient-profile.service';
+export declare class PatientProfileController {
+    private readonly patientProfileService;
+    constructor(patientProfileService: PatientProfileService);
+    create(req: any, body: any): Promise<{
+        id: number;
+        userId: number;
+        city: string;
+        goal: string;
+        chronicDisease: string | null;
+        medicalRestriction: string | null;
+        foodAllergyOrIntolerance: string | null;
+        foodsToAvoid: string | null;
+        physicalActivity: boolean;
+        activityDescription: string | null;
+        mealTimeConsistency: boolean;
+        essentialFoods: string | null;
+        neckCircumference: number | null;
+        waistCircumference: number | null;
+        hipCircumference: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    getProfile(req: any): Promise<{
+        id: number;
+        userId: number;
+        city: string;
+        goal: string;
+        chronicDisease: string | null;
+        medicalRestriction: string | null;
+        foodAllergyOrIntolerance: string | null;
+        foodsToAvoid: string | null;
+        physicalActivity: boolean;
+        activityDescription: string | null;
+        mealTimeConsistency: boolean;
+        essentialFoods: string | null;
+        neckCircumference: number | null;
+        waistCircumference: number | null;
+        hipCircumference: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
+    updateProfile(req: any, body: any): Promise<{
+        id: number;
+        userId: number;
+        city: string;
+        goal: string;
+        chronicDisease: string | null;
+        medicalRestriction: string | null;
+        foodAllergyOrIntolerance: string | null;
+        foodsToAvoid: string | null;
+        physicalActivity: boolean;
+        activityDescription: string | null;
+        mealTimeConsistency: boolean;
+        essentialFoods: string | null;
+        neckCircumference: number | null;
+        waistCircumference: number | null;
+        hipCircumference: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+}

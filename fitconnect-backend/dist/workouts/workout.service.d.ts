@@ -33,34 +33,34 @@ export declare class WorkoutService {
         workoutDays: WorkoutDayInput[];
     }): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     }>;
     getWorkoutsByPatient(patientId: number): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     }[]>;
     getWorkoutById(id: number): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     } | null>;
@@ -87,12 +87,12 @@ export declare class WorkoutService {
     })[]>;
     updateWorkout(id: number, data: UpdateWorkoutInput): Promise<{
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     }>;
@@ -134,12 +134,12 @@ export declare class WorkoutService {
             workoutPlanId: number;
         })[];
         id: number;
+        createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
-        createdAt: Date;
         trainerId: number;
         patientId: number;
     }>;

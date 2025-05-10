@@ -9,8 +9,8 @@ export declare class TrainerService {
     }>;
     getStudents(trainerId: number): Promise<{
         id: number;
-        email: string;
         name: string;
+        email: string;
         birthDate: Date;
         gender: import(".prisma/client").$Enums.Gender;
         peso: number | null;
@@ -28,31 +28,31 @@ export declare class TrainerService {
         }[];
     }>;
     getStudentAssessments(patientId: number, trainerId: number): Promise<{
-        createdById: number;
         id: number;
-        patientId: number;
-        method: string;
-        date: Date;
-        nextAssessment: Date | null;
         data: import("@prisma/client/runtime/library").JsonValue;
+        patientId: number;
+        date: Date;
+        method: string;
+        createdById: number;
+        nextAssessment: Date | null;
     }[]>;
     getUpcomingAssessments(trainerId: number): Promise<{
-        createdById: number;
         id: number;
-        patientId: number;
-        method: string;
-        date: Date;
-        nextAssessment: Date | null;
         data: import("@prisma/client/runtime/library").JsonValue;
+        patientId: number;
+        date: Date;
+        method: string;
+        createdById: number;
+        nextAssessment: Date | null;
     }[]>;
     getTrainerAssessments(trainerId: number): Promise<{
-        createdById: number;
         id: number;
-        patientId: number;
-        method: string;
-        date: Date;
-        nextAssessment: Date | null;
         data: import("@prisma/client/runtime/library").JsonValue;
+        patientId: number;
+        date: Date;
+        method: string;
+        createdById: number;
+        nextAssessment: Date | null;
     }[]>;
     getPatientBasicInfo(patientId: number): Promise<{
         name: string;
@@ -60,14 +60,14 @@ export declare class TrainerService {
         age: number;
     }>;
     getTrainerWorkouts(trainerId: number): Promise<{
-        trainerId: number;
-        isActive: boolean;
         id: number;
         createdAt: Date;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
+        isActive: boolean;
+        trainerId: number;
         patientId: number;
     }[]>;
     getWorkoutPlanById(id: number, trainerId: number): Promise<{

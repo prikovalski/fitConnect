@@ -1,0 +1,62 @@
+import { PrismaService } from '../prisma.service';
+export declare class PatientProfileService {
+    private readonly prisma;
+    constructor(prisma: PrismaService);
+    create(userId: number, data: any): Promise<{
+        id: number;
+        userId: number;
+        city: string;
+        goal: string;
+        chronicDisease: string | null;
+        medicalRestriction: string | null;
+        foodAllergyOrIntolerance: string | null;
+        foodsToAvoid: string | null;
+        physicalActivity: boolean;
+        activityDescription: string | null;
+        mealTimeConsistency: boolean;
+        essentialFoods: string | null;
+        neckCircumference: number | null;
+        waistCircumference: number | null;
+        hipCircumference: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    getByUserId(userId: number): Promise<{
+        id: number;
+        userId: number;
+        city: string;
+        goal: string;
+        chronicDisease: string | null;
+        medicalRestriction: string | null;
+        foodAllergyOrIntolerance: string | null;
+        foodsToAvoid: string | null;
+        physicalActivity: boolean;
+        activityDescription: string | null;
+        mealTimeConsistency: boolean;
+        essentialFoods: string | null;
+        neckCircumference: number | null;
+        waistCircumference: number | null;
+        hipCircumference: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
+    update(userId: number, data: any): Promise<{
+        id: number;
+        userId: number;
+        city: string;
+        goal: string;
+        chronicDisease: string | null;
+        medicalRestriction: string | null;
+        foodAllergyOrIntolerance: string | null;
+        foodsToAvoid: string | null;
+        physicalActivity: boolean;
+        activityDescription: string | null;
+        mealTimeConsistency: boolean;
+        essentialFoods: string | null;
+        neckCircumference: number | null;
+        waistCircumference: number | null;
+        hipCircumference: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+}
