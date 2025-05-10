@@ -35,8 +35,8 @@ export class WorkoutService {
     description: string;
     validFrom: string;
     validUntil: string;
-    trainerId: number;
     patientId: number;
+    trainerId: number; // <- adicionamos aqui
     workoutDays: WorkoutDayInput[];
   }) {
     return this.prisma.workoutPlan.create({
@@ -45,7 +45,7 @@ export class WorkoutService {
         description: data.description,
         validFrom: new Date(data.validFrom),
         validUntil: new Date(data.validUntil),
-        trainerId: data.trainerId,
+        trainerId: data.trainerId, // <- garantimos que é preenchido
         patientId: data.patientId,
         workoutDays: {
           create: data.workoutDays.map((day) => ({
@@ -69,6 +69,7 @@ export class WorkoutService {
       },
     });
   }
+  
 
   async getWorkoutsByPatient(patientId: number) {
     return this.prisma.workoutPlan.findMany({

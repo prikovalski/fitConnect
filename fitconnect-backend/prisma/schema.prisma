@@ -25,7 +25,30 @@ model User {
   mealPatientPlans     MealPlan[]            @relation("MealPatientPlans")
   patientDataSharing      DataSharing[]        @relation("PatientDataSharing")
   professionalDataSharing DataSharing[]        @relation("ProfessionalDataSharing")
+  patientProfile       PatientProfile?        
 }
+
+model PatientProfile {
+  id                         Int      @id @default(autoincrement())
+  user                       User     @relation(fields: [userId], references: [id])
+  userId                     Int      @unique
+  city                       String
+  goal                       String
+  chronicDisease             String?
+  medicalRestriction         String?
+  foodAllergyOrIntolerance   String?
+  foodsToAvoid               String?
+  physicalActivity           Boolean
+  activityDescription        String?
+  mealTimeConsistency        Boolean
+  essentialFoods             String?
+  neckCircumference          Float?
+  waistCircumference         Float?
+  hipCircumference           Float?
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
+
 
 
 model WorkoutPlan {

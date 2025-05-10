@@ -4,16 +4,59 @@ export declare class TrainerController {
     constructor(trainerService: TrainerService);
     getDashboardSummary(req: any): Promise<{
         studentsCount: number;
-        activeWorkouts: number;
-        expiringWorkouts: number;
         upcomingAssessments: number;
+        expiringWorkouts: number;
     }>;
     getStudents(req: any): Promise<{
         id: number;
-        name: string;
         email: string;
+        name: string;
+        birthDate: Date;
+        gender: import(".prisma/client").$Enums.Gender;
+        peso: number | null;
     }[]>;
     getStudentWorkouts(id: string, req: any): Promise<{
+        student: {
+            name: string;
+        };
+        workouts: {
+            id: number;
+            title: string;
+            description: string;
+            validFrom: Date;
+            validUntil: Date;
+        }[];
+    }>;
+    getStudentAssessments(studentId: string, req: any): Promise<{
+        createdById: number;
+        id: number;
+        patientId: number;
+        method: string;
+        date: Date;
+        nextAssessment: Date | null;
+        data: import("@prisma/client/runtime/library").JsonValue;
+    }[]>;
+    getUpcomingAssessments(req: any): Promise<{
+        createdById: number;
+        id: number;
+        patientId: number;
+        method: string;
+        date: Date;
+        nextAssessment: Date | null;
+        data: import("@prisma/client/runtime/library").JsonValue;
+    }[]>;
+    getTrainerWorkouts(req: any): Promise<{
+        trainerId: number;
+        isActive: boolean;
+        id: number;
+        createdAt: Date;
+        title: string;
+        description: string;
+        validFrom: Date;
+        validUntil: Date;
+        patientId: number;
+    }[]>;
+    getWorkoutPlanById(id: string, req: any): Promise<{
         id: number;
         title: string;
         description: string;
@@ -38,44 +81,9 @@ export declare class TrainerController {
             }[];
         }[];
     }>;
-    getStudentAssessments(id: string, req: any): Promise<{
-        studentName: string;
-        assessments: {
-            id: number;
-            method: string;
-            date: Date;
-            nextAssessment: Date | null;
-        }[];
-    }>;
-    getUpcomingAssessments(req: any): Promise<{
-        id: number;
-        method: string;
-        nextAssessment: Date | null;
-        patientName: string;
-    }[]>;
-    getAssessments(req: any): Promise<{
-        id: number;
-        method: string;
-        date: Date;
-        patientName: string;
-    }[]>;
-    getPatientBasicInfo(id: string): Promise<{
+    getStudentBasicInfo(studentId: string): Promise<{
         name: string;
         gender: import(".prisma/client").$Enums.Gender;
         age: number;
     }>;
-    getTrainerWorkouts(req: any): Promise<{
-        id: number;
-        title: string;
-        description: string;
-        validFrom: Date;
-        validUntil: Date;
-        isActive: boolean;
-        patientName: string;
-    }[]>;
-    getWorkoutPlanById(id: string, req: any): Promise<{
-        id: number;
-        title: string;
-        validUntil: Date;
-    }[]>;
 }

@@ -25,41 +25,32 @@ let TrainerController = class TrainerController {
         const trainerId = req.user.id;
         return this.trainerService.getDashboardSummary(trainerId);
     }
-    async getStudents(req) {
+    getStudents(req) {
         const trainerId = req.user.id;
         return this.trainerService.getStudents(trainerId);
     }
     async getStudentWorkouts(id, req) {
-        console.log('aqui');
         const trainerId = req.user.id;
-        console.log('paramId: ', id);
-        console.log('trainerId userId: ', trainerId);
         return this.trainerService.getStudentWorkouts(Number(id), trainerId);
     }
-    async getStudentAssessments(id, req) {
+    getStudentAssessments(studentId, req) {
         const trainerId = req.user.id;
-        return this.trainerService.getStudentAssessments(Number(id), trainerId);
+        return this.trainerService.getStudentAssessments(Number(studentId), trainerId);
     }
-    async getUpcomingAssessments(req) {
+    getUpcomingAssessments(req) {
         const trainerId = req.user.id;
         return this.trainerService.getUpcomingAssessments(trainerId);
     }
-    async getAssessments(req) {
-        const trainerId = req.user.id;
-        return this.trainerService.getTrainerAssessments(trainerId);
-    }
-    async getPatientBasicInfo(id) {
-        return this.trainerService.getPatientBasicInfo(Number(id));
-    }
-    async getTrainerWorkouts(req) {
+    getTrainerWorkouts(req) {
         const trainerId = req.user.id;
         return this.trainerService.getTrainerWorkouts(trainerId);
     }
-    async getWorkoutPlanById(id, req) {
+    getWorkoutPlanById(id, req) {
         const trainerId = req.user.id;
-        console.log('paramId: ', id);
-        console.log('trainerId userId: ', trainerId);
         return this.trainerService.getWorkoutPlanById(Number(id), trainerId);
+    }
+    getStudentBasicInfo(studentId) {
+        return this.trainerService.getPatientBasicInfo(Number(studentId));
     }
 };
 exports.TrainerController = TrainerController;
@@ -77,7 +68,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], TrainerController.prototype, "getStudents", null);
 __decorate([
     (0, roles_decorator_1.Roles)('TRAINER'),
@@ -90,12 +81,12 @@ __decorate([
 ], TrainerController.prototype, "getStudentWorkouts", null);
 __decorate([
     (0, roles_decorator_1.Roles)('TRAINER'),
-    (0, common_1.Get)('students/:id/assessments'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('students/:studentId/assessments'),
+    __param(0, (0, common_1.Param)('studentId')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], TrainerController.prototype, "getStudentAssessments", null);
 __decorate([
     (0, roles_decorator_1.Roles)('TRAINER'),
@@ -103,31 +94,15 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], TrainerController.prototype, "getUpcomingAssessments", null);
-__decorate([
-    (0, roles_decorator_1.Roles)('TRAINER'),
-    (0, common_1.Get)('assessments'),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], TrainerController.prototype, "getAssessments", null);
-__decorate([
-    (0, roles_decorator_1.Roles)('TRAINER'),
-    (0, common_1.Get)('students/:id/basic-info'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], TrainerController.prototype, "getPatientBasicInfo", null);
 __decorate([
     (0, roles_decorator_1.Roles)('TRAINER'),
     (0, common_1.Get)('workouts'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], TrainerController.prototype, "getTrainerWorkouts", null);
 __decorate([
     (0, roles_decorator_1.Roles)('TRAINER'),
@@ -136,11 +111,19 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], TrainerController.prototype, "getWorkoutPlanById", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('TRAINER'),
+    (0, common_1.Get)('students/:studentId/basic-info'),
+    __param(0, (0, common_1.Param)('studentId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TrainerController.prototype, "getStudentBasicInfo", null);
 exports.TrainerController = TrainerController = __decorate([
-    (0, common_1.Controller)('trainer'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Controller)('trainer'),
     __metadata("design:paramtypes", [trainer_service_1.TrainerService])
 ], TrainerController);
 //# sourceMappingURL=trainer.controller.js.map

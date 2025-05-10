@@ -20,8 +20,9 @@ let WorkoutController = class WorkoutController {
     constructor(workoutService) {
         this.workoutService = workoutService;
     }
-    create(body) {
-        return this.workoutService.createWorkout(body);
+    async createWorkout(body, req) {
+        const trainerId = req.user.id;
+        return this.workoutService.createWorkout(Object.assign(Object.assign({}, body), { trainerId }));
     }
     getByPatient(patientId) {
         return this.workoutService.getWorkoutsByPatient(Number(patientId));
@@ -40,10 +41,11 @@ exports.WorkoutController = WorkoutController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], WorkoutController.prototype, "create", null);
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], WorkoutController.prototype, "createWorkout", null);
 __decorate([
     (0, common_1.Get)('plans'),
     __param(0, (0, common_1.Query)('patientId')),

@@ -12,90 +12,172 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TrainerService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
-const date_fns_1 = require("date-fns");
 let TrainerService = class TrainerService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async validateAccess(patientId, professionalId, role) {
-        const sharing = await this.prisma.dataSharing.findFirst({
-            where: {
-                patientId,
-                professionalId,
-                role
-            }
-        });
-        if (!sharing) {
-            throw new common_1.ForbiddenException('Você não tem permissão para acessar os dados deste paciente.');
-        }
-        return sharing;
-    }
     async getDashboardSummary(trainerId) {
-        const students = await this.prisma.dataSharing.findMany({
+        const studentsCount = await this.prisma.user.count({
             where: {
-                professionalId: trainerId,
-                role: 'TRAINER',
-                shareWorkoutWith: true,
-            },
-            select: {
-                patientId: true,
+                professionalDataSharing: {
+                    some: {
+                        professionalId: trainerId,
+                        role: 'TRAINER',
+                        shareWorkoutWith: true,
+                    },
+                },
             },
         });
         const upcomingAssessments = await this.prisma.physicalAssessment.count({
             where: {
+                createdById: trainerId,
                 nextAssessment: {
                     gte: new Date(),
-                    lte: (0, date_fns_1.addDays)(new Date(), 30)
-                }
-            }
-        });
-        const studentIds = students.map(s => s.patientId);
-        const activeWorkouts = await this.prisma.workoutPlan.count({
-            where: {
-                trainerId,
-                isActive: true,
-                patientId: { in: studentIds },
+                },
             },
         });
         const expiringWorkouts = await this.prisma.workoutPlan.count({
             where: {
                 trainerId,
                 isActive: true,
-                validUntil: { lte: (0, date_fns_1.addDays)(new Date(), 7) },
-                patientId: { in: studentIds },
+                validUntil: {
+                    lte: new Date(new Date().setDate(new Date().getDate() + 7)),
+                },
             },
         });
         return {
-            studentsCount: studentIds.length,
-            activeWorkouts,
+            studentsCount,
+            upcomingAssessments,
             expiringWorkouts,
-            upcomingAssessments
         };
     }
     async getStudents(trainerId) {
-        const sharedPatients = await this.prisma.dataSharing.findMany({
+        const students = await this.prisma.user.findMany({
             where: {
-                professionalId: trainerId,
-                role: 'TRAINER',
-                shareWorkoutWith: true
+                patientPlans: {
+                    some: {
+                        trainerId: trainerId,
+                    },
+                },
             },
             select: {
-                patient: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true
-                    }
-                }
-            }
+                id: true,
+                name: true,
+                email: true,
+                gender: true,
+                birthDate: true,
+                peso: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
         });
-        return sharedPatients.map(s => s.patient);
+        return students;
     }
     async getStudentWorkouts(studentId, trainerId) {
-        await this.validateAccess(studentId, trainerId, 'TRAINER');
-        const plan = await this.prisma.workoutPlan.findFirst({
+        const student = await this.prisma.user.findUnique({
+            where: { id: studentId },
+            select: {
+                name: true,
+            },
+        });
+        if (!student) {
+            throw new common_1.NotFoundException('Aluno não encontrado');
+        }
+        const workouts = await this.prisma.workoutPlan.findMany({
             where: {
                 patientId: studentId,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                validFrom: true,
+                validUntil: true,
+            },
+        });
+        return {
+            student,
+            workouts,
+        };
+    }
+    async getStudentAssessments(patientId, trainerId) {
+        const assessments = await this.prisma.physicalAssessment.findMany({
+            where: {
+                patientId,
+                createdById: trainerId,
+            },
+            orderBy: {
+                date: 'desc',
+            },
+        });
+        return assessments;
+    }
+    async getUpcomingAssessments(trainerId) {
+        return this.prisma.physicalAssessment.findMany({
+            where: {
+                createdById: trainerId,
+                nextAssessment: {
+                    gte: new Date(),
+                },
+            },
+            orderBy: {
+                nextAssessment: 'asc',
+            },
+        });
+    }
+    async getTrainerAssessments(trainerId) {
+        return this.prisma.physicalAssessment.findMany({
+            where: {
+                createdById: trainerId,
+            },
+            orderBy: {
+                date: 'desc',
+            },
+        });
+    }
+    async getPatientBasicInfo(patientId) {
+        const patient = await this.prisma.user.findUnique({
+            where: { id: patientId },
+            select: {
+                name: true,
+                gender: true,
+                birthDate: true,
+            },
+        });
+        if (!patient) {
+            throw new common_1.NotFoundException('Paciente não encontrado');
+        }
+        const birthDate = new Date(patient.birthDate);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const hasHadBirthdayThisYear = today.getMonth() > birthDate.getMonth() ||
+            (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+        const finalAge = hasHadBirthdayThisYear ? age : age - 1;
+        return {
+            name: patient.name,
+            gender: patient.gender,
+            age: finalAge,
+        };
+    }
+    async getTrainerWorkouts(trainerId) {
+        return this.prisma.workoutPlan.findMany({
+            where: {
+                trainerId,
+                isActive: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    }
+    async getWorkoutPlanById(id, trainerId) {
+        const plan = await this.prisma.workoutPlan.findFirst({
+            where: {
+                id,
                 trainerId,
             },
             select: {
@@ -148,194 +230,6 @@ let TrainerService = class TrainerService {
             patientPeso: plan.patient.peso,
             workoutDays: plan.workoutDays,
         };
-    }
-    async getStudentAssessments(studentId, trainerId) {
-        await this.validateAccess(studentId, trainerId, 'TRAINER');
-        const student = await this.prisma.user.findUnique({
-            where: { id: studentId },
-            select: { name: true }
-        });
-        if (!student) {
-            throw new Error('Paciente não encontrado');
-        }
-        const assessments = await this.prisma.physicalAssessment.findMany({
-            where: { patientId: studentId },
-            select: {
-                id: true,
-                method: true,
-                date: true,
-                nextAssessment: true
-            },
-            orderBy: { date: 'desc' }
-        });
-        return {
-            studentName: student.name,
-            assessments
-        };
-    }
-    async getUpcomingAssessments(trainerId) {
-        const today = new Date();
-        const limitDate = (0, date_fns_1.addDays)(today, 30);
-        const sharedPatients = await this.prisma.dataSharing.findMany({
-            where: {
-                professionalId: trainerId,
-                role: 'TRAINER',
-                shareWorkoutWith: true
-            },
-            select: { patientId: true }
-        });
-        const patientIds = sharedPatients.map(p => p.patientId);
-        if (patientIds.length === 0)
-            return [];
-        const assessments = await this.prisma.physicalAssessment.findMany({
-            where: {
-                patientId: { in: patientIds },
-                nextAssessment: {
-                    gte: today,
-                    lte: limitDate
-                }
-            },
-            select: {
-                id: true,
-                method: true,
-                nextAssessment: true,
-                patient: {
-                    select: {
-                        name: true
-                    }
-                }
-            },
-            orderBy: { nextAssessment: 'asc' }
-        });
-        return assessments.map(a => ({
-            id: a.id,
-            method: a.method,
-            nextAssessment: a.nextAssessment,
-            patientName: a.patient.name
-        }));
-    }
-    async getTrainerAssessments(trainerId) {
-        const sharedPatients = await this.prisma.dataSharing.findMany({
-            where: {
-                professionalId: trainerId,
-                role: 'TRAINER',
-                shareWorkoutWith: true
-            },
-            select: {
-                patientId: true,
-                patient: {
-                    select: {
-                        name: true
-                    }
-                }
-            }
-        });
-        const patientIds = sharedPatients.map(p => p.patientId);
-        const assessments = await this.prisma.physicalAssessment.findMany({
-            where: {
-                patientId: { in: patientIds }
-            },
-            select: {
-                id: true,
-                method: true,
-                date: true,
-                patientId: true
-            },
-            orderBy: { date: 'desc' }
-        });
-        const result = assessments.map(a => {
-            const patientInfo = sharedPatients.find(p => p.patientId === a.patientId);
-            return {
-                id: a.id,
-                method: a.method,
-                date: a.date,
-                patientName: (patientInfo === null || patientInfo === void 0 ? void 0 : patientInfo.patient.name) || 'Paciente'
-            };
-        });
-        return result;
-    }
-    async getPatientBasicInfo(patientId) {
-        const patient = await this.prisma.user.findUnique({
-            where: { id: patientId },
-            select: {
-                id: true,
-                name: true,
-                birthDate: true,
-                gender: true
-            }
-        });
-        if (!patient)
-            throw new Error('Paciente não encontrado');
-        const today = new Date();
-        const birthDate = new Date(patient.birthDate);
-        const age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        const adjustedAge = m < 0 || (m === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
-        return {
-            name: patient.name,
-            gender: patient.gender,
-            age: adjustedAge
-        };
-    }
-    async getTrainerWorkouts(trainerId) {
-        const plans = await this.prisma.workoutPlan.findMany({
-            where: {
-                trainerId,
-                isActive: true,
-            },
-            select: {
-                id: true,
-                title: true,
-                description: true,
-                validFrom: true,
-                validUntil: true,
-                isActive: true,
-                patient: {
-                    select: {
-                        name: true,
-                    },
-                },
-            },
-            orderBy: {
-                createdAt: 'desc',
-            }
-        });
-        return plans.map(plan => {
-            var _a;
-            return ({
-                id: plan.id,
-                title: plan.title,
-                description: plan.description,
-                validFrom: plan.validFrom,
-                validUntil: plan.validUntil,
-                isActive: plan.isActive,
-                patientName: ((_a = plan.patient) === null || _a === void 0 ? void 0 : _a.name) || 'Paciente',
-            });
-        });
-    }
-    async getWorkoutPlanById(patientId, trainerId) {
-        return this.prisma.workoutPlan.findMany({
-            where: { patientId: patientId },
-            select: {
-                id: true,
-                title: true,
-                validUntil: true
-            }
-        });
-    }
-    async getWorkoutsByStudent(studentId) {
-        return this.prisma.workoutPlan.findMany({
-            where: { patientId: studentId },
-            orderBy: { createdAt: 'desc' },
-            select: {
-                id: true,
-                title: true,
-                description: true,
-                validFrom: true,
-                validUntil: true,
-                createdAt: true,
-            },
-        });
     }
 };
 exports.TrainerService = TrainerService;

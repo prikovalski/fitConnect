@@ -2,25 +2,7 @@ import { WorkoutService } from './workout.service';
 export declare class WorkoutController {
     private readonly workoutService;
     constructor(workoutService: WorkoutService);
-    create(body: {
-        title: string;
-        description: string;
-        trainerId: number;
-        patientId: number;
-        validFrom: string;
-        validUntil: string;
-        workoutDays: {
-            dayOfWeek: string;
-            muscleGroup: string;
-            exercises: {
-                name: string;
-                sets: {
-                    targetReps: number;
-                    targetLoad: number;
-                }[];
-            }[];
-        }[];
-    }): Promise<{
+    createWorkout(body: any, req: any): Promise<{
         id: number;
         title: string;
         description: string;

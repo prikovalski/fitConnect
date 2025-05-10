@@ -11,6 +11,7 @@ export default function StudentsPage() {
   useEffect(() => {
     const fetchStudents = async () => {
       const token = localStorage.getItem('token');
+      console.log('teste student.tsx')
       if (!token) return;
 
       try {

@@ -1,329 +1,263 @@
+// pages/trainer/workouts/new.tsx
+
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import NavbarTrainer from '../../../components/NavbarTrainer';
+import { motion } from 'framer-motion';
 
-export default function WorkoutPlanForm() {
+export default function NewWorkoutPlan() {
   const router = useRouter();
-  const [students, setStudents] = useState<any[]>([]);
-  const [plan, setPlan] = useState({
+  const { studentId } = router.query; // <- pega o aluno
+  const [formData, setFormData] = useState<any>({
     title: '',
     description: '',
     validFrom: '',
     validUntil: '',
-    patientId: '',
     workoutDays: [],
   });
-  const [openDayIndex, setOpenDayIndex] = useState<number | null>(null);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      try {
-        const res = await fetch('http://localhost:3333/trainer/students', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setStudents(data);
-        } else {
-          console.error('Erro ao buscar alunos');
-        }
-      } catch (error) {
-        console.error('Erro de conexão ao buscar alunos:', error);
-      }
-    };
-
-    fetchStudents();
-  }, []);
-  
-  const handleChange = (path: string[], value: any) => {
-    const newPlan = { ...plan };
-    let ref = newPlan;
-    for (let i = 0; i < path.length - 1; i++) {
-      ref = ref[path[i]];
-    }
-    ref[path[path.length - 1]] = value;
-    setPlan(newPlan);
+  const handleChange = (field: string, value: any) => {
+    setFormData({ ...formData, [field]: value });
   };
 
-  const handleAddDay = () => {
-    setPlan({
-      ...plan,
+  const addDay = () => {
+    setFormData({
+      ...formData,
       workoutDays: [
-        ...plan.workoutDays,
+        ...formData.workoutDays,
         { dayOfWeek: '', muscleGroup: '', exercises: [] }
-      ],
+      ]
     });
-    setOpenDayIndex(plan.workoutDays.length); // abre o novo
   };
 
-  const handleRemoveDay = (index: number) => {
-    const updated = [...plan.workoutDays];
-    updated.splice(index, 1);
-    setPlan({ ...plan, workoutDays: updated });
-    setOpenDayIndex(null);
+  const removeDay = (index: number) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays.splice(index, 1);
+    setFormData({ ...formData, workoutDays: updatedDays });
   };
 
-  const handleAddExercise = (dayIndex: number) => {
-    const updated = [...plan.workoutDays];
-    updated[dayIndex].exercises.push({ name: '', sets: [] });
-    setPlan({ ...plan, workoutDays: updated });
+  const handleDayChange = (index: number, field: string, value: any) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays[index][field] = value;
+    setFormData({ ...formData, workoutDays: updatedDays });
   };
 
-  const handleRemoveExercise = (dayIndex: number, exerciseIndex: number) => {
-    const updated = [...plan.workoutDays];
-    updated[dayIndex].exercises.splice(exerciseIndex, 1);
-    setPlan({ ...plan, workoutDays: updated });
+  const addExercise = (dayIndex: number) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays[dayIndex].exercises.push({ name: '', sets: [] });
+    setFormData({ ...formData, workoutDays: updatedDays });
   };
 
-  const handleAddSet = (dayIndex: number, exerciseIndex: number) => {
-    const updated = [...plan.workoutDays];
-    updated[dayIndex].exercises[exerciseIndex].sets.push({
-      setNumber: updated[dayIndex].exercises[exerciseIndex].sets.length + 1,
-      targetReps: 10,
-      targetLoad: 0,
-    });
-    setPlan({ ...plan, workoutDays: updated });
+  const removeExercise = (dayIndex: number, exerciseIndex: number) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays[dayIndex].exercises.splice(exerciseIndex, 1);
+    setFormData({ ...formData, workoutDays: updatedDays });
   };
 
-  const handleRemoveSet = (dayIndex: number, exerciseIndex: number, setIndex: number) => {
-    const updated = [...plan.workoutDays];
-    updated[dayIndex].exercises[exerciseIndex].sets.splice(setIndex, 1);
-    setPlan({ ...plan, workoutDays: updated });
+  const handleExerciseChange = (dayIndex: number, exerciseIndex: number, value: string) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays[dayIndex].exercises[exerciseIndex].name = value;
+    setFormData({ ...formData, workoutDays: updatedDays });
+  };
+
+  const addSet = (dayIndex: number, exerciseIndex: number) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays[dayIndex].exercises[exerciseIndex].sets.push({ setNumber: 1, targetReps: 0, targetLoad: 0 });
+    setFormData({ ...formData, workoutDays: updatedDays });
+  };
+
+  const handleSetChange = (dayIndex: number, exerciseIndex: number, setIndex: number, field: string, value: any) => {
+    const updatedDays = [...formData.workoutDays];
+    updatedDays[dayIndex].exercises[exerciseIndex].sets[setIndex][field] = value;
+    setFormData({ ...formData, workoutDays: updatedDays });
   };
 
   const handleSave = async () => {
+    if (!studentId) {
+      setMessage('ID do aluno não encontrado.');
+      return;
+    }
+
     const token = localStorage.getItem('token');
-    const userId = Number(localStorage.getItem('userId'));
-    
-    const res = await fetch('http://localhost:3333/workouts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...plan,
-        trainerId: userId,
-        patientId: Number(plan.patientId),
-      }),
-    });
-    if (res.ok) {
-      const createdWorkout = await res.json(); // pegar o plano criado
-      const workoutId = createdWorkout.id;
-      if (workoutId) {
-        router.push(`/trainer/workouts/${workoutId}`); // redireciona para a página do treino
+    if (!token) return;
+
+    setLoading(true);
+
+    const payload = {
+      title: formData.title,
+      description: formData.description,
+      validFrom: formData.validFrom,
+      validUntil: formData.validUntil,
+      patientId: Number(studentId), // <- aluno
+      workoutDays: formData.workoutDays,
+    };
+
+    try {
+      const res = await fetch('http://localhost:3333/workouts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        const createdWorkout = await res.json();
+        setMessage('Plano criado com sucesso!');
+        router.push(`/trainer/students/${studentId}/workouts/${createdWorkout.id}`);
       } else {
-        alert('Plano salvo, mas ID não encontrado para redirecionar.');
+        setMessage('Erro ao criar o plano.');
       }
-    } else {
-      alert('Erro ao salvar plano.');
+    } catch (error) {
+      console.error('Erro ao conectar:', error);
+      setMessage('Erro ao conectar com o servidor.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#F0F9F7] flex flex-col">
       <NavbarTrainer />
-      <div className="flex-grow flex items-start justify-center p-8">
+      <div className="flex-grow flex items-start justify-center">
         <motion.div
-          className="w-full max-w-5xl bg-white rounded-xl p-6 shadow"
+          className="mt-12 p-8 max-w-5xl w-full bg-white rounded-xl shadow"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-2xl font-bold text-[#00B894] mb-6">Novo Plano de Treino</h1>
+          <h1 className="text-2xl font-bold text-[#00B894] mb-4">
+            Criar Novo Plano de Treino
+          </h1>
 
-          <div className="grid gap-4">
-
-            {/* SELEÇÃO DE PACIENTE */}
-            <select
-              className="border p-2 rounded"
-              value={plan.patientId}
-              onChange={(e) => handleChange(['patientId'], e.target.value)}
-            >
-              <option value="">Selecione o paciente</option>
-              {students.map(student => (
-                <option key={student.id} value={student.id}>
-                  {student.name}
-                </option>
-              ))}
-            </select>
-
+          {/* Formulário */}
+          <div className="grid gap-4 mb-8">
             <input
-              className="border p-2 rounded"
+              type="text"
               placeholder="Título do Plano"
-              value={plan.title}
-              onChange={(e) => handleChange(['title'], e.target.value)}
+              value={formData.title}
+              onChange={(e) => handleChange('title', e.target.value)}
+              className="border rounded p-2 w-full"
             />
             <textarea
-              className="border p-2 rounded"
               placeholder="Descrição"
-              value={plan.description}
-              onChange={(e) => handleChange(['description'], e.target.value)}
+              value={formData.description}
+              onChange={(e) => handleChange('description', e.target.value)}
+              className="border rounded p-2 w-full"
             />
             <div className="flex gap-4">
               <input
                 type="date"
-                className="border p-2 rounded w-full"
-                value={plan.validFrom}
-                onChange={(e) => handleChange(['validFrom'], e.target.value)}
+                value={formData.validFrom}
+                onChange={(e) => handleChange('validFrom', e.target.value)}
+                className="border rounded p-2 w-full"
               />
               <input
                 type="date"
-                className="border p-2 rounded w-full"
-                value={plan.validUntil}
-                onChange={(e) => handleChange(['validUntil'], e.target.value)}
+                value={formData.validUntil}
+                onChange={(e) => handleChange('validUntil', e.target.value)}
+                className="border rounded p-2 w-full"
               />
             </div>
+          </div>
 
-            {/* Dias de Treino */}
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-[#00B894]">Dias de Treino</h2>
+          {/* Dias de treino */}
+          <h2 className="text-xl font-semibold text-[#00B894] mb-4">Dias de Treino</h2>
+          {formData.workoutDays.map((day: any, dayIndex: number) => (
+            <div key={dayIndex} className="bg-gray-100 p-4 rounded shadow mb-4">
+              <div className="flex gap-4 mb-4">
+                <input
+                  type="text"
+                  placeholder="Dia da Semana"
+                  value={day.dayOfWeek}
+                  onChange={(e) => handleDayChange(dayIndex, 'dayOfWeek', e.target.value)}
+                  className="border rounded p-2 flex-1"
+                />
+                <input
+                  type="text"
+                  placeholder="Grupo Muscular"
+                  value={day.muscleGroup}
+                  onChange={(e) => handleDayChange(dayIndex, 'muscleGroup', e.target.value)}
+                  className="border rounded p-2 flex-1"
+                />
                 <button
-                  onClick={handleAddDay}
-                  className="bg-[#00B894] text-white px-4 py-1 rounded hover:bg-[#009f84]"
+                  onClick={() => removeDay(dayIndex)}
+                  className="bg-red-500 text-white px-4 rounded hover:bg-red-600"
                 >
-                  + Adicionar Dia
+                  Remover Dia
                 </button>
               </div>
 
-              <div className="space-y-4">
-                {plan.workoutDays.map((day, dayIndex) => (
-                  <div key={dayIndex} className="border rounded overflow-hidden bg-gray-50">
-                    <button
-                      className="w-full text-left p-4 bg-[#E0F7F4] font-semibold"
-                      onClick={() => setOpenDayIndex(openDayIndex === dayIndex ? null : dayIndex)}
-                    >
-                      {day.dayOfWeek || 'Novo Dia'} - {day.muscleGroup || 'Grupo Muscular'}
-                    </button>
+              {day.exercises.map((exercise: any, exerciseIndex: number) => (
+                <div key={exerciseIndex} className="bg-white p-3 rounded shadow-sm mb-2">
+                  <input
+                    type="text"
+                    placeholder="Nome do Exercício"
+                    value={exercise.name}
+                    onChange={(e) => handleExerciseChange(dayIndex, exerciseIndex, e.target.value)}
+                    className="border rounded p-2 w-full mb-2"
+                  />
 
-                    <AnimatePresence>
-                      {openDayIndex === dayIndex && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="p-4"
-                        >
-                          <div className="grid gap-4 mb-4">
-                            <input
-                              className="border p-2 rounded"
-                              placeholder="Dia da Semana"
-                              value={day.dayOfWeek}
-                              onChange={(e) => handleChange(['workoutDays', String(dayIndex), 'dayOfWeek'], e.target.value)}
-                            />
-                            <input
-                              className="border p-2 rounded"
-                              placeholder="Grupo Muscular"
-                              value={day.muscleGroup}
-                              onChange={(e) => handleChange(['workoutDays', String(dayIndex), 'muscleGroup'], e.target.value)}
-                            />
-                          </div>
+                  {exercise.sets.map((set: any, setIndex: number) => (
+                    <div key={setIndex} className="flex gap-2 mb-2">
+                      <input
+                        type="number"
+                        placeholder="Repetições"
+                        value={set.targetReps}
+                        onChange={(e) => handleSetChange(dayIndex, exerciseIndex, setIndex, 'targetReps', Number(e.target.value))}
+                        className="border rounded p-2 w-24"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Carga (kg)"
+                        value={set.targetLoad}
+                        onChange={(e) => handleSetChange(dayIndex, exerciseIndex, setIndex, 'targetLoad', Number(e.target.value))}
+                        className="border rounded p-2 w-24"
+                      />
+                    </div>
+                  ))}
 
-                          <div>
-                            <div className="flex justify-between items-center mb-2">
-                              <h3 className="text-lg font-semibold text-[#00B894]">Exercícios</h3>
-                              <button
-                                onClick={() => handleAddExercise(dayIndex)}
-                                className="text-sm text-[#00B894] hover:underline"
-                              >
-                                + Adicionar Exercício
-                              </button>
-                            </div>
+                  <button
+                    onClick={() => addSet(dayIndex, exerciseIndex)}
+                    className="bg-[#00B894] text-white px-4 py-1 rounded hover:bg-[#009f84] mt-2"
+                  >
+                    + Adicionar Série
+                  </button>
+                </div>
+              ))}
 
-                            {day.exercises.map((exercise, exerciseIndex) => (
-                              <div key={exerciseIndex} className="border p-4 rounded bg-white mb-2">
-                                <div className="flex justify-between items-center">
-                                  <input
-                                    className="border p-2 rounded w-full"
-                                    placeholder="Nome do Exercício"
-                                    value={exercise.name}
-                                    onChange={(e) =>
-                                      handleChange(['workoutDays', dayIndex, 'exercises', exerciseIndex, 'name'], e.target.value)
-                                    }
-                                  />
-                                  <button
-                                    onClick={() => handleRemoveExercise(dayIndex, exerciseIndex)}
-                                    className="text-red-500 ml-2"
-                                  >
-                                    🗑️
-                                  </button>
-                                </div>
-
-                                <div className="mt-2">
-                                  <h4 className="font-semibold text-[#00B894]">Séries</h4>
-                                  {exercise.sets.map((set, setIndex) => (
-                                    <div key={setIndex} className="flex gap-2 mb-2">
-                                      <input
-                                        type="number"
-                                        className="border p-2 rounded w-1/3"
-                                        placeholder="Repetições"
-                                        value={set.targetReps}
-                                        onChange={(e) =>
-                                          handleChange([
-                                            'workoutDays', dayIndex, 'exercises', exerciseIndex, 'sets', setIndex, 'targetReps'
-                                          ], e.target.value)
-                                        }
-                                      />
-                                      <input
-                                        type="number"
-                                        className="border p-2 rounded w-2/3"
-                                        placeholder="Carga (kg)"
-                                        value={set.targetLoad}
-                                        onChange={(e) =>
-                                          handleChange([
-                                            'workoutDays', dayIndex, 'exercises', exerciseIndex, 'sets', setIndex, 'targetLoad'
-                                          ], e.target.value)
-                                        }
-                                      />
-                                      <button
-                                        onClick={() => handleRemoveSet(dayIndex, exerciseIndex, setIndex)}
-                                        className="text-red-500"
-                                      >
-                                        🗑️
-                                      </button>
-                                    </div>
-                                  ))}
-                                  <button
-                                    onClick={() => handleAddSet(dayIndex, exerciseIndex)}
-                                    className="text-sm text-[#00B894] hover:underline mt-2"
-                                  >
-                                    + Adicionar Série
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="flex justify-end">
-                            <button
-                              onClick={() => handleRemoveDay(dayIndex)}
-                              className="mt-4 text-red-500 hover:underline"
-                            >
-                              Remover Dia
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Botão salvar */}
-            <div className="mt-6 flex justify-end">
               <button
-                onClick={handleSave}
-                className="bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84]"
+                onClick={() => addExercise(dayIndex)}
+                className="bg-[#00B894] text-white px-4 py-1 rounded hover:bg-[#009f84]"
               >
-                Salvar Plano
+                + Adicionar Exercício
               </button>
             </div>
+          ))}
+
+          {/* Botões */}
+          <div className="flex justify-between mt-8">
+            <button
+              onClick={addDay}
+              className="bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84]"
+            >
+              + Adicionar Dia
+            </button>
+
+            <button
+              onClick={handleSave}
+              className="bg-[#00B894] text-white px-6 py-2 rounded hover:bg-[#009f84]"
+              disabled={loading}
+            >
+              {loading ? 'Salvando...' : 'Salvar Plano'}
+            </button>
           </div>
+
+          {message && (
+            <p className="text-center mt-4">{message}</p>
+          )}
         </motion.div>
       </div>
     </div>

@@ -28,8 +28,8 @@ export declare class WorkoutService {
         description: string;
         validFrom: string;
         validUntil: string;
-        trainerId: number;
         patientId: number;
+        trainerId: number;
         workoutDays: WorkoutDayInput[];
     }): Promise<{
         id: number;

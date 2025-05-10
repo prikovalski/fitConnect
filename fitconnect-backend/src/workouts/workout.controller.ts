@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Query, UseGuards, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, UseGuards, Put, Req } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -8,26 +8,9 @@ export class WorkoutController {
   constructor(private readonly workoutService: WorkoutService) {}
 
   @Post()
-  create(@Body() body: {
-    title: string;
-    description: string;
-    trainerId: number;
-    patientId: number;
-    validFrom: string;
-    validUntil: string;
-    workoutDays: {
-      dayOfWeek: string;
-      muscleGroup: string;
-      exercises: {
-        name: string;
-        sets: {
-          targetReps: number;
-          targetLoad: number;
-        }[];
-      }[];
-    }[];
-  }) {
-    return this.workoutService.createWorkout(body); 
+  async createWorkout(@Body() body: any, @Req() req: any) {
+    const trainerId = req.user.id;
+    return this.workoutService.createWorkout({ ...body, trainerId });
   }
 
   @Get('plans')

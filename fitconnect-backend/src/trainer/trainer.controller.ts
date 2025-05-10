@@ -1,10 +1,12 @@
-import { Controller, Get, Req, UseGuards, Param } from '@nestjs/common';
+// src/trainer/trainer.controller.ts
+
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { TrainerService } from './trainer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 
-@Controller('trainer')
 @UseGuards(JwtAuthGuard)
+@Controller('trainer')
 export class TrainerController {
   constructor(private readonly trainerService: TrainerService) {}
 
@@ -17,63 +19,49 @@ export class TrainerController {
 
   @Roles('TRAINER')
   @Get('students')
-  async getStudents(@Req() req: any) {
+  getStudents(@Req() req: any) {
     const trainerId = req.user.id;
     return this.trainerService.getStudents(trainerId);
   }
-
+  
   @Roles('TRAINER')
   @Get('students/:id/workouts')
   async getStudentWorkouts(@Param('id') id: string, @Req() req: any) {
-    console.log('aqui')
     const trainerId = req.user.id;
-    console.log('paramId: ', id)
-    console.log('trainerId userId: ',trainerId)
     return this.trainerService.getStudentWorkouts(Number(id), trainerId);
   }
 
   @Roles('TRAINER')
-  @Get('students/:id/assessments')
-  async getStudentAssessments(@Param('id') id: string, @Req() req: any) {
+  @Get('students/:studentId/assessments')
+  getStudentAssessments(@Param('studentId') studentId: string, @Req() req: any) {
     const trainerId = req.user.id;
-    return this.trainerService.getStudentAssessments(Number(id), trainerId);
+    return this.trainerService.getStudentAssessments(Number(studentId), trainerId);
   }
 
   @Roles('TRAINER')
   @Get('assessments')
-  async getUpcomingAssessments(@Req() req: any) {
+  getUpcomingAssessments(@Req() req: any) {
     const trainerId = req.user.id;
     return this.trainerService.getUpcomingAssessments(trainerId);
   }
 
   @Roles('TRAINER')
-  @Get('assessments')
-  async getAssessments(@Req() req: any) {
-    const trainerId = req.user.id;
-    return this.trainerService.getTrainerAssessments(trainerId);
-  }
-
-  @Roles('TRAINER')
-  @Get('students/:id/basic-info')
-  async getPatientBasicInfo(@Param('id') id: string) {
-    return this.trainerService.getPatientBasicInfo(Number(id));
-  }
-
-  @Roles('TRAINER')
   @Get('workouts')
-  async getTrainerWorkouts(@Req() req: any) {
+  getTrainerWorkouts(@Req() req: any) {
     const trainerId = req.user.id;
     return this.trainerService.getTrainerWorkouts(trainerId);
-}
+  }
 
   @Roles('TRAINER')
   @Get('workouts/:id')
-  async getWorkoutPlanById(@Param('id') id: string, @Req() req: any) {
+  getWorkoutPlanById(@Param('id') id: string, @Req() req: any) {
     const trainerId = req.user.id;
-    console.log('paramId: ', id)
-    console.log('trainerId userId: ',trainerId)
     return this.trainerService.getWorkoutPlanById(Number(id), trainerId);
   }
 
-
-} 
+  @Roles('TRAINER')
+  @Get('students/:studentId/basic-info')
+  getStudentBasicInfo(@Param('studentId') studentId: string) {
+    return this.trainerService.getPatientBasicInfo(Number(studentId));
+  }
+}
