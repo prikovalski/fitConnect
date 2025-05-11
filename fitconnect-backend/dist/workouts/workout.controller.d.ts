@@ -5,66 +5,66 @@ export declare class WorkoutController {
     createWorkout(body: any, req: any): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }>;
     getByPatient(patientId: string): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }[]>;
     getOne(id: string): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     } | null>;
     getExercises(id: string): Promise<({
         exercises: ({
             sets: {
                 id: number;
+                exerciseId: number;
                 setNumber: number;
                 targetReps: number;
                 targetLoad: number;
-                exerciseId: number;
             }[];
         } & {
             id: number;
             name: string;
-            order: number;
             workoutDayId: number;
+            order: number;
         })[];
     } & {
         id: number;
+        workoutPlanId: number;
         dayOfWeek: string;
         muscleGroup: string;
-        workoutPlanId: number;
     })[]>;
     updateWorkout(id: string, body: any): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }>;
 }

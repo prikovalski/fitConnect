@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
 import PatientProfileModal from '../components/PatientProfileModal';
+import PatientMeasurementsModal from '../components/PatientMeasurementsModal';
 
 type DecodedToken = {
   id: number;
@@ -16,6 +17,8 @@ export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<DecodedToken | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showMeasurementsModal, setShowMeasurementsModal] = useState(false);
+  const [patientProfileData, setPatientProfileData] = useState<any>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,31 +27,16 @@ export default function Dashboard() {
         const decoded = jwtDecode<DecodedToken>(token);
         setUser(decoded);
 
-        // Depois de setar o usuário, buscar se já tem perfil preenchido
-        checkPatientProfile();
+        const profileComplete = localStorage.getItem('profileComplete');
+        if (!profileComplete) {
+          setShowProfileModal(true);
+        }
       } catch (err) {
         localStorage.removeItem('token');
         router.push('/login');
       }
     }
   }, [router]);
-
-  const checkPatientProfile = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    try {
-      const res = await fetch('http://localhost:3333/patient-profile', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.status === 404) {
-        setShowProfileModal(true); // Exibe o modal se perfil não encontrado
-      }
-    } catch (error) {
-      console.error('Erro ao verificar perfil do paciente:', error);
-    }
-  };
 
   const handleLogout = () => {
     const confirmLogout = window.confirm('Deseja realmente sair da sua conta?');
@@ -57,6 +45,48 @@ export default function Dashboard() {
       router.push('/login');
     }
   };
+
+  const handleNextProfile = (data: any) => {
+    setPatientProfileData(data);
+    setShowProfileModal(false);
+    setShowMeasurementsModal(true);
+  };
+
+  const handleSaveMeasurements = async (measurementsData: any) => {
+    try {
+      const fullProfileData = { ...patientProfileData, ...measurementsData };
+      console.log('Enviando perfil completo:', fullProfileData);
+
+      await sendPatientProfile(fullProfileData);
+
+      localStorage.setItem('profileComplete', 'true');
+      setShowMeasurementsModal(false);
+      alert('Perfil salvo com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar perfil:', error);
+      alert('Erro ao salvar perfil. Tente novamente.');
+    }
+  };
+
+  async function sendPatientProfile(profileData: any) {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Usuário não autenticado');
+
+    const response = await fetch('http://localhost:3333/patient/profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(profileData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao salvar perfil');
+    }
+
+    return await response.json();
+  }
 
   return (
     <PrivateRoute>
@@ -101,15 +131,23 @@ export default function Dashboard() {
               Bem-vinda, {user?.name || user?.email} 👋
             </h2>
 
-            <p className="text-gray-600 mt-2">
-              Aqui você verá seu treino do dia, plano alimentar e sua evolução.
-            </p>
+            <p className="text-gray-600 mt-2">Aqui você verá seu treino do dia, plano alimentar e sua evolução.</p>
           </motion.div>
         </div>
 
-        {/* Modal de preenchimento de perfil */}
+        {/* Modais */}
         {showProfileModal && (
-          <PatientProfileModal onClose={() => setShowProfileModal(false)} />
+          <PatientProfileModal
+            onClose={() => setShowProfileModal(false)}
+            onSave={() => {}} // agora só "Avançar" funciona
+            onNext={handleNextProfile}
+          />
+        )}
+        {showMeasurementsModal && (
+          <PatientMeasurementsModal
+            onClose={() => setShowMeasurementsModal(false)}
+            onSave={handleSaveMeasurements}
+          />
         )}
       </div>
     </PrivateRoute>

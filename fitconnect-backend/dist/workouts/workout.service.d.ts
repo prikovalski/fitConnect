@@ -34,67 +34,67 @@ export declare class WorkoutService {
     }): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }>;
     getWorkoutsByPatient(patientId: number): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }[]>;
     getWorkoutById(id: number): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     } | null>;
     getExercisesByPlan(planId: number): Promise<({
         exercises: ({
             sets: {
                 id: number;
+                exerciseId: number;
                 setNumber: number;
                 targetReps: number;
                 targetLoad: number;
-                exerciseId: number;
             }[];
         } & {
             id: number;
             name: string;
-            order: number;
             workoutDayId: number;
+            order: number;
         })[];
     } & {
         id: number;
+        workoutPlanId: number;
         dayOfWeek: string;
         muscleGroup: string;
-        workoutPlanId: number;
     })[]>;
     updateWorkout(id: number, data: UpdateWorkoutInput): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }>;
     getWorkoutByPatientAndId(patientId: number, workoutId: number): Promise<{
         patientName: string;
@@ -110,38 +110,38 @@ export declare class WorkoutService {
                     logs: {
                         id: number;
                         date: Date;
+                        workoutSetId: number;
                         actualReps: number;
                         actualLoad: number;
-                        workoutSetId: number;
                     }[];
                 } & {
                     id: number;
+                    exerciseId: number;
                     setNumber: number;
                     targetReps: number;
                     targetLoad: number;
-                    exerciseId: number;
                 })[];
             } & {
                 id: number;
                 name: string;
-                order: number;
                 workoutDayId: number;
+                order: number;
             })[];
         } & {
             id: number;
+            workoutPlanId: number;
             dayOfWeek: string;
             muscleGroup: string;
-            workoutPlanId: number;
         })[];
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }>;
 }
 export {};

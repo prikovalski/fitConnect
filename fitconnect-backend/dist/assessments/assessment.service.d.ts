@@ -4,30 +4,30 @@ export declare class AssessmentService {
     constructor(prisma: PrismaService);
     createAssessment(body: any): Promise<{
         id: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        data: import("@prisma/client/runtime/library").JsonValue;
         date: Date;
         method: string;
-        createdById: number;
         nextAssessment: Date | null;
+        createdById: number;
     }>;
     getAssessmentsByPatient(patientId: number): Promise<{
         id: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        data: import("@prisma/client/runtime/library").JsonValue;
         date: Date;
         method: string;
-        createdById: number;
         nextAssessment: Date | null;
+        createdById: number;
     }[]>;
     getAssessmentById(id: number): Promise<{
         id: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        data: import("@prisma/client/runtime/library").JsonValue;
         date: Date;
         method: string;
-        createdById: number;
         nextAssessment: Date | null;
+        createdById: number;
     } | null>;
     updateAssessment(id: number, body: {
         method?: string;
@@ -35,11 +35,11 @@ export declare class AssessmentService {
         nextAssessment?: Date;
     }): Promise<{
         id: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        data: import("@prisma/client/runtime/library").JsonValue;
         date: Date;
         method: string;
-        createdById: number;
         nextAssessment: Date | null;
+        createdById: number;
     }>;
 }

@@ -9,12 +9,12 @@ export declare class WorkoutPlanService {
     } & {
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     })[]>;
 }

@@ -77,32 +77,32 @@ export class TrainerService {
       where: { id: studentId },
       select: {
         name: true,
+        patientPlans: {
+          where: {
+            trainerId: trainerId,
+            isActive: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            validFrom: true,
+            validUntil: true,
+          },
+        },
       },
     });
-
+  
     if (!student) {
-      throw new NotFoundException('Aluno não encontrado');
+      throw new Error('Aluno não encontrado');
     }
-
-    const workouts = await this.prisma.workoutPlan.findMany({
-      where: {
-        patientId: studentId,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        validFrom: true,
-        validUntil: true,
-      },
-    });
-
+  
     return {
-      student,
-      workouts,
+      name: student.name,
+      workouts: student.patientPlans || [], 
     };
   }
   
@@ -150,32 +150,44 @@ export class TrainerService {
     const patient = await this.prisma.user.findUnique({
       where: { id: patientId },
       select: {
+        id: true,
         name: true,
         gender: true,
         birthDate: true,
+        peso: true, // Já adicionando o peso, pois pode ser útil
       },
     });
-
+  
     if (!patient) {
       throw new NotFoundException('Paciente não encontrado');
     }
-
-    // Calcular idade
-    const birthDate = new Date(patient.birthDate);
-    const today = new Date();
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const hasHadBirthdayThisYear =
-      today.getMonth() > birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
-
-    const finalAge = hasHadBirthdayThisYear ? age : age - 1;
-
+  
+    let finalAge = null;
+    if (patient.birthDate) {
+      const birthDate = new Date(patient.birthDate);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+  
+      const birthdayThisYearNotYetHappened =
+        today.getMonth() < birthDate.getMonth() ||
+        (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate());
+  
+      if (birthdayThisYearNotYetHappened) {
+        age -= 1;
+      }
+  
+      finalAge = age;
+    }
+  
     return {
+      id: patient.id,
       name: patient.name,
       gender: patient.gender,
       age: finalAge,
+      peso: patient.peso ?? null,
     };
   }
+  
 
   async getTrainerWorkouts(trainerId: number) {
     return this.prisma.workoutPlan.findMany({
@@ -248,4 +260,5 @@ export class TrainerService {
       workoutDays: plan.workoutDays,
     };
   }
+  
 }

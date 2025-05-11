@@ -13,10 +13,10 @@ export declare class MealService {
     }): Promise<{
         items: {
             id: number;
+            mealId: number;
             foodName: string;
             quantity: string;
             notes: string | null;
-            mealId: number;
         }[];
     } & {
         id: number;

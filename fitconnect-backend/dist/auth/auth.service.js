@@ -69,9 +69,7 @@ let AuthService = class AuthService {
                 name,
                 email,
                 password: hashedPassword,
-                role: role,
-                birthDate: new Date(birthDate),
-                gender
+                role: role
             },
         });
         const payload = { sub: newUser.id, email: newUser.email, role: newUser.role, name: newUser.name };

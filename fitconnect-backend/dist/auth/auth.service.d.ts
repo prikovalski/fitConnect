@@ -6,13 +6,13 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwtService: JwtService);
     validateUser(email: string, password: string): Promise<{
         id: number;
-        createdAt: Date;
         name: string;
         email: string;
         role: import(".prisma/client").$Enums.Role;
-        birthDate: Date;
-        gender: import(".prisma/client").$Enums.Gender;
+        birthDate: Date | null;
+        gender: import(".prisma/client").$Enums.Gender | null;
         peso: number | null;
+        createdAt: Date;
     } | null>;
     login({ email, password }: {
         email: string;

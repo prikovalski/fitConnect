@@ -11,14 +11,12 @@ export declare class TrainerController {
         id: number;
         name: string;
         email: string;
-        birthDate: Date;
-        gender: import(".prisma/client").$Enums.Gender;
+        birthDate: Date | null;
+        gender: import(".prisma/client").$Enums.Gender | null;
         peso: number | null;
     }[]>;
     getStudentWorkouts(id: string, req: any): Promise<{
-        student: {
-            name: string;
-        };
+        name: string;
         workouts: {
             id: number;
             title: string;
@@ -29,32 +27,32 @@ export declare class TrainerController {
     }>;
     getStudentAssessments(studentId: string, req: any): Promise<{
         id: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        data: import("@prisma/client/runtime/library").JsonValue;
         date: Date;
         method: string;
-        createdById: number;
         nextAssessment: Date | null;
+        createdById: number;
     }[]>;
     getUpcomingAssessments(req: any): Promise<{
         id: number;
-        data: import("@prisma/client/runtime/library").JsonValue;
         patientId: number;
+        data: import("@prisma/client/runtime/library").JsonValue;
         date: Date;
         method: string;
-        createdById: number;
         nextAssessment: Date | null;
+        createdById: number;
     }[]>;
     getTrainerWorkouts(req: any): Promise<{
         id: number;
         createdAt: Date;
+        patientId: number;
         title: string;
         description: string;
         validFrom: Date;
         validUntil: Date;
         isActive: boolean;
         trainerId: number;
-        patientId: number;
     }[]>;
     getWorkoutPlanById(id: string, req: any): Promise<{
         id: number;
@@ -82,8 +80,10 @@ export declare class TrainerController {
         }[];
     }>;
     getStudentBasicInfo(studentId: string): Promise<{
+        id: number;
         name: string;
-        gender: import(".prisma/client").$Enums.Gender;
-        age: number;
+        gender: import(".prisma/client").$Enums.Gender | null;
+        age: number | null;
+        peso: number | null;
     }>;
 }

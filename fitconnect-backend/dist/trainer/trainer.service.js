@@ -79,29 +79,30 @@ let TrainerService = class TrainerService {
             where: { id: studentId },
             select: {
                 name: true,
+                patientPlans: {
+                    where: {
+                        trainerId: trainerId,
+                        isActive: true,
+                    },
+                    orderBy: {
+                        createdAt: 'desc',
+                    },
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        validFrom: true,
+                        validUntil: true,
+                    },
+                },
             },
         });
         if (!student) {
-            throw new common_1.NotFoundException('Aluno não encontrado');
+            throw new Error('Aluno não encontrado');
         }
-        const workouts = await this.prisma.workoutPlan.findMany({
-            where: {
-                patientId: studentId,
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-            select: {
-                id: true,
-                title: true,
-                description: true,
-                validFrom: true,
-                validUntil: true,
-            },
-        });
         return {
-            student,
-            workouts,
+            name: student.name,
+            workouts: student.patientPlans || [],
         };
     }
     async getStudentAssessments(patientId, trainerId) {
@@ -140,27 +141,38 @@ let TrainerService = class TrainerService {
         });
     }
     async getPatientBasicInfo(patientId) {
+        var _a;
         const patient = await this.prisma.user.findUnique({
             where: { id: patientId },
             select: {
+                id: true,
                 name: true,
                 gender: true,
                 birthDate: true,
+                peso: true,
             },
         });
         if (!patient) {
             throw new common_1.NotFoundException('Paciente não encontrado');
         }
-        const birthDate = new Date(patient.birthDate);
-        const today = new Date();
-        const age = today.getFullYear() - birthDate.getFullYear();
-        const hasHadBirthdayThisYear = today.getMonth() > birthDate.getMonth() ||
-            (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
-        const finalAge = hasHadBirthdayThisYear ? age : age - 1;
+        let finalAge = null;
+        if (patient.birthDate) {
+            const birthDate = new Date(patient.birthDate);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const birthdayThisYearNotYetHappened = today.getMonth() < birthDate.getMonth() ||
+                (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate());
+            if (birthdayThisYearNotYetHappened) {
+                age -= 1;
+            }
+            finalAge = age;
+        }
         return {
+            id: patient.id,
             name: patient.name,
             gender: patient.gender,
             age: finalAge,
+            peso: (_a = patient.peso) !== null && _a !== void 0 ? _a : null,
         };
     }
     async getTrainerWorkouts(trainerId) {

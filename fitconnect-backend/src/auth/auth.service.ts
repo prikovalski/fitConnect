@@ -72,9 +72,7 @@ export class AuthService {
         name,
         email,
         password: hashedPassword,
-        role: role as Role,
-        birthDate: new Date(birthDate),
-        gender
+        role: role as Role
       },
     });
 

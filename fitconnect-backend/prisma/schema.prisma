@@ -13,8 +13,8 @@ model User {
   password             String
   name                 String
   role                 Role
-  birthDate            DateTime              
-  gender               Gender                
+  birthDate            DateTime?              
+  gender               Gender?                
   peso                 Float?
   createdAt            DateTime              @default(now())
   trainerPlans         WorkoutPlan[]         @relation("TrainerPlans")
@@ -26,27 +26,37 @@ model User {
   patientDataSharing      DataSharing[]        @relation("PatientDataSharing")
   professionalDataSharing DataSharing[]        @relation("ProfessionalDataSharing")
   patientProfile       PatientProfile?        
+  patientPhotos        PatientPhoto[]
 }
 
 model PatientProfile {
-  id                         Int      @id @default(autoincrement())
-  user                       User     @relation(fields: [userId], references: [id])
-  userId                     Int      @unique
-  city                       String
-  goal                       String
-  chronicDisease             String?
-  medicalRestriction         String?
-  foodAllergyOrIntolerance   String?
-  foodsToAvoid               String?
-  physicalActivity           Boolean
-  activityDescription        String?
-  mealTimeConsistency        Boolean
-  essentialFoods             String?
-  neckCircumference          Float?
-  waistCircumference         Float?
-  hipCircumference           Float?
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  user                User     @relation(fields: [userId], references: [id])
+  userId              Int      @unique
+  height              Float
+  weight              Float
+  city                String
+  goal                String
+  chronicDisease      String?
+  medicalRestriction  String?
+  foodAllergy         String?
+  avoidFood           String?
+  physicalActivity    String?
+  activityFrequency   String?
+  fixedMealTimes      String?
+  mustHaveFood        String?
+  neckCircumference   Float?
+  waistCircumference  Float?
+  hipCircumference    Float?
+  profileImageUrl     String?
+}
+
+model PatientPhoto {
+  id         Int      @id @default(autoincrement())
+  url        String
+  uploadedAt DateTime @default(now())
+  patient    User     @relation(fields: [patientId], references: [id])
+  patientId  Int
 }
 
 
