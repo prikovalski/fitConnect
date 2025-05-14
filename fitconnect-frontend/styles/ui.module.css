@@ -1,0 +1,27 @@
+.input {
+  @apply w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+.button {
+  @apply w-full bg-primary text-white py-2 rounded hover:bg-[#019f80] transition;
+}
+
+.card {
+  @apply bg-white p-8 rounded-xl shadow-md w-full max-w-md;
+}
+
+.link {
+  @apply text-primary hover:underline;
+}
+
+.message-error {
+  @apply text-red-500 text-sm mb-4;
+}
+
+.message-success {
+  @apply text-green-600 text-sm mb-4;
+}
+
+.heading {
+  @apply text-2xl font-bold mb-6 text-primary text-center;
+}
