@@ -27,6 +27,9 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
   });
 
   const [photos, setPhotos] = useState<any[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+
 
   function mapGenderToDisplay(genderEnum: string) {
     switch (genderEnum) {
@@ -67,9 +70,7 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
     try {
       const token = localStorage.getItem('token');
       const res = await fetch('http://localhost:3333/patient-profile/photos', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
@@ -138,7 +139,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
       onSave(form);
     }
   };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <motion.div
@@ -236,7 +236,7 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               {photos.map((photo) => (
                 <div key={photo.id} className="relative group">
                   <img
-                    src={`http://localhost:3333${photo.url}`}
+                    src={`${baseUrl}${photo.url}`}
                     alt="Progresso"
                     className="rounded-lg object-cover w-full h-40"
                   />
@@ -268,6 +268,27 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
           </button>
         </div>
       </motion.div>
+
+      {/* 🔍 Preview Ampliado */}
+      {previewUrl && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50"
+          onClick={() => setPreviewUrl(null)}
+        >
+          <img
+            src={previewUrl}
+            alt="Foto Ampliada"
+            className="max-w-full max-h-full rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            onClick={() => setPreviewUrl(null)}
+            className="absolute top-4 right-4 text-white text-2xl"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }

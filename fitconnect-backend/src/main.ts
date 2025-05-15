@@ -6,6 +6,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { Request, Response, NextFunction } from 'express';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { existsSync, mkdirSync } from 'fs'; // ✅ IMPORTANTE: precisa importar aqui
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -14,21 +15,32 @@ async function bootstrap() {
   app.useGlobalGuards(new RolesGuard(reflector));
 
   app.use((req: Request, res: Response, next: NextFunction) => {
-    // Exceções para rotas públicas
     const isPublic = [
       '/auth/login',
       '/auth/register'
-    ].includes(req.path);
-
-    if (isPublic) {
+    ];
+  
+    const publicPaths = [
+      '/uploads/', // qualquer coisa em uploads
+    ];
+  
+    const pathIsPublic = isPublic.includes(req.path) || publicPaths.some(publicPath => req.path.startsWith(publicPath));
+  
+    if (pathIsPublic) {
       return next();
     }
-
+  
     const middleware = new AuthMiddleware();
     return middleware.use(req, res, next);
   });
 
-  // 👉 Serve a pasta de uploads como estática
+  // ✅ Cria automaticamente a pasta uploads/patient-photos se não existir
+  const uploadsPath = join(__dirname, '..', 'uploads', 'patient-photos');
+  if (!existsSync(uploadsPath)) {
+    mkdirSync(uploadsPath, { recursive: true });
+    console.log('📁 Pasta uploads/patient-photos criada automaticamente.');
+  }
+
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
@@ -36,5 +48,4 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(process.env.PORT || 3333);
 }
-
 bootstrap();
