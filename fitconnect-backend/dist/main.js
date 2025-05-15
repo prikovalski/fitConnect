@@ -22,7 +22,7 @@ async function bootstrap() {
         return middleware.use(req, res, next);
     });
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'uploads'), {
-        prefix: '/uploads',
+        prefix: '/uploads/',
     });
     app.enableCors();
     await app.listen(process.env.PORT || 3333);

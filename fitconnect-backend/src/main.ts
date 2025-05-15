@@ -30,7 +30,7 @@ async function bootstrap() {
 
   // 👉 Serve a pasta de uploads como estática
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads',
+    prefix: '/uploads/',
   });
 
   app.enableCors();

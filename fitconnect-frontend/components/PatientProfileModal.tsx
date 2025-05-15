@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 interface PatientProfileModalProps {
   onClose: () => void;
   onSave: (data: any) => void;
-  onNext?: (data: any) => void; // Para diferenciar criação ou edição
-  initialData?: any;            // <-- Novo parâmetro opcional
+  onNext?: (data: any) => void;
+  initialData?: any;
 }
 
 export default function PatientProfileModal({ onClose, onSave, onNext, initialData }: PatientProfileModalProps) {
@@ -26,6 +26,8 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
     mustHaveFood: '',
   });
 
+  const [photos, setPhotos] = useState<any[]>([]);
+
   function mapGenderToDisplay(genderEnum: string) {
     switch (genderEnum) {
       case 'MALE':
@@ -39,7 +41,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
     }
   }
 
-  // Preenche os campos se vier initialData (modo edição)
   useEffect(() => {
     if (initialData) {
       setForm({
@@ -59,7 +60,72 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
         mustHaveFood: initialData.mustHaveFood || '',
       });
     }
+    fetchPhotos();
   }, [initialData]);
+
+  const fetchPhotos = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:3333/patient-profile/photos', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPhotos(data);
+      } else {
+        console.error('Erro ao carregar fotos.');
+      }
+    } catch (error) {
+      console.error('Erro de conexão:', error);
+    }
+  };
+
+  const handleUploadPhotos = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const token = localStorage.getItem('token');
+    if (!token || !event.target.files) return;
+
+    const files = Array.from(event.target.files);
+
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('http://localhost:3333/patient-profile/photos/upload', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+        if (res.ok) {
+          await fetchPhotos();
+        }
+      } catch (error) {
+        console.error('Erro ao enviar foto:', error);
+      }
+    }
+  };
+
+  const handleDeletePhoto = async (photoId: number) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const confirmDelete = window.confirm('Deseja excluir esta foto?');
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`http://localhost:3333/patient-profile/photos/${photoId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        await fetchPhotos();
+      }
+    } catch (error) {
+      console.error('Erro ao excluir foto:', error);
+    }
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm({ ...form, [field]: value });
@@ -69,14 +135,14 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
     if (onNext) {
       onNext(form);
     } else {
-      onSave(form); // Se for edição
+      onSave(form);
     }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <motion.div
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-5xl max-h-[95vh] overflow-y-auto"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -85,9 +151,8 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
           {onNext ? 'Complete seu Perfil' : 'Editar Perfil'}
         </h2>
 
-        {/* Campos do Formulário */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Gênero */}
+        {/* Formulário */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div>
             <label className="text-sm font-semibold">Gênero</label>
             <select
@@ -101,8 +166,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               <option value="Outro">Outro</option>
             </select>
           </div>
-
-          {/* Altura */}
           <div>
             <label className="text-sm font-semibold">Altura (cm)</label>
             <input
@@ -112,8 +175,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               onChange={(e) => handleChange('height', e.target.value)}
             />
           </div>
-
-          {/* Peso */}
           <div>
             <label className="text-sm font-semibold">Peso (kg)</label>
             <input
@@ -123,8 +184,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               onChange={(e) => handleChange('weight', e.target.value)}
             />
           </div>
-
-          {/* Data de nascimento */}
           <div>
             <label className="text-sm font-semibold">Data de Nascimento</label>
             <input
@@ -134,8 +193,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               onChange={(e) => handleChange('birthDate', e.target.value)}
             />
           </div>
-
-          {/* Cidade */}
           <div className="md:col-span-2">
             <label className="text-sm font-semibold">Cidade</label>
             <input
@@ -145,8 +202,6 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               onChange={(e) => handleChange('city', e.target.value)}
             />
           </div>
-
-          {/* Objetivo */}
           <div className="md:col-span-2">
             <label className="text-sm font-semibold">Objetivo</label>
             <input
@@ -156,6 +211,45 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
               onChange={(e) => handleChange('goal', e.target.value)}
             />
           </div>
+        </div>
+
+        {/* 📷 Bloco de Fotos */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-[#00B894] mb-4">Fotos de Progresso</h3>
+
+          <div className="flex justify-end mb-4">
+            <label className="bg-[#00B894] text-white px-4 py-2 rounded cursor-pointer hover:bg-[#009f84]">
+              + Adicionar Fotos
+              <input
+                type="file"
+                multiple
+                onChange={handleUploadPhotos}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          {photos.length === 0 ? (
+            <p className="text-gray-500">Nenhuma foto enviada ainda.</p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {photos.map((photo) => (
+                <div key={photo.id} className="relative group">
+                  <img
+                    src={`http://localhost:3333${photo.url}`}
+                    alt="Progresso"
+                    className="rounded-lg object-cover w-full h-40"
+                  />
+                  <button
+                    onClick={() => handleDeletePhoto(photo.id)}
+                    className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
+                  >
+                    Excluir
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Botões */}
