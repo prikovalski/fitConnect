@@ -19,14 +19,14 @@ export class PatientController {
   ) {}
 
   @Roles('PATIENT')
-  @Get('meal-plans/:id')
+  @Get('mealplans/:id')
   async getMealPlanById(@Req() req: any, @Param('id') id: string) {
     const userId = req.user.id;
     return this.patientService.getMealPlanById(userId, Number(id));
   }
 
   @Roles('PATIENT')
-  @Get('meal-plans')
+  @Get('mealplans')
   async getAllMealPlans(@Req() req: any) {
     const userId = req.user.id;
     return this.patientService.getAllMealPlans(userId);

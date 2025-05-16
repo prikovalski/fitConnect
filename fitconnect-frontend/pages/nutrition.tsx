@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PrivateRoute from '../components/PrivateRoute';
-import BackButton from '../components/BackButton';
+import BackButtonPatient from '../components/BackButtonPatient';
 import { Salad } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
@@ -36,7 +36,7 @@ export default function Nutrition() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <BackButton />
+          <BackButtonPatient />
           <div className="flex items-center gap-4 mb-6">
             <Salad className="text-[#00B894]" size={32} />
             <h1 className="text-3xl font-bold text-[#00B894]">Plano Alimentar</h1>
@@ -53,14 +53,11 @@ export default function Nutrition() {
               {plans.map((plan) => (
                 <div
                   key={plan.id}
-                  onClick={() => goToDetails(plan.id)}
-                  className="bg-[#F0F9F7] p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-100 p-4 rounded"
+                  onClick={() => router.push(`/patient/meal-plans/${plan.id}`)}
                 >
-                  <h2 className="text-lg font-semibold text-[#00B894] mb-2">{plan.title}</h2>
-                  <p className="text-gray-600 text-sm mb-1">{plan.description}</p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(plan.validFrom).toLocaleDateString()} → {new Date(plan.validUntil).toLocaleDateString()}
-                  </p>
+                  <h3 className="text-lg font-bold text-[#00B894]">{plan.title}</h3>
+                  <p className="text-sm text-gray-600">{plan.description}</p>
                 </div>
               ))}
             </div>

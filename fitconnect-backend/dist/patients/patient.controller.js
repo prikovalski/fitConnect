@@ -35,7 +35,7 @@ let PatientController = class PatientController {
 exports.PatientController = PatientController;
 __decorate([
     (0, roles_decorator_1.Roles)('PATIENT'),
-    (0, common_1.Get)('meal-plans/:id'),
+    (0, common_1.Get)('mealplans/:id'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -44,7 +44,7 @@ __decorate([
 ], PatientController.prototype, "getMealPlanById", null);
 __decorate([
     (0, roles_decorator_1.Roles)('PATIENT'),
-    (0, common_1.Get)('meal-plans'),
+    (0, common_1.Get)('mealplans'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
