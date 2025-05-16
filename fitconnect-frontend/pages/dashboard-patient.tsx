@@ -1,5 +1,5 @@
 import PrivateRoute from '../components/PrivateRoute';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
@@ -21,6 +21,8 @@ export default function Dashboard() {
   const [patientProfileData, setPatientProfileData] = useState<any>(null);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [initialProfileData, setInitialProfileData] = useState<any>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -29,10 +31,20 @@ export default function Dashboard() {
         const decoded = jwtDecode<DecodedToken>(token);
         setUser(decoded);
 
-        const profileComplete = localStorage.getItem('profileComplete');
-        if (!profileComplete) {
-          setShowProfileModal(true);
-        }
+        // 👇 Nova verificação no backend
+        fetch('http://localhost:3333/patient-profile/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => {
+            if (res.status === 404) {
+              // Perfil não encontrado → Exibir modal
+              setShowProfileModal(true);
+            }
+          })
+          .catch(err => {
+            console.error('Erro ao verificar perfil do paciente:', err);
+          });
+
       } catch (err) {
         localStorage.removeItem('token');
         router.push('/login');
@@ -113,6 +125,7 @@ export default function Dashboard() {
       <div className="min-h-screen bg-[#F0F9F7] flex flex-col">
         {/* Navbar */}
         <motion.div
+          ref={modalRef}
           className="bg-white shadow-md py-4 px-6 flex justify-between items-center"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}

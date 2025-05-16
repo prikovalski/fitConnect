@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 interface PatientProfileModalProps {
@@ -9,6 +9,8 @@ interface PatientProfileModalProps {
 }
 
 export default function PatientProfileModal({ onClose, onSave, onNext, initialData }: PatientProfileModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
   const [form, setForm] = useState({
     gender: '',
     height: '',
@@ -26,10 +28,19 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
     mustHaveFood: '',
   });
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose(); // aqui está seguro
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]); 
+
   const [photos, setPhotos] = useState<any[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
-
 
   function mapGenderToDisplay(genderEnum: string) {
     switch (genderEnum) {
@@ -142,6 +153,7 @@ export default function PatientProfileModal({ onClose, onSave, onNext, initialDa
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <motion.div
+        ref={modalRef}
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-5xl max-h-[95vh] overflow-y-auto"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
