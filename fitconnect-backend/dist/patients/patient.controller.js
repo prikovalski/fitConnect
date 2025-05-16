@@ -23,34 +23,36 @@ let PatientController = class PatientController {
         this.patientService = patientService;
         this.workoutService = workoutService;
     }
-    async getPatientWorkouts(id) {
-        return this.patientService.getPatientWorkouts(Number(id));
+    async getMealPlanById(req, id) {
+        const userId = req.user.id;
+        return this.patientService.getMealPlanById(userId, Number(id));
     }
-    async getWorkoutDetailByPatient(patientId, workoutId) {
-        return this.workoutService.getWorkoutByPatientAndId(Number(patientId), Number(workoutId));
+    async getAllMealPlans(req) {
+        const userId = req.user.id;
+        return this.patientService.getAllMealPlans(userId);
     }
 };
 exports.PatientController = PatientController;
 __decorate([
-    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
-    (0, common_1.Get)(':id/workouts'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, roles_decorator_1.Roles)('PATIENT'),
+    (0, common_1.Get)('meal-plans/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
-], PatientController.prototype, "getPatientWorkouts", null);
+], PatientController.prototype, "getMealPlanById", null);
 __decorate([
-    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
-    (0, common_1.Get)(':patientId/workouts/:workoutId/detail'),
-    __param(0, (0, common_1.Param)('patientId')),
-    __param(1, (0, common_1.Param)('workoutId')),
+    (0, roles_decorator_1.Roles)('PATIENT'),
+    (0, common_1.Get)('meal-plans'),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], PatientController.prototype, "getWorkoutDetailByPatient", null);
+], PatientController.prototype, "getAllMealPlans", null);
 exports.PatientController = PatientController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Controller)('nutritionist/patient'),
+    (0, common_1.Controller)('patient'),
     __metadata("design:paramtypes", [patient_service_1.PatientService,
         workout_service_1.WorkoutService])
 ], PatientController);

@@ -11,30 +11,27 @@ import { v4 as uuidv4 } from 'uuid';
 import { extname } from 'path';
 
 @UseGuards(JwtAuthGuard)
-@Controller('nutritionist/patient')
+@Controller('patient')
 export class PatientController {
   constructor(
     private readonly patientService: PatientService,
     private readonly workoutService: WorkoutService
   ) {}
 
-  @Roles('NUTRITIONIST')
-  @Get(':id/workouts')
-  async getPatientWorkouts(@Param('id') id: string) {
-    return this.patientService.getPatientWorkouts(Number(id));
+  @Roles('PATIENT')
+  @Get('meal-plans/:id')
+  async getMealPlanById(@Req() req: any, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.patientService.getMealPlanById(userId, Number(id));
   }
 
-  @Roles('NUTRITIONIST')
-  @Get(':patientId/workouts/:workoutId/detail')
-  async getWorkoutDetailByPatient(
-    @Param('patientId') patientId: string,
-    @Param('workoutId') workoutId: string
-    
-  ) {
-    return this.workoutService.getWorkoutByPatientAndId(
-      Number(patientId),
-      Number(workoutId)
-    );
+  @Roles('PATIENT')
+  @Get('meal-plans')
+  async getAllMealPlans(@Req() req: any) {
+    const userId = req.user.id;
+    return this.patientService.getAllMealPlans(userId);
   }
+
+
   
 }

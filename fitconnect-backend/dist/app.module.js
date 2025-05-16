@@ -25,6 +25,7 @@ const meal_module_1 = require("./mealplans/meal.module");
 const trainer_module_1 = require("./trainer/trainer.module");
 const patient_module_1 = require("./patients/patient.module");
 const patient_profile_module_1 = require("./patient-profile/patient-profile.module");
+const nutritionist_patient_module_1 = require("./nutritionist-patient/nutritionist-patient.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -33,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             patient_module_1.PatientModule,
             patient_profile_module_1.PatientProfileModule,
+            nutritionist_patient_module_1.NutritionistPatientModule,
             trainer_module_1.TrainerModule,
             meal_module_1.MealModule,
             nutritionist_module_1.NutritionistModule,

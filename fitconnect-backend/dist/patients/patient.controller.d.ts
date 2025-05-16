@@ -4,44 +4,34 @@ export declare class PatientController {
     private readonly patientService;
     private readonly workoutService;
     constructor(patientService: PatientService, workoutService: WorkoutService);
-    getPatientWorkouts(id: string): Promise<import("./patient.types").PatientWithActiveWorkouts>;
-    getWorkoutDetailByPatient(patientId: string, workoutId: string): Promise<{
-        patientName: string;
-        patientPeso: number | null;
-        patient: {
-            id: number;
-            name: string;
-            peso: number | null;
-        };
-        workoutDays: ({
-            exercises: ({
-                sets: ({
-                    logs: {
-                        id: number;
-                        date: Date;
-                        workoutSetId: number;
-                        actualReps: number;
-                        actualLoad: number;
-                    }[];
-                } & {
-                    id: number;
-                    exerciseId: number;
-                    setNumber: number;
-                    targetReps: number;
-                    targetLoad: number;
-                })[];
-            } & {
+    getMealPlanById(req: any, id: string): Promise<{
+        meals: ({
+            items: {
                 id: number;
-                name: string;
-                workoutDayId: number;
-                order: number;
-            })[];
+                mealId: number;
+                foodName: string;
+                quantity: string;
+                notes: string | null;
+            }[];
         } & {
             id: number;
-            workoutPlanId: number;
-            dayOfWeek: string;
-            muscleGroup: string;
+            order: number;
+            name: string;
+            mealPlanId: number;
         })[];
+    } & {
+        id: number;
+        title: string;
+        description: string;
+        observations: string | null;
+        validFrom: Date;
+        validUntil: Date;
+        isActive: boolean;
+        createdAt: Date;
+        nutritionistId: number;
+        patientId: number;
+    }>;
+    getAllMealPlans(req: any): Promise<{
         id: number;
         title: string;
         description: string;
@@ -49,7 +39,5 @@ export declare class PatientController {
         validUntil: Date;
         isActive: boolean;
         createdAt: Date;
-        trainerId: number;
-        patientId: number;
-    }>;
+    }[]>;
 }

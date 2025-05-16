@@ -76,7 +76,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MealPlanController.prototype, "getPlansByPatient", null);
 __decorate([
-    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
+    (0, roles_decorator_1.Roles)('NUTRITIONIST', 'PATIENT'),
     (0, common_1.Get)(':planId'),
     __param(0, (0, common_1.Param)('planId')),
     __metadata("design:type", Function),

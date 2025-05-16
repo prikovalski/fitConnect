@@ -16,36 +16,42 @@ let PatientService = class PatientService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async getPatientWorkouts(patientId) {
-        const patient = await this.prisma.user.findUnique({
-            where: { id: patientId },
+    async getMealPlanById(patientId, mealPlanId) {
+        const plan = await this.prisma.mealPlan.findFirst({
+            where: {
+                id: mealPlanId,
+                patientId: patientId,
+            },
+            include: {
+                meals: {
+                    orderBy: { order: 'asc' },
+                    include: {
+                        items: {
+                            orderBy: { id: 'asc' }
+                        }
+                    }
+                }
+            }
+        });
+        if (!plan) {
+            throw new common_1.NotFoundException('Plano alimentar não encontrado.');
+        }
+        return plan;
+    }
+    async getAllMealPlans(patientId) {
+        return this.prisma.mealPlan.findMany({
+            where: { patientId },
+            orderBy: { createdAt: 'desc' },
             select: {
                 id: true,
-                name: true,
-            },
+                title: true,
+                description: true,
+                validFrom: true,
+                validUntil: true,
+                isActive: true,
+                createdAt: true,
+            }
         });
-        if (!patient) {
-            throw new common_1.NotFoundException('Paciente não encontrado');
-        }
-        const workoutPlans = await this.prisma.workoutPlan.findMany({
-            where: { patientId, isActive: true },
-            include: {
-                workoutDays: {
-                    include: {
-                        exercises: {
-                            include: {
-                                sets: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
-        return {
-            id: patient.id,
-            name: patient.name,
-            workoutPlans,
-        };
     }
 };
 exports.PatientService = PatientService;
