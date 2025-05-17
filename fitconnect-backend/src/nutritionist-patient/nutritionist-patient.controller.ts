@@ -19,18 +19,5 @@ export class NutritionistPatientController {
   async getPatientWorkouts(@Param('id') id: string) {
     return this.nutritionitPatientService.getPatientWorkouts(Number(id));
   }
-
-  @Roles('NUTRITIONIST')
-  @Get(':patientId/workouts/:workoutId/detail')
-  async getWorkoutDetailByPatient(
-    @Param('patientId') patientId: string,
-    @Param('workoutId') workoutId: string
-    
-  ) {
-    return this.workoutService.getWorkoutByPatientAndId(
-      Number(patientId),
-      Number(workoutId)
-    );
-  }
   
 }

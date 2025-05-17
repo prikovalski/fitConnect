@@ -26,9 +26,6 @@ let NutritionistPatientController = class NutritionistPatientController {
     async getPatientWorkouts(id) {
         return this.nutritionitPatientService.getPatientWorkouts(Number(id));
     }
-    async getWorkoutDetailByPatient(patientId, workoutId) {
-        return this.workoutService.getWorkoutByPatientAndId(Number(patientId), Number(workoutId));
-    }
 };
 exports.NutritionistPatientController = NutritionistPatientController;
 __decorate([
@@ -39,15 +36,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], NutritionistPatientController.prototype, "getPatientWorkouts", null);
-__decorate([
-    (0, roles_decorator_1.Roles)('NUTRITIONIST'),
-    (0, common_1.Get)(':patientId/workouts/:workoutId/detail'),
-    __param(0, (0, common_1.Param)('patientId')),
-    __param(1, (0, common_1.Param)('workoutId')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], NutritionistPatientController.prototype, "getWorkoutDetailByPatient", null);
 exports.NutritionistPatientController = NutritionistPatientController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('nutritionist/patient'),

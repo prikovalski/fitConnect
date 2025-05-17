@@ -17,11 +17,13 @@ import { TrainerModule } from 'trainer/trainer.module';
 import { PatientModule } from 'patients/patient.module';
 import { PatientProfileModule } from 'patient-profile/patient-profile.module';
 import { NutritionistPatientModule} from 'nutritionist-patient/nutritionist-patient.module';
+import { PatientAssessmentModule } from 'patient-assessment/patient-assessment.module';
 
 @Module({
   imports: [
     PatientModule,
     PatientProfileModule,
+    PatientAssessmentModule,
     NutritionistPatientModule,
     TrainerModule,
     MealModule,
